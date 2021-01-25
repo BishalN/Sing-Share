@@ -4,6 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const db_1 = require("./config/db");
+dotenv_1.default.config();
+db_1.connectDb();
 const app = express_1.default();
 app.get('/', (_, res) => {
     res.send('hello to the world');
