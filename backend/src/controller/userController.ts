@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
+import jwt, { decode } from 'jsonwebtoken';
 
 import { generateToken } from '../utils/generateToken';
 import User from '../models/User';
+import { sendForgetPasswordEmail } from '../utils/sendForgetPasswordEmail';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 // @desc    Register New User and Send the Auth Token
 // @route   POST /api/users
@@ -40,7 +43,6 @@ const register = asyncHandler(async (req: Request, res: Response) => {
 // @desc    Auth and Send Token
 // @route   POST /api/users/login
 // @access  Public
-
 const login = asyncHandler(async (req: Request, res: Response) => {
   const { usernameOrEmail, password } = req.body;
   let user;
@@ -76,4 +78,63 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
-export { register, login };
+// @desc    Reset Password
+// @route   POST /api/users/reset-password
+// @access  Public
+const resetPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  let user;
+  try {
+    user = await User.findOne({ email });
+    if (!user) {
+      res.status(404);
+      throw new Error('User with that email does not exist');
+    }
+
+    const userid = user.id;
+    const token = jwt.sign({ userid }, process.env.JWT_SECRET!, {
+      expiresIn: '30m',
+    });
+
+    sendForgetPasswordEmail(user.email, token);
+  } catch (error) {
+    res.status(500);
+    throw new Error(error.message);
+  }
+  res.json({
+    message:
+      'The reset email has been sent to the owner of the email plz check out your mail inbox',
+  });
+});
+
+// @desc    Reset Password
+// @route   POST /api/users/change-password
+// @access  Private
+const changePassword = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+  try {
+    const { userid }: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const user: any = await User.findById(userid);
+
+    if (!user) {
+      res.status(404);
+      throw new Error('Invalid Request');
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    user.password = hashedPassword;
+    user.save();
+
+    res.json({
+      _id: user.id,
+      username: user.username,
+      email: user.email,
+      token: generateToken(user.id),
+    });
+  } catch (error) {
+    console.error(error.message);
+    throw new Error(error.message);
+  }
+});
+
+export { register, login, resetPassword, changePassword };

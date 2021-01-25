@@ -20,6 +20,7 @@ const connectDb = () => __awaiter(void 0, void 0, void 0, function* () {
         const conn = yield mongoose_1.default.connect(process.env.MONGO_DB_URI, {
             useUnifiedTopology: true,
             useNewUrlParser: true,
+            useCreateIndex: true,
         });
         const connectionMessage = `MONGO_DB_CONNECTED: ${conn.connection.host}`;
         console.log(colors_1.default.bold.green.underline(connectionMessage));
