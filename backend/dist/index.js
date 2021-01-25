@@ -7,12 +7,12 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const db_1 = require("./config/db");
 const errorMiddleware_1 = require("./middleware/errorMiddleware");
+const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 dotenv_1.default.config();
 db_1.connectDb();
 const app = express_1.default();
-app.get('/', (_, res) => {
-    res.send('hello to the world');
-});
+app.use(express_1.default.json());
+app.use('/api/users', userRoutes_1.default);
 app.use(errorMiddleware_1.notFound);
 app.use(errorMiddleware_1.errorHandler);
 app.listen(4000, () => {
