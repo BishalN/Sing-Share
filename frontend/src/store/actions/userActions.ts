@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import {
   USER_LOGIN_FAIL,
+  USER_REGISTER_FAIL,
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
 } from '../constants/userConstants';
@@ -30,7 +31,7 @@ export const register = (
     dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
-      type: USER_LOGIN_FAIL,
+      type: USER_REGISTER_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

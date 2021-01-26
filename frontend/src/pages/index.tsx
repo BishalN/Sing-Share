@@ -1,12 +1,8 @@
 import { Box } from '@chakra-ui/react';
-import { NavBar } from '../components/NavBar/NavBar';
+import { Layout } from '../components/Layout';
 
 const Index = () => {
-  return (
-    <Box>
-      <NavBar />
-    </Box>
-  );
+  return <Layout />;
 };
 
 export default Index;

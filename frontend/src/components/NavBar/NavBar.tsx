@@ -13,7 +13,7 @@ const NavBarContainer = ({ children, ...props }) => {
       wrap='wrap'
       w='100%'
       mb={1}
-      p={8}
+      p={4}
       bg={['black']}
       color={['white']}
       {...props}
