@@ -14,7 +14,7 @@ const sendForgetPasswordEmail = (email, token) => {
         text: 'This is an account reset request made probably by in app sing&share',
         html: `<div>
     <h1>Reset your password</h1>
-    <a href='http://localhost:3000/reset-password?token=${token}'>
+    <a href='http://localhost:3000/change-password?token=${token}'>
     Click here to reset your password</a>
     <h2>Hurry up it won't last long!!</h2></div>`,
     };

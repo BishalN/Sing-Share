@@ -1,12 +1,11 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
-import jwt, { decode } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import { generateToken } from '../utils/generateToken';
 import User from '../models/User';
 import { sendForgetPasswordEmail } from '../utils/sendForgetPasswordEmail';
-import { JsonWebTokenError } from 'jsonwebtoken';
 
 // @desc    Register New User and Send the Auth Token
 // @route   POST /api/users
