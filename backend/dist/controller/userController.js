@@ -115,8 +115,7 @@ const resetPassword = express_async_handler_1.default((req, res) => __awaiter(vo
 }));
 exports.resetPassword = resetPassword;
 const changePassword = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { token } = req.params;
-    const { newPassword } = req.body;
+    const { newPassword, token } = req.body;
     try {
         const { userid } = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         const user = yield User_1.default.findById(userid);

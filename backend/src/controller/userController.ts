@@ -122,8 +122,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @route   POST /api/users/change-password
 // @access  Private
 const changePassword = asyncHandler(async (req, res) => {
-  const { token } = req.params;
-  const { newPassword } = req.body;
+  const { newPassword, token } = req.body;
   try {
     const { userid }: any = jwt.verify(token, process.env.JWT_SECRET!);
     const user: any = await User.findById(userid);

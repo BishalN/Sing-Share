@@ -23,7 +23,7 @@ if (typeof window !== 'undefined') {
     : [];
 }
 
-const initialState: any = { userLogin: { user: userInfoFromLocalStorage } };
+const initialState: any = { userLogin: { userInfo: userInfoFromLocalStorage } };
 
 const middleware = [thunk];
 

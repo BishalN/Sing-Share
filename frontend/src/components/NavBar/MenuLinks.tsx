@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Link, Stack, Text } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
 
 const MenuItem = ({ children, isLast = false, to = '/', ...rest }) => {
   return (
@@ -12,6 +13,20 @@ const MenuItem = ({ children, isLast = false, to = '/', ...rest }) => {
 };
 
 export const MenuLinks = ({ isOpen }) => {
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const { userInfo } = userLogin;
+  console.log(userInfo);
+  let isLoggedIn;
+  if (userInfo && userInfo.username) {
+    isLoggedIn = true;
+  } else {
+    isLoggedIn = false;
+  }
+
+  const logoutHandler = () => {
+    localStorage.removeItem('userInfo');
+  };
+
   return (
     <Box
       display={{ base: isOpen ? 'block' : 'none', md: 'block' }}
@@ -24,10 +39,16 @@ export const MenuLinks = ({ isOpen }) => {
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}
       >
-        <MenuItem to='/'>Signup</MenuItem>
-        <MenuItem to='/how'>Login</MenuItem>
-        <MenuItem to='/'>Singers</MenuItem>
-        <MenuItem to='/'>Recordings</MenuItem>
+        {isLoggedIn && <MenuItem>Welcome {userInfo.username}!</MenuItem>}
+        {!isLoggedIn && <MenuItem to='/register'>Signup</MenuItem>}
+        {!isLoggedIn && <MenuItem to='/login'>Login</MenuItem>}
+        {isLoggedIn && <MenuItem to='/singers'>Singers</MenuItem>}
+        {isLoggedIn && <MenuItem to='/recordings'>Recordings</MenuItem>}
+        {isLoggedIn && (
+          <Box onClick={logoutHandler}>
+            <MenuItem>Logout</MenuItem>
+          </Box>
+        )}
       </Stack>
     </Box>
   );

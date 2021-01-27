@@ -107,7 +107,7 @@ export const resetPassword = (email) => async (dispatch) => {
   }
 };
 
-export const changePassword = (newPassword) => async (dispatch) => {
+export const changePassword = (newPassword, token) => async (dispatch) => {
   try {
     dispatch({ type: USER_CHANGE_PASSWORD_REQUEST });
 
@@ -119,7 +119,7 @@ export const changePassword = (newPassword) => async (dispatch) => {
 
     const { data } = await axios.post(
       'http://localhost:4000/api/users/change-password',
-      { newPassword },
+      { newPassword, token },
       config
     );
 

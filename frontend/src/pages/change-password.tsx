@@ -17,16 +17,19 @@ import NextLink from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { changePassword } from '../store/actions/userActions';
+import { useRouter } from 'next/router';
 
 interface changePassword {}
 
 const ChangePassword: React.FC<changePassword> = ({}) => {
+  const router = useRouter();
+  const { token } = router.query;
   const dispatch = useDispatch();
 
   const userChangePassword = useSelector(
     (state: any) => state.userChangePassword
   );
-  const { loading, error, status } = userChangePassword;
+  const { loading, error, userInfo } = userChangePassword;
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -40,12 +43,12 @@ const ChangePassword: React.FC<changePassword> = ({}) => {
       setConfirmPasswordError("Passwords don't match");
       return;
     }
-    dispatch(changePassword(password));
+    dispatch(changePassword(password, token));
   };
   useEffect(() => {
-    // if(error){
-    // }
-    // console.log(status);
+    if (userInfo && userInfo.username) {
+      router.push('/');
+    }
   });
 
   return (
@@ -55,19 +58,6 @@ const ChangePassword: React.FC<changePassword> = ({}) => {
           Change Password
         </Heading>
         <Flex flexDirection='column' justifyContent='center' maxW='sm' mt={8}>
-          {/* {status?.message ? (
-            <Link
-              href='https://mail.google.com/mail/u/0/#inbox'
-              target='_blank'
-            >
-              <Alert mt={4} mb={4}>
-                {status?.message}
-              </Alert>
-            </Link>
-          ) : (
-            ''
-          )} */}
-
           <FormControl id='email' isRequired mb={8}>
             <FormLabel>New Password</FormLabel>
             <Input
@@ -101,7 +91,6 @@ const ChangePassword: React.FC<changePassword> = ({}) => {
               maxW='100px'
               onClick={handleSubmit}
               isLoading={loading}
-              isDisabled={status?.message}
             >
               Reset
             </Button>
