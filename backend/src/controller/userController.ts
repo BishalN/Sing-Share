@@ -14,6 +14,18 @@ import { JsonWebTokenError } from 'jsonwebtoken';
 const register = asyncHandler(async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
 
+  const userAlreadyExistsWithThatUsername = await User.findOne({ username });
+  if (userAlreadyExistsWithThatUsername) {
+    res.status(401);
+    throw new Error('Username already in use');
+  }
+
+  const userAlreadyExistsWithThatEmail = await User.findOne({ email });
+  if (userAlreadyExistsWithThatEmail) {
+    res.status(401);
+    throw new Error('Email already in use');
+  }
+
   const hashedPassword = await bcrypt.hash(password, 12);
 
   try {

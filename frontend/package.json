@@ -1,6 +1,5 @@
 {
   "name": "with-chakra-ui",
-  "proxy": "http://localhost:4000",
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev",

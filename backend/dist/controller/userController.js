@@ -21,6 +21,16 @@ const User_1 = __importDefault(require("../models/User"));
 const sendForgetPasswordEmail_1 = require("../utils/sendForgetPasswordEmail");
 const register = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password } = req.body;
+    const userAlreadyExistsWithThatUsername = yield User_1.default.findOne({ username });
+    if (userAlreadyExistsWithThatUsername) {
+        res.status(401);
+        throw new Error('Username already in use');
+    }
+    const userAlreadyExistsWithThatEmail = yield User_1.default.findOne({ email });
+    if (userAlreadyExistsWithThatEmail) {
+        res.status(401);
+        throw new Error('Email already in use');
+    }
     const hashedPassword = yield bcryptjs_1.default.hash(password, 12);
     try {
         const user = yield User_1.default.create({
