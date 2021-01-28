@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from '../components/Layout';
 import {
+  Box,
   Button,
   Container,
   Flex,
@@ -14,17 +15,31 @@ import {
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { login } from '../store/actions/userActions';
 import { useRouter } from 'next/router';
+import FacebookLogin from 'react-facebook-login';
+import { GoogleLogin } from 'react-google-login';
 
-interface loginProps {}
+import {
+  login,
+  facebookLogin,
+  googleLogin,
+} from '../store/actions/userActions';
 
-const Login: React.FC<loginProps> = ({}) => {
+const Login = ({}) => {
   const router = useRouter();
   const dispatch = useDispatch();
+
   const userLogin = useSelector((state: any) => state.userLogin);
   const { loading, error, userInfo } = userLogin;
+
+  const userGoogleLogin = useSelector((state: any) => state.userGoogleLogin);
+  const {
+    loading: googleSignInLoading,
+    error: googleError,
+    userInfo: userGoogleInfo,
+  } = userGoogleLogin;
+
+  console.log(userGoogleInfo);
 
   const [usrenameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,13 +53,13 @@ const Login: React.FC<loginProps> = ({}) => {
   };
 
   useEffect(() => {
-    if (userInfo && userInfo.username) {
+    if (userInfo?.username || userGoogleInfo?.username) {
       router.push('/');
     }
     if (error?.includes('Invalid Credentials')) {
       setCredentialsError(error);
     }
-  });
+  }, [userGoogleInfo, userInfo]);
 
   return (
     <Layout>
@@ -94,7 +109,9 @@ const Login: React.FC<loginProps> = ({}) => {
           <Flex>
             <Button
               mt={4}
-              colorScheme='blue'
+              p={4}
+              colorScheme='pink'
+              borderRadius='100px'
               type='submit'
               maxW='100px'
               onClick={handleSubmit}
@@ -108,6 +125,29 @@ const Login: React.FC<loginProps> = ({}) => {
               </Link>
             </NextLink>
           </Flex>
+          <Box mt={4} p={-4} maxWidth='sm'>
+            <FacebookLogin
+              appId={process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}
+              autoLoad={false}
+              onClick={() => console.log('button clicked')}
+              callback={(response: any) => {
+                console.log(response);
+                dispatch(facebookLogin(response.userID, response.accessToken));
+              }}
+              icon='fa-facebook'
+            />
+          </Box>
+          <Box mt={4}>
+            <GoogleLogin
+              clientId='1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com'
+              buttonText='Login with google'
+              onSuccess={(responseGoogle: any) =>
+                dispatch(googleLogin(responseGoogle.tokenObj.id_token))
+              }
+              onFailure={(responseGoogle) => console.log(responseGoogle)}
+              cookiePolicy={'single_host_origin'}
+            />
+          </Box>
         </Flex>
       </Container>
     </Layout>

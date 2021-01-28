@@ -12,10 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePassword = exports.resetPassword = exports.login = exports.register = void 0;
+exports.googleLogin = exports.facebookLogin = exports.changePassword = exports.resetPassword = exports.login = exports.register = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const google_auth_library_1 = require("google-auth-library");
+const node_fetch_1 = __importDefault(require("node-fetch"));
+const client = new google_auth_library_1.OAuth2Client('1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com');
 const generateToken_1 = require("../utils/generateToken");
 const User_1 = __importDefault(require("../models/User"));
 const sendForgetPasswordEmail_1 = require("../utils/sendForgetPasswordEmail");
@@ -139,4 +142,68 @@ const changePassword = express_async_handler_1.default((req, res) => __awaiter(v
     }
 }));
 exports.changePassword = changePassword;
+const googleLogin = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { idToken } = req.body;
+    const { payload } = (yield client.verifyIdToken({
+        idToken,
+        audience: '1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com',
+    }));
+    const { email, email_verified, picture, name } = payload;
+    if (email_verified) {
+        try {
+            const user = yield User_1.default.findOne({ email });
+            if (user) {
+                res.json({
+                    _id: user.id,
+                    profilePicture: picture,
+                    username: user.username,
+                    email: user.email,
+                    token: generateToken_1.generateToken(user.id),
+                });
+            }
+            else {
+                let password = email + process.env.JWT_SECRET;
+                let username = name;
+                try {
+                    const user = yield User_1.default.create({
+                        username,
+                        email,
+                        password,
+                        profilePicture: picture,
+                    });
+                    if (user) {
+                        res.status(201);
+                        res.json({
+                            _id: user.id,
+                            username,
+                            email,
+                            profilePicture: picture,
+                            token: generateToken_1.generateToken(user.id),
+                        });
+                    }
+                }
+                catch (error) {
+                    res.status(500);
+                    throw new Error(error.message);
+                }
+            }
+        }
+        catch (error) {
+            res.status(500);
+            throw new Error(error.message);
+        }
+    }
+}));
+exports.googleLogin = googleLogin;
+const facebookLogin = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { accessToken, userId } = req.body;
+    let userData;
+    let graphUrl = `https://graph.facebook.com/v9.0/${userId}/?fields=id,name,email,picture&access_token=${accessToken}`;
+    yield node_fetch_1.default(graphUrl, { method: 'GET' })
+        .then((res) => res.json())
+        .then((data) => (userData = data));
+    const { id, name, email, picture: { data: { url }, }, } = userData;
+    console.log(name, url, email);
+}));
+exports.facebookLogin = facebookLogin;
 //# sourceMappingURL=userController.js.map

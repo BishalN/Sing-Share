@@ -7,6 +7,8 @@ import {
   userRegisterReducer,
   userResetPasswordReducer,
   userChangePasswordReducer,
+  userFacebookLoginReducer,
+  userGoogleLoginReducer,
 } from './reducers/userReducer';
 
 const reducers = combineReducers({
@@ -14,6 +16,8 @@ const reducers = combineReducers({
   userLogin: userLoginReducer,
   userResetPassword: userResetPasswordReducer,
   userChangePassword: userChangePasswordReducer,
+  userFacebookLogin: userFacebookLoginReducer,
+  userGoogleLogin: userGoogleLoginReducer,
 });
 
 let userInfoFromLocalStorage;

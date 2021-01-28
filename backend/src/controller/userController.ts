@@ -2,6 +2,12 @@ import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
+import fetch from 'node-fetch';
+
+const client = new OAuth2Client(
+  '1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com'
+);
 
 import { generateToken } from '../utils/generateToken';
 import User from '../models/User';
@@ -147,4 +153,94 @@ const changePassword = asyncHandler(async (req, res) => {
   }
 });
 
-export { register, login, resetPassword, changePassword };
+// @desc    Login with google
+// @route   POST /api/users/google-login
+// @access  public
+const googleLogin = asyncHandler(async (req, res) => {
+  const { idToken } = req.body;
+
+  const { payload } = (await client.verifyIdToken({
+    idToken,
+    audience:
+      '1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com',
+  })) as any;
+
+  const { email, email_verified, picture, name } = payload;
+
+  if (email_verified) {
+    try {
+      const user: any = await User.findOne({ email });
+
+      //User already exists
+      if (user) {
+        res.json({
+          _id: user.id,
+          profilePicture: picture,
+          username: user.username,
+          email: user.email,
+          token: generateToken(user.id),
+        });
+      } else {
+        //Brand new User
+        let password = email + process.env.JWT_SECRET;
+        let username = name;
+        try {
+          const user = await User.create({
+            username,
+            email,
+            password,
+            profilePicture: picture,
+          });
+
+          if (user) {
+            res.status(201);
+            res.json({
+              _id: user.id,
+              username,
+              email,
+              profilePicture: picture,
+              token: generateToken(user.id),
+            });
+          }
+        } catch (error) {
+          res.status(500);
+          throw new Error(error.message);
+        }
+      }
+    } catch (error) {
+      res.status(500);
+      throw new Error(error.message);
+    }
+  }
+});
+
+// @desc    Login with facebook
+// @route   POST /api/users/facebook-login
+// @access  public
+const facebookLogin = asyncHandler(async (req, res) => {
+  const { accessToken, userId } = req.body;
+  let userData;
+  let graphUrl = `https://graph.facebook.com/v9.0/${userId}/?fields=id,name,email,picture&access_token=${accessToken}`;
+  await fetch(graphUrl, { method: 'GET' })
+    .then((res) => res.json())
+    .then((data) => (userData = data));
+  const {
+    id,
+    name,
+    email,
+    picture: {
+      data: { url },
+    },
+  } = userData;
+
+  console.log(name, url, email);
+});
+
+export {
+  register,
+  login,
+  resetPassword,
+  changePassword,
+  facebookLogin,
+  googleLogin,
+};
