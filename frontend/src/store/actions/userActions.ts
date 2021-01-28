@@ -184,6 +184,7 @@ export const googleLogin = (idToken) => async (dispatch) => {
       { idToken },
       config
     );
+
     localStorage.setItem('userInfo', JSON.stringify(data));
     dispatch({ type: USER_GOOGLE_LOGIN_SUCCESS, payload: data });
   } catch (error) {

@@ -1,21 +1,35 @@
 import React from 'react';
-import { Box, Link, Stack, Text } from '@chakra-ui/react';
+import NextLink from 'next/link';
+import {
+  Avatar,
+  Box,
+  Link,
+  Stack,
+  Text,
+  Wrap,
+  WrapItem,
+} from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
+import Router from 'next/dist/next-server/server/router';
+import { useRouter } from 'next/router';
 
 const MenuItem = ({ children, isLast = false, to = '/', ...rest }) => {
   return (
-    <Link href={to}>
-      <Text display='block' {...rest}>
-        {children}
-      </Text>
-    </Link>
+    <NextLink href={to}>
+      <Link>
+        <Text display='block' {...rest}>
+          {children}
+        </Text>
+      </Link>
+    </NextLink>
   );
 };
 
 export const MenuLinks = ({ isOpen }) => {
+  const router = useRouter();
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo } = userLogin;
-  console.log(userInfo);
+
   let isLoggedIn;
   if (userInfo && userInfo.username) {
     isLoggedIn = true;
@@ -25,6 +39,7 @@ export const MenuLinks = ({ isOpen }) => {
 
   const logoutHandler = () => {
     localStorage.removeItem('userInfo');
+    router.reload();
   };
 
   return (
@@ -39,7 +54,18 @@ export const MenuLinks = ({ isOpen }) => {
         direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}
       >
-        {isLoggedIn && <MenuItem>Welcome {userInfo.username}!</MenuItem>}
+        {isLoggedIn && (
+          <Wrap>
+            <WrapItem>
+              <Avatar
+                size='lg'
+                name={userInfo.username}
+                src={userInfo.profilePicture}
+              />
+            </WrapItem>
+          </Wrap>
+        )}
+
         {!isLoggedIn && <MenuItem to='/register'>Signup</MenuItem>}
         {!isLoggedIn && <MenuItem to='/login'>Login</MenuItem>}
         {isLoggedIn && <MenuItem to='/singers'>Singers</MenuItem>}

@@ -235,7 +235,7 @@ const facebookLogin = asyncHandler(async (req, res) => {
   if (!email) {
     res.status(403);
     throw new Error(
-      'You cannot continue with your facebook as no email address is associated with your facebook  account'
+      'You cannot continue with your facebook as no email address is associated with your facebook account'
     );
   }
 

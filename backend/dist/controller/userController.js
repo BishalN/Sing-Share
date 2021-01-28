@@ -205,7 +205,7 @@ const facebookLogin = express_async_handler_1.default((req, res) => __awaiter(vo
     const { name, email, picture: { data: { url }, }, } = userData;
     if (!email) {
         res.status(403);
-        throw new Error('You cannot continue with your facebook as no email address is associated with your facebook  account');
+        throw new Error('You cannot continue with your facebook as no email address is associated with your facebook account');
     }
     try {
         const user = yield User_1.default.findOne({ email });

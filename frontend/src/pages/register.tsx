@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from '../components/Layout';
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
+  CloseButton,
   Container,
   Flex,
   FormControl,
@@ -52,7 +55,7 @@ const Register: React.FC<registerProps> = ({}) => {
   const userFacebookLogin = useSelector(
     (state: any) => state.userFacebookLogin
   );
-  const {
+  let {
     loading: facebookSignInLoading,
     error: facebookError,
     userInfo: userFacebookInfo,
@@ -96,10 +99,25 @@ const Register: React.FC<registerProps> = ({}) => {
     } else if (error?.includes('Email')) {
       setEmailError(error);
     }
-  }, [userInfo, error, loginUserInfo]);
+  }, [userInfo, error, loginUserInfo, facebookError]);
+
+  const [showAlert, setShowAlert] = useState(true);
 
   return (
     <Layout>
+      {facebookError && showAlert && (
+        <Alert status='error' variant='solid' mt={4}>
+          <AlertIcon />
+          {facebookError}
+          <CloseButton
+            position='absolute'
+            right='-5px'
+            top='8px'
+            color='black'
+            onClick={() => setShowAlert(false)}
+          />
+        </Alert>
+      )}
       <Container>
         <Heading as='h1' mt='2'>
           Register

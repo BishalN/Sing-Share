@@ -27,6 +27,11 @@ const NavBarContainer = ({ children, ...props }) => {
 export const NavBar = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
+  const userFaceBookLogin = useSelector(
+    (state: any) => state.userFacebookLogin
+  );
+  const {} = userFaceBookLogin;
+
   const toggle = () => setIsOpen(!isOpen);
 
   return (

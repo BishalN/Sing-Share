@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Layout } from '../components/Layout';
 import {
   Alert,
+  AlertIcon,
   Box,
   Button,
+  CloseButton,
   Container,
   Flex,
   FormControl,
@@ -77,9 +79,23 @@ const Login = ({}) => {
     }
   }, [userGoogleInfo, userInfo, userFacebookInfo]);
 
+  const [showAlert, setShowAlert] = useState(true);
+
   return (
     <Layout>
-      {facebookError && <Alert mt={4}>{facebookError}</Alert>}
+      {facebookError && showAlert && (
+        <Alert status='error' variant='solid' mt={4}>
+          <AlertIcon />
+          {facebookError}
+          <CloseButton
+            position='absolute'
+            right='-5px'
+            top='8px'
+            color='black'
+            onClick={() => setShowAlert(false)}
+          />
+        </Alert>
+      )}
 
       <Container>
         <Heading as='h1' mt='2'>
