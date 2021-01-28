@@ -225,7 +225,6 @@ const facebookLogin = asyncHandler(async (req, res) => {
     .then((res) => res.json())
     .then((data) => (userData = data));
   const {
-    id,
     name,
     email,
     picture: {
@@ -233,7 +232,56 @@ const facebookLogin = asyncHandler(async (req, res) => {
     },
   } = userData;
 
-  console.log(name, url, email);
+  if (!email) {
+    res.status(403);
+    throw new Error(
+      'You cannot continue with your facebook as no email address is associated with your facebook  account'
+    );
+  }
+
+  try {
+    const user: any = await User.findOne({ email });
+
+    //User already exists
+    if (user) {
+      res.json({
+        _id: user.id,
+        profilePicture: url,
+        username: user.username,
+        email: user.email,
+        token: generateToken(user.id),
+      });
+    } else {
+      //Brand new User
+      let password = email + process.env.JWT_SECRET;
+      let username = name;
+      try {
+        const user = await User.create({
+          username,
+          email,
+          password,
+          profilePicture: url,
+        });
+
+        if (user) {
+          res.status(201);
+          res.json({
+            _id: user.id,
+            username,
+            email,
+            profilePicture: url,
+            token: generateToken(user.id),
+          });
+        }
+      } catch (error) {
+        res.status(500);
+        throw new Error(error.message);
+      }
+    }
+  } catch (error) {
+    res.status(500);
+    throw new Error(error.message);
+  }
 });
 
 export {

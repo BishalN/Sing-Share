@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from '../components/Layout';
 import {
+  Box,
   Button,
   Container,
   Flex,
@@ -16,15 +17,53 @@ import NextLink from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 
-import { register } from '../store/actions/userActions';
+import {
+  facebookLogin,
+  googleLogin,
+  register,
+} from '../store/actions/userActions';
+import { GoogleLogin } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login';
+import { FaFacebook, FaGoogle } from 'react-icons/fa';
 
 interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
   const dispatch = useDispatch();
   const router = useRouter();
+
   const userRegister = useSelector((state: any) => state.userRegister);
   const { loading, error, userInfo } = userRegister;
+
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const {
+    loading: loginLoading,
+    error: errorLogin,
+    userInfo: loginUserInfo,
+  } = userLogin;
+
+  const userGoogleLogin = useSelector((state: any) => state.userGoogleLogin);
+  const {
+    loading: googleSignInLoading,
+    error: googleError,
+    userInfo: userGoogleInfo,
+  } = userGoogleLogin;
+
+  const userFacebookLogin = useSelector(
+    (state: any) => state.userFacebookLogin
+  );
+  const {
+    loading: facebookSignInLoading,
+    error: facebookError,
+    userInfo: userFacebookInfo,
+  } = userFacebookLogin;
+
+  /*Lil trick this will lead to restarting of the redux store and pickup the userinfo
+  from local storage as the userLogin --> userInfo as it is checked in initial state*/
+
+  if (userFacebookInfo?.username || userGoogleInfo?.username) {
+    router.reload();
+  }
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -34,8 +73,6 @@ const Register: React.FC<registerProps> = ({}) => {
   const [usernameError, setUsernameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-
-  console.log(usernameError, emailError, passwordError);
 
   const handleSubmit = () => {
     //Clearing the previous submission error and starting with new data
@@ -51,7 +88,7 @@ const Register: React.FC<registerProps> = ({}) => {
     dispatch(register(username, email, password));
   };
   useEffect(() => {
-    if (userInfo && userInfo.username) {
+    if (userInfo?.username || loginUserInfo?.username) {
       router.push('/');
     }
     if (error?.includes('Username')) {
@@ -59,7 +96,7 @@ const Register: React.FC<registerProps> = ({}) => {
     } else if (error?.includes('Email')) {
       setEmailError(error);
     }
-  }, [userInfo, error]);
+  }, [userInfo, error, loginUserInfo]);
 
   return (
     <Layout>
@@ -132,9 +169,11 @@ const Register: React.FC<registerProps> = ({}) => {
           <Flex>
             <Button
               mt={4}
-              colorScheme='blue'
+              p={4}
+              colorScheme='pink'
+              borderRadius='15px'
               type='submit'
-              maxW='100px'
+              maxW='200px'
               onClick={handleSubmit}
               isLoading={loading}
             >
@@ -146,6 +185,45 @@ const Register: React.FC<registerProps> = ({}) => {
               </Link>
             </NextLink>
           </Flex>
+
+          <Button
+            mt={8}
+            borderColor='black'
+            colorScheme='facebook'
+            leftIcon={<FaFacebook />}
+          >
+            <FacebookLogin
+              appId='508027223494006'
+              autoLoad={false}
+              onClick={() => console.log('button clicked')}
+              callback={(response: any) => {
+                console.log(response);
+                dispatch(facebookLogin(response.userID, response.accessToken));
+              }}
+              cssClass=''
+              textButton='Signup with facebook'
+            />
+          </Button>
+
+          <Box mt={4} maxWidth='sm' mb={8}>
+            <GoogleLogin
+              clientId='1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com'
+              render={(renderProps) => (
+                <Button
+                  leftIcon={<FaGoogle />}
+                  onClick={renderProps.onClick}
+                  width='sm'
+                >
+                  Signup with google
+                </Button>
+              )}
+              onSuccess={(responseGoogle: any) =>
+                dispatch(googleLogin(responseGoogle.tokenObj.id_token))
+              }
+              onFailure={(responseGoogle) => console.log(responseGoogle)}
+              cookiePolicy={'single_host_origin'}
+            />
+          </Box>
         </Flex>
       </Container>
     </Layout>

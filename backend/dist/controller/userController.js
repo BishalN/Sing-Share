@@ -202,8 +202,53 @@ const facebookLogin = express_async_handler_1.default((req, res) => __awaiter(vo
     yield node_fetch_1.default(graphUrl, { method: 'GET' })
         .then((res) => res.json())
         .then((data) => (userData = data));
-    const { id, name, email, picture: { data: { url }, }, } = userData;
-    console.log(name, url, email);
+    const { name, email, picture: { data: { url }, }, } = userData;
+    if (!email) {
+        res.status(403);
+        throw new Error('You cannot continue with your facebook as no email address is associated with your facebook  account');
+    }
+    try {
+        const user = yield User_1.default.findOne({ email });
+        if (user) {
+            res.json({
+                _id: user.id,
+                profilePicture: url,
+                username: user.username,
+                email: user.email,
+                token: generateToken_1.generateToken(user.id),
+            });
+        }
+        else {
+            let password = email + process.env.JWT_SECRET;
+            let username = name;
+            try {
+                const user = yield User_1.default.create({
+                    username,
+                    email,
+                    password,
+                    profilePicture: url,
+                });
+                if (user) {
+                    res.status(201);
+                    res.json({
+                        _id: user.id,
+                        username,
+                        email,
+                        profilePicture: url,
+                        token: generateToken_1.generateToken(user.id),
+                    });
+                }
+            }
+            catch (error) {
+                res.status(500);
+                throw new Error(error.message);
+            }
+        }
+    }
+    catch (error) {
+        res.status(500);
+        throw new Error(error.message);
+    }
 }));
 exports.facebookLogin = facebookLogin;
 //# sourceMappingURL=userController.js.map

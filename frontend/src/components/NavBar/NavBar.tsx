@@ -3,6 +3,7 @@ import { Box, Flex } from '@chakra-ui/react';
 import Logo from './Logo';
 import { MenuToggle } from './MenuToggleButton';
 import { MenuLinks } from './MenuLinks';
+import { useSelector } from 'react-redux';
 
 const NavBarContainer = ({ children, ...props }) => {
   return (

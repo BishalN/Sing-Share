@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from '../components/Layout';
 import {
+  Alert,
   Box,
   Button,
   Container,
@@ -18,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import FacebookLogin from 'react-facebook-login';
 import { GoogleLogin } from 'react-google-login';
+import { FaFacebook, FaGoogle } from 'react-icons/fa';
 
 import {
   login,
@@ -39,9 +41,16 @@ const Login = ({}) => {
     userInfo: userGoogleInfo,
   } = userGoogleLogin;
 
-  console.log(userGoogleInfo);
+  const userFacebookLogin = useSelector(
+    (state: any) => state.userFacebookLogin
+  );
+  const {
+    loading: facebookSignInLoading,
+    error: facebookError,
+    userInfo: userFacebookInfo,
+  } = userFacebookLogin;
 
-  const [usrenameOrEmail, setUsernameOrEmail] = useState('');
+  const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const [credentialsError, setCredentialsError] = useState('');
@@ -49,27 +58,36 @@ const Login = ({}) => {
   const handleSubmit = () => {
     //Clearing the previous state errors
     setCredentialsError('');
-    dispatch(login(usrenameOrEmail, password));
+    dispatch(login(usernameOrEmail, password));
   };
 
+  /*Lil trick this will lead to restarting of the redux store and pickup the userinfo
+  from local storage as the userLogin --> userInfo as it is checked in initial state*/
+
+  if (userFacebookInfo?.username || userGoogleInfo?.username) {
+    router.reload();
+  }
+
   useEffect(() => {
-    if (userInfo?.username || userGoogleInfo?.username) {
+    if (userInfo?.username) {
       router.push('/');
     }
     if (error?.includes('Invalid Credentials')) {
       setCredentialsError(error);
     }
-  }, [userGoogleInfo, userInfo]);
+  }, [userGoogleInfo, userInfo, userFacebookInfo]);
 
   return (
     <Layout>
+      {facebookError && <Alert mt={4}>{facebookError}</Alert>}
+
       <Container>
         <Heading as='h1' mt='2'>
           Login
         </Heading>
         <Flex flexDirection='column' justifyContent='center' maxW='sm'>
           <FormControl
-            id='usrenameOrEmail'
+            id='usernameOrEmail'
             mt={4}
             isRequired
             isInvalid={credentialsError.length > 0}
@@ -78,13 +96,12 @@ const Login = ({}) => {
             <Input
               type='text'
               isRequired
-              value={usrenameOrEmail}
+              value={usernameOrEmail}
               onChange={(e) => setUsernameOrEmail(e.target.value)}
             />
             <FormHelperText>An email will contain @</FormHelperText>
             <FormErrorMessage>{credentialsError}</FormErrorMessage>
           </FormControl>
-
           <FormControl
             id='password'
             mt={4}
@@ -105,15 +122,14 @@ const Login = ({}) => {
               </Link>
             </NextLink>
           </FormControl>
-
           <Flex>
             <Button
               mt={4}
               p={4}
               colorScheme='pink'
-              borderRadius='100px'
+              borderRadius='15px'
               type='submit'
-              maxW='100px'
+              maxW='200px'
               onClick={handleSubmit}
               isLoading={loading}
             >
@@ -125,22 +141,36 @@ const Login = ({}) => {
               </Link>
             </NextLink>
           </Flex>
-          <Box mt={4} p={-4} maxWidth='sm'>
+          <Button
+            mt={8}
+            borderColor='black'
+            colorScheme='facebook'
+            leftIcon={<FaFacebook />}
+          >
             <FacebookLogin
-              appId={process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}
+              appId='508027223494006'
               autoLoad={false}
               onClick={() => console.log('button clicked')}
               callback={(response: any) => {
                 console.log(response);
                 dispatch(facebookLogin(response.userID, response.accessToken));
               }}
-              icon='fa-facebook'
+              cssClass=''
             />
-          </Box>
-          <Box mt={4}>
+          </Button>
+
+          <Box mt={4} maxWidth='sm'>
             <GoogleLogin
               clientId='1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com'
-              buttonText='Login with google'
+              render={(renderProps) => (
+                <Button
+                  leftIcon={<FaGoogle />}
+                  onClick={renderProps.onClick}
+                  width='sm'
+                >
+                  Login with google
+                </Button>
+              )}
               onSuccess={(responseGoogle: any) =>
                 dispatch(googleLogin(responseGoogle.tokenObj.id_token))
               }
