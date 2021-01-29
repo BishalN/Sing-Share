@@ -96,105 +96,98 @@ const Login = ({}) => {
         </Alert>
       )}
 
-      <Container>
-        <Heading as='h1' mt='2'>
+      <Flex mx='auto' alignItems='center' direction='column' maxW='sm'>
+        <Heading as='h1' mt='2' alignSelf='self-start' mb='sm'>
           Login
         </Heading>
-        <Flex flexDirection='column' justifyContent='center' maxW='sm'>
-          <FormControl
-            id='usernameOrEmail'
-            mt={4}
+        <FormControl
+          id='usernameOrEmail'
+          mt={4}
+          isRequired
+          isInvalid={credentialsError.length > 0}
+        >
+          <FormLabel>Username Or Email</FormLabel>
+          <Input
+            type='text'
             isRequired
-            isInvalid={credentialsError.length > 0}
-          >
-            <FormLabel>Username Or Email</FormLabel>
-            <Input
-              type='text'
-              isRequired
-              value={usernameOrEmail}
-              onChange={(e) => setUsernameOrEmail(e.target.value)}
-            />
-            <FormHelperText>An email will contain @</FormHelperText>
-            <FormErrorMessage>{credentialsError}</FormErrorMessage>
-          </FormControl>
-          <FormControl
-            id='password'
-            mt={4}
-            isRequired
-            isInvalid={credentialsError.length > 0}
-          >
-            <FormLabel>Password</FormLabel>
-            <Input
-              type='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <FormErrorMessage>{credentialsError}</FormErrorMessage>
+            value={usernameOrEmail}
+            onChange={(e) => setUsernameOrEmail(e.target.value)}
+          />
+          <FormHelperText>An email will contain @</FormHelperText>
+          <FormErrorMessage>{credentialsError}</FormErrorMessage>
+        </FormControl>
+        <FormControl
+          id='password'
+          mt={4}
+          isRequired
+          isInvalid={credentialsError.length > 0}
+        >
+          <FormLabel>Password</FormLabel>
+          <Input
+            type='password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <FormErrorMessage>{credentialsError}</FormErrorMessage>
 
-            <NextLink href='/password-reset'>
-              <Link>
-                <FormHelperText>Forgot password?</FormHelperText>
-              </Link>
-            </NextLink>
-          </FormControl>
-          <Flex>
-            <Button
-              mt={4}
-              p={4}
-              colorScheme='pink'
-              borderRadius='15px'
-              type='submit'
-              maxW='200px'
-              onClick={handleSubmit}
-              isLoading={loading}
-            >
-              Login
-            </Button>
-            <NextLink href='/register'>
-              <Link mt={8} ml={4} as='a' fontSize='sm'>
-                Don't have an account?
-              </Link>
-            </NextLink>
-          </Flex>
+          <NextLink href='/password-reset'>
+            <Link>
+              <FormHelperText>Forgot password?</FormHelperText>
+            </Link>
+          </NextLink>
+        </FormControl>
+        <Flex alignSelf='self-start'>
           <Button
-            mt={8}
-            borderColor='black'
-            colorScheme='facebook'
-            leftIcon={<FaFacebook />}
+            mt={4}
+            p={4}
+            colorScheme='pink'
+            borderRadius='15px'
+            type='submit'
+            maxW='200px'
+            onClick={handleSubmit}
+            isLoading={loading}
           >
-            <FacebookLogin
-              appId='508027223494006'
-              autoLoad={false}
-              onClick={() => console.log('button clicked')}
-              callback={(response: any) => {
-                console.log(response);
-                dispatch(facebookLogin(response.userID, response.accessToken));
-              }}
-              cssClass=''
-            />
+            Login
           </Button>
-
-          <Box mt={4} maxWidth='sm'>
-            <GoogleLogin
-              clientId='1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com'
-              render={(renderProps) => (
-                <Button
-                  leftIcon={<FaGoogle />}
-                  onClick={renderProps.onClick}
-                  width='sm'
-                >
-                  Login with google
-                </Button>
-              )}
-              onSuccess={(responseGoogle: any) =>
-                dispatch(googleLogin(responseGoogle.tokenObj.id_token))
-              }
-              onFailure={(responseGoogle) => console.log(responseGoogle)}
-              cookiePolicy={'single_host_origin'}
-            />
-          </Box>
+          <NextLink href='/register'>
+            <Link mt={8} ml={4} as='a' fontSize='sm'>
+              Don't have an account?
+            </Link>
+          </NextLink>
         </Flex>
-      </Container>
+        <Button mt={8} colorScheme='facebook' leftIcon={<FaFacebook />} w='sm'>
+          <FacebookLogin
+            appId='508027223494006'
+            autoLoad={false}
+            onClick={() => console.log('button clicked')}
+            callback={(response: any) => {
+              console.log(response);
+              dispatch(facebookLogin(response.userID, response.accessToken));
+            }}
+            cssClass=''
+          />
+        </Button>
+
+        <Box mt={4} maxWidth='sm'>
+          <GoogleLogin
+            clientId='1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com'
+            render={(renderProps) => (
+              <Button
+                leftIcon={<FaGoogle />}
+                onClick={renderProps.onClick}
+                width='sm'
+              >
+                Login with google
+              </Button>
+            )}
+            onSuccess={(responseGoogle: any) =>
+              dispatch(googleLogin(responseGoogle.tokenObj.id_token))
+            }
+            onFailure={(responseGoogle) => console.log(responseGoogle)}
+            cookiePolicy={'single_host_origin'}
+          />
+        </Box>
+      </Flex>
     </Layout>
   );
 };
