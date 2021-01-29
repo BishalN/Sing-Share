@@ -1,20 +1,32 @@
-import React from 'react';
-import NextLink from 'next/link';
 import {
   Avatar,
+  AvatarBadge,
   Box,
   Link,
+  Menu,
+  MenuButton,
+  MenuList,
   Stack,
   Text,
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
-import { useSelector } from 'react-redux';
-import Router from 'next/dist/next-server/server/router';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../store/actions/userActions';
 
-const MenuItem = ({ children, isLast = false, to = '/', ...rest }) => {
-  return (
+const MenuItem = ({
+  children,
+  isLast = false,
+  to = '/',
+  isAvatar = false,
+  ...rest
+}) => {
+  let component = isAvatar ? (
+    <Box>{children}</Box>
+  ) : (
     <NextLink href={to}>
       <Link>
         <Text display='block' {...rest}>
@@ -23,12 +35,15 @@ const MenuItem = ({ children, isLast = false, to = '/', ...rest }) => {
       </Link>
     </NextLink>
   );
+  return component;
 };
 
 export const MenuLinks = ({ isOpen }) => {
   const router = useRouter();
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const dispatch = useDispatch();
 
   let isLoggedIn;
   if (userInfo && userInfo.username) {
@@ -38,8 +53,7 @@ export const MenuLinks = ({ isOpen }) => {
   }
 
   const logoutHandler = () => {
-    localStorage.removeItem('userInfo');
-    router.reload();
+    dispatch(logout());
   };
 
   return (
@@ -55,15 +69,33 @@ export const MenuLinks = ({ isOpen }) => {
         pt={[4, 4, 0, 0]}
       >
         {isLoggedIn && (
-          <Wrap>
-            <WrapItem>
-              <Avatar
-                size='lg'
-                name={userInfo.username}
-                src={userInfo.profilePicture}
-              />
-            </WrapItem>
-          </Wrap>
+          <MenuItem isAvatar={true}>
+            <Menu>
+              <MenuButton as={Avatar}>
+                <Wrap>
+                  <WrapItem>
+                    <Avatar
+                      size='lg'
+                      name={userInfo.username}
+                      src={userInfo.profilePicture}
+                    >
+                      <AvatarBadge
+                        boxSize='0.75em'
+                        bg='green.400'
+                        border='2px'
+                      />
+                    </Avatar>
+                  </WrapItem>
+                </Wrap>
+              </MenuButton>
+
+              <MenuList color='black' p={4} maxW='20px'>
+                <MenuItem>Profile</MenuItem>
+                <MenuItem>Record</MenuItem>
+                <MenuItem>Logout</MenuItem>
+              </MenuList>
+            </Menu>
+          </MenuItem>
         )}
 
         {!isLoggedIn && <MenuItem to='/register'>Signup</MenuItem>}

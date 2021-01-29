@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import { Layout } from '../components/Layout';
 import {
   Alert,
   AlertIcon,
@@ -17,16 +15,17 @@ import {
   Link,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import FacebookLogin from 'react-facebook-login';
 import { GoogleLogin } from 'react-google-login';
 import { FaFacebook, FaGoogle } from 'react-icons/fa';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { Layout } from '../components/Layout';
 import {
-  login,
   facebookLogin,
   googleLogin,
+  login,
 } from '../store/actions/userActions';
 
 const Login = ({}) => {

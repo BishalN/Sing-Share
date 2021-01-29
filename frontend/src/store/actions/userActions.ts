@@ -4,6 +4,7 @@ import {
   USER_CHANGE_PASSWORD_FAIL,
   USER_CHANGE_PASSWORD_REQUEST,
   USER_CHANGE_PASSWORD_SUCCESS,
+  USER_DATA_CLEAR,
   USER_FACEBOOK_LOGIN_FAIL,
   USER_FACEBOOK_LOGIN_REQUEST,
   USER_FACEBOOK_LOGIN_SUCCESS,
@@ -13,6 +14,7 @@ import {
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
+  USER_LOGOUT,
   USER_REGISTER_FAIL,
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
@@ -20,6 +22,12 @@ import {
   USER_RESET_PASSWORD_REQUEST,
   USER_RESET_PASSWORD_SUCCESS,
 } from '../constants/userConstants';
+
+export const logout = () => (dispatch) => {
+  localStorage.removeItem('userInfo');
+  dispatch({ type: USER_DATA_CLEAR });
+  dispatch({ type: USER_LOGOUT });
+};
 
 export const register = (
   username: string,

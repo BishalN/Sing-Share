@@ -2,6 +2,7 @@ import {
   USER_CHANGE_PASSWORD_FAIL,
   USER_CHANGE_PASSWORD_REQUEST,
   USER_CHANGE_PASSWORD_SUCCESS,
+  USER_DATA_CLEAR,
   USER_FACEBOOK_LOGIN_FAIL,
   USER_FACEBOOK_LOGIN_REQUEST,
   USER_FACEBOOK_LOGIN_SUCCESS,
@@ -27,6 +28,8 @@ export const userRegisterReducer = (state = {}, action) => {
       return { loading: false, userInfo: action.payload };
     case USER_REGISTER_FAIL:
       return { loading: false, error: action.payload };
+    case USER_DATA_CLEAR:
+      return { userInfo: null };
     default:
       return state;
   }
@@ -40,6 +43,8 @@ export const userLoginReducer = (state = {}, action) => {
       return { loading: false, userInfo: action.payload };
     case USER_LOGIN_FAIL:
       return { loading: false, error: action.payload };
+    case USER_DATA_CLEAR:
+      return { userInfo: null };
     default:
       return state;
   }
@@ -53,6 +58,8 @@ export const userResetPasswordReducer = (state = {}, action) => {
       return { loading: false, status: action.payload };
     case USER_RESET_PASSWORD_FAIL:
       return { loading: false, error: action.payload };
+    case USER_DATA_CLEAR:
+      return { userInfo: null };
     default:
       return state;
   }
@@ -66,6 +73,8 @@ export const userChangePasswordReducer = (state = {}, action) => {
       return { loading: false, userInfo: action.payload };
     case USER_CHANGE_PASSWORD_FAIL:
       return { loading: false, error: action.payload };
+    case USER_DATA_CLEAR:
+      return { userInfo: null };
     default:
       return state;
   }
@@ -79,6 +88,8 @@ export const userFacebookLoginReducer = (state = {}, action) => {
       return { loading: false, userInfo: action.payload };
     case USER_FACEBOOK_LOGIN_FAIL:
       return { loading: false, error: action.payload };
+    case USER_DATA_CLEAR:
+      return { userInfo: null };
     default:
       return state;
   }
@@ -92,6 +103,8 @@ export const userGoogleLoginReducer = (state = {}, action) => {
       return { loading: false, userInfo: action.payload };
     case USER_GOOGLE_LOGIN_FAIL:
       return { loading: false, error: action.payload };
+    case USER_DATA_CLEAR:
+      return { userInfo: null };
     default:
       return state;
   }
