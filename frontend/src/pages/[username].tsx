@@ -4,20 +4,27 @@ import {
   Box,
   Divider,
   Flex,
-  Stack,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
+  Spinner,
   Text,
 } from '@chakra-ui/react';
-import React from 'react';
-import { Layout } from '../components/Layout';
+import React, { useEffect, useState } from 'react';
 import {
   AiFillPlayCircle,
   AiOutlineComment,
   AiOutlineHeart,
 } from 'react-icons/ai';
+import { useDispatch, useSelector } from 'react-redux';
+import { Layout } from '../components/Layout';
+import { useRouter } from 'next/router';
+
+import { getUserProfile } from '../store/actions/userProfileActions';
 
 interface usernameProps {}
 
-const AudioPlayer = (porps) => {
+const AudioPlayer = (props) => {
   return (
     <>
       <Box
@@ -65,42 +72,65 @@ const AudioPlayer = (porps) => {
   );
 };
 
-const Username: React.FC<usernameProps> = ({}) => {
+const UserProfile = ({}) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const { username } = router.query;
+
+  const getUserProfileFromStore = useSelector(
+    (state: any) => state.getUserProfile
+  );
+  const { loading, error, userProfile } = getUserProfileFromStore;
+
+  useEffect(() => {
+    if (userProfile) {
+    } else {
+      dispatch(getUserProfile(username));
+    }
+  }, [username]);
+
   return (
     <Layout>
-      <Flex alignItems='center' direction='column'>
-        <Avatar
-          mt='4'
-          size='2xl'
-          name='Segun Adebayo'
-          src='https://bit.ly/sage-adebayo'
-        />{' '}
-        <Text fontWeight='medium' fontSize='2xl' color='shallowPink'>
-          Segun Adebayo
-        </Text>
-        <Text mt='-1' fontWeight='normal' fontSize='sm' color='gray.600'>
-          @segunadebayo
-        </Text>
-        <Text
-          mt='2'
-          fontWeight='medium'
-          fontSize='md'
-          textAlign='center'
-          color='gray.400'
-        >
-          This is segun adebayo designer and developer of chakra ui
-        </Text>
-        <Divider color='grey.700' mt='3' />
-        <Text fontWeight='normal' fontSize='xl'>
-          5 songs recorded
-        </Text>
-        <Text alignSelf='start' mt='4' fontWeight='bold' fontSize='xl'>
-          Latest Recordings:
-        </Text>
-        <AudioPlayer />
-      </Flex>
+      {loading ? (
+        <Flex minH='50vh' alignItems='center' justifyContent='center'>
+          <Spinner thickness='5px' color='primaryColor' size='xl' />
+        </Flex>
+      ) : (
+        <Flex alignItems='center' direction='column'>
+          <Avatar
+            mt='4'
+            size='2xl'
+            name={`${userProfile?.username}`}
+            src={`${userProfile?.profilePicture}`}
+          />{' '}
+          <Text fontWeight='medium' fontSize='2xl' color='shallowPink'>
+            {userProfile?.username}
+          </Text>
+          <Text mt='-1' fontWeight='normal' fontSize='sm' color='gray.600'>
+            @{userProfile?.username}
+          </Text>
+          <Text
+            mt='2'
+            fontWeight='medium'
+            fontSize='md'
+            textAlign='center'
+            color='gray.400'
+          >
+            {userProfile?.bio}
+          </Text>
+          <Divider color='grey.700' mt='3' />
+          <Text fontWeight='normal' fontSize='xl'>
+            5 songs recorded
+          </Text>
+          <Text alignSelf='start' mt='4' fontWeight='bold' fontSize='xl'>
+            Latest Recordings:
+          </Text>
+          <AudioPlayer />
+        </Flex>
+      )}
     </Layout>
   );
 };
 
-export default Username;
+export default UserProfile;

@@ -6,6 +6,9 @@ import {
   USER_FACEBOOK_LOGIN_FAIL,
   USER_FACEBOOK_LOGIN_REQUEST,
   USER_FACEBOOK_LOGIN_SUCCESS,
+  USER_GET_PROFILE_FAIL,
+  USER_GET_PROFILE_REQUEST,
+  USER_GET_PROFILE_SUCCESS,
   USER_GOOGLE_LOGIN_FAIL,
   USER_GOOGLE_LOGIN_REQUEST,
   USER_GOOGLE_LOGIN_SUCCESS,
@@ -105,6 +108,19 @@ export const userGoogleLoginReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
     case USER_DATA_CLEAR:
       return { userInfo: null };
+    default:
+      return state;
+  }
+};
+
+export const getUserProfileReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_GET_PROFILE_REQUEST:
+      return { loading: true };
+    case USER_GET_PROFILE_SUCCESS:
+      return { loading: false, userProfile: action.payload };
+    case USER_GET_PROFILE_FAIL:
+      return { loading: false, error: action.payload };
     default:
       return state;
   }

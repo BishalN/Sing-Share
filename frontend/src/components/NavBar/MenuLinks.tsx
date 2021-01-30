@@ -11,11 +11,11 @@ import {
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../store/actions/userActions';
+import NextLink from 'next/link';
 
 const MenuItem = ({
   children,
@@ -90,7 +90,9 @@ export const MenuLinks = ({ isOpen }) => {
               </MenuButton>
 
               <MenuList color='black' p={4} maxW='20px'>
-                <MenuItem>Profile</MenuItem>
+                <NextLink href={`/${userInfo.username}`}>
+                  <MenuItem>Profile</MenuItem>
+                </NextLink>
                 <MenuItem>Record</MenuItem>
                 <MenuItem>Logout</MenuItem>
               </MenuList>
