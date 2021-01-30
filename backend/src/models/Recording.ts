@@ -37,12 +37,20 @@ const recordingSchema = new mongoose.Schema(
       required: true,
       ref: 'User',
     },
+    fileUri: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
     },
     likes: [like],
     comments: [comment],
+    isPublic: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );
