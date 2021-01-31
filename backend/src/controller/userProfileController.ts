@@ -68,6 +68,7 @@ const updateProfile = asyncHandler(async (req: any, res) => {
 
     res.json({
       _id: updatedUser._id,
+      bio: updatedUser.bio,
       fullName: updatedUser.fullName,
       username: updatedUser.username,
       email: updatedUser.email,

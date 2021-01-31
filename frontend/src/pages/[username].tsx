@@ -6,6 +6,7 @@ import {
   Divider,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Modal,
@@ -28,7 +29,10 @@ import {
 } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from '../components/Layout';
-import { getUserProfile } from '../store/actions/userProfileActions';
+import {
+  getUserProfile,
+  updateProfile,
+} from '../store/actions/userProfileActions';
 
 interface usernameProps {}
 
@@ -87,10 +91,31 @@ const UserProfile = ({}) => {
   const initialRef = useRef();
   const finalRef = useRef();
 
+  const userUpdateProfile = useSelector(
+    (state: any) => state.userUpdateProfile
+  );
+  const {
+    loading: userupdateProfileLoading,
+    error: userUpdateProfileError,
+    userProfile: updatedProfile,
+  } = userUpdateProfile;
+
   const [updateFullName, setUpdateFullName] = useState('');
   const [updateUserName, setUpdateUserName] = useState('');
-  const [updateEmail, setUpdateEmail] = useState('');
   const [updateBio, setUpdateBio] = useState('');
+
+  const [updateUsernameError, setUpdateUserNameError] = useState('');
+
+  const handleUserUpdate = () => {
+    setUpdateUserNameError('');
+    dispatch(
+      updateProfile({
+        fullName: updateFullName,
+        username: updateUserName,
+        bio: updateBio,
+      })
+    );
+  };
 
   const { username } = router.query;
 
@@ -114,11 +139,14 @@ const UserProfile = ({}) => {
       dispatch(getUserProfile(username));
     } else {
       setUpdateFullName(userProfile.fullName);
-      setUpdateEmail(userProfile.email);
       setUpdateUserName(userProfile.username);
       setUpdateBio(userProfile.bio);
     }
-  }, [username]);
+
+    if (userUpdateProfileError) {
+      setUpdateUserNameError('Username already in use');
+    }
+  }, [username, userProfile, userUpdateProfileError]);
 
   return (
     <Layout>
@@ -147,7 +175,7 @@ const UserProfile = ({}) => {
             textAlign='center'
             color='gray.400'
           >
-            Hello my name is bishal and I love music
+            {userProfile?.bio}
           </Text>
           {isUserProfile && (
             <>
@@ -184,7 +212,10 @@ const UserProfile = ({}) => {
                       />
                     </FormControl>
 
-                    <FormControl mt={4}>
+                    <FormControl
+                      mt={4}
+                      isInvalid={updateUsernameError.length > 0}
+                    >
                       <FormLabel>Username</FormLabel>
                       <Input
                         placeholder='username'
@@ -192,16 +223,7 @@ const UserProfile = ({}) => {
                         onChange={(e) => setUpdateUserName(e.target.value)}
                         focusBorderColor='primaryColor'
                       />
-                    </FormControl>
-
-                    <FormControl mt={4}>
-                      <FormLabel>Email</FormLabel>
-                      <Input
-                        value={updateEmail}
-                        onChange={(e) => setUpdateEmail(e.target.value)}
-                        placeholder='email'
-                        focusBorderColor='primaryColor'
-                      />
+                      <FormErrorMessage>{updateUsernameError}</FormErrorMessage>
                     </FormControl>
 
                     <FormControl mt={4}>
@@ -221,8 +243,12 @@ const UserProfile = ({}) => {
                   </ModalBody>
 
                   <ModalFooter>
-                    <Button colorScheme='pink' mr={3}>
-                      Save
+                    <Button
+                      colorScheme='pink'
+                      mr={3}
+                      onClick={() => handleUserUpdate()}
+                    >
+                      Update
                     </Button>
                     <Button onClick={onClose}>Cancel</Button>
                   </ModalFooter>

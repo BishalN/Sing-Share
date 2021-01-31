@@ -7,6 +7,9 @@ import {
   USER_GET_PROFILE_FAIL,
   USER_GET_PROFILE_REQUEST,
   USER_GET_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
 } from '../constants/userConstants';
 
 export const getUserProfile = (username) => async (dispatch, getState) => {
@@ -67,6 +70,43 @@ export const getUsersProfile = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_GET_ALL_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    });
+  }
+};
+
+export const updateProfile = ({ fullName, username, bio }) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
+
+    const {
+      userLogin: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `http://localhost:4000/api/users/edit`,
+      { fullName, username, bio },
+      config
+    );
+
+    dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

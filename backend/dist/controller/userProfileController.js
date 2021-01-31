@@ -65,6 +65,7 @@ const updateProfile = express_async_handler_1.default((req, res) => __awaiter(vo
         const updatedUser = yield user.save();
         res.json({
             _id: updatedUser._id,
+            bio: updatedUser.bio,
             fullName: updatedUser.fullName,
             username: updatedUser.username,
             email: updatedUser.email,
