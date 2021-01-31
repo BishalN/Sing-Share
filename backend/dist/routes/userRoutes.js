@@ -16,6 +16,7 @@ router.route('/google-login').post(userController_1.googleLogin);
 router.route('/all').get(authMiddleware_1.protect, userProfileController_1.getUsers);
 router.route('/me').get(authMiddleware_1.protect, userProfileController_1.getUser);
 router.route('/:username').get(authMiddleware_1.protect, userProfileController_1.getUserByUsername);
+router.route('/edit').put(authMiddleware_1.protect, userProfileController_1.updateProfile);
 router.route('/').post(userController_1.register);
 exports.default = router;
 //# sourceMappingURL=userRoutes.js.map

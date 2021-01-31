@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import User from '../models/User';
+import { generateToken } from '../utils/generateToken';
 
 // @desc    Get all users from database
 // @route   GET /api/users/all
@@ -46,4 +47,37 @@ const getUserByUsername = asyncHandler(async (req: any, res: Response) => {
   }
 });
 
-export { getUsers, getUser, getUserByUsername };
+// @desc    Update the user profile
+// @route   PUT /api/users/update-profile
+// @access  Private only the account holder user
+
+const updateProfile = asyncHandler(async (req: any, res) => {
+  //Since the user is logged in
+  const user: any = await User.findById(req.user._id);
+
+  const { username, fullName, bio, email } = req.body;
+
+  if (user) {
+    user.username = username || user.username;
+    user.fullName = fullName || user.fullName;
+    user.bio = bio || user.bio;
+    user.email = email || user.email;
+    user.profilePicture = user.profilePicture;
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      fullName: updatedUser.fullName,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      profilePicture: updatedUser.profilePicture,
+      token: generateToken(updatedUser._id),
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+export { getUsers, getUser, getUserByUsername, updateProfile };

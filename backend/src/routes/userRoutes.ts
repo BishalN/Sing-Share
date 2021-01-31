@@ -11,6 +11,7 @@ import {
   getUser,
   getUsers,
   getUserByUsername,
+  updateProfile,
 } from '../controller/userProfileController';
 
 import { protect } from '../middleware/authMiddleware';
@@ -25,6 +26,7 @@ router.route('/google-login').post(googleLogin);
 router.route('/all').get(protect, getUsers);
 router.route('/me').get(protect, getUser);
 router.route('/:username').get(protect, getUserByUsername);
+router.route('/edit').put(protect, updateProfile);
 router.route('/').post(register);
 
 export default router;
