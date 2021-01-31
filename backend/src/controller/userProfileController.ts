@@ -9,7 +9,6 @@ import User from '../models/User';
 const getUsers = asyncHandler(async (req: any, res: Response) => {
   try {
     const users = await User.find({}).select('-password');
-
     res.json(users);
   } catch (error) {
     res.status(500);

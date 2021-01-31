@@ -30,6 +30,7 @@ export const logout = () => (dispatch) => {
 };
 
 export const register = (
+  fullName: string,
   username: string,
   email: string,
   password: string
@@ -45,7 +46,7 @@ export const register = (
 
     const { data } = await axios.post(
       'http://localhost:4000/api/users',
-      { username, email, password },
+      { fullName, username, email, password },
       config
     );
 

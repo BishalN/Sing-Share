@@ -84,8 +84,7 @@ const UserProfile = ({}) => {
   const { loading, error, userProfile } = getUserProfileFromStore;
 
   useEffect(() => {
-    if (userProfile) {
-    } else {
+    if (!userProfile) {
       dispatch(getUserProfile(username));
     }
   }, [username]);
@@ -105,7 +104,7 @@ const UserProfile = ({}) => {
             src={`${userProfile?.profilePicture}`}
           />{' '}
           <Text fontWeight='medium' fontSize='2xl' color='shallowPink'>
-            {userProfile?.username}
+            {userProfile?.fullName}
           </Text>
           <Text mt='-1' fontWeight='normal' fontSize='sm' color='gray.600'>
             @{userProfile?.username}

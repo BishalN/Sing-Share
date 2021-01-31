@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container } from '@chakra-ui/react';
 import { NavBar } from './NavBar/NavBar';
+import { Nav } from './Nav';
 
 interface LayoutProps {}
 

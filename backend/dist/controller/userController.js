@@ -23,20 +23,21 @@ const generateToken_1 = require("../utils/generateToken");
 const User_1 = __importDefault(require("../models/User"));
 const sendForgetPasswordEmail_1 = require("../utils/sendForgetPasswordEmail");
 const register = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, email, password } = req.body;
-    const userAlreadyExistsWithThatUsername = yield User_1.default.findOne({ username });
-    if (userAlreadyExistsWithThatUsername) {
+    const { username, email, password, fullName } = req.body;
+    const duplicateUsername = yield User_1.default.findOne({ username });
+    if (duplicateUsername) {
         res.status(401);
         throw new Error('Username already in use');
     }
-    const userAlreadyExistsWithThatEmail = yield User_1.default.findOne({ email });
-    if (userAlreadyExistsWithThatEmail) {
+    const duplicateEmail = yield User_1.default.findOne({ email });
+    if (duplicateEmail) {
         res.status(401);
         throw new Error('Email already in use');
     }
     const hashedPassword = yield bcryptjs_1.default.hash(password, 12);
     try {
         const user = yield User_1.default.create({
+            fullName,
             username,
             email,
             password: hashedPassword,
@@ -45,6 +46,7 @@ const register = express_async_handler_1.default((req, res) => __awaiter(void 0,
             res.status(201);
             res.json({
                 _id: user.id,
+                fullName,
                 username,
                 email,
                 token: generateToken_1.generateToken(user.id),
@@ -82,6 +84,7 @@ const login = express_async_handler_1.default((req, res) => __awaiter(void 0, vo
         }
         res.json({
             _id: user.id,
+            fullName: user.fullName,
             username: user.username,
             email: user.email,
             token: generateToken_1.generateToken(user.id),
@@ -133,6 +136,7 @@ const changePassword = express_async_handler_1.default((req, res) => __awaiter(v
             _id: user.id,
             username: user.username,
             email: user.email,
+            fullName: user.fullName,
             token: generateToken_1.generateToken(user.id),
         });
     }
@@ -157,6 +161,7 @@ const googleLogin = express_async_handler_1.default((req, res) => __awaiter(void
                     _id: user.id,
                     profilePicture: picture,
                     username: user.username,
+                    fullName: user.fullName,
                     email: user.email,
                     token: generateToken_1.generateToken(user.id),
                 });
@@ -166,6 +171,7 @@ const googleLogin = express_async_handler_1.default((req, res) => __awaiter(void
                 let username = name;
                 try {
                     const user = yield User_1.default.create({
+                        fullName: name,
                         username,
                         email,
                         password,
@@ -176,6 +182,7 @@ const googleLogin = express_async_handler_1.default((req, res) => __awaiter(void
                         res.json({
                             _id: user.id,
                             username,
+                            fullName: name,
                             email,
                             profilePicture: picture,
                             token: generateToken_1.generateToken(user.id),
@@ -214,6 +221,7 @@ const facebookLogin = express_async_handler_1.default((req, res) => __awaiter(vo
                 _id: user.id,
                 profilePicture: url,
                 username: user.username,
+                fullName: user.fullName,
                 email: user.email,
                 token: generateToken_1.generateToken(user.id),
             });
@@ -223,6 +231,7 @@ const facebookLogin = express_async_handler_1.default((req, res) => __awaiter(vo
             let username = name;
             try {
                 const user = yield User_1.default.create({
+                    fullName: name,
                     username,
                     email,
                     password,
@@ -232,6 +241,7 @@ const facebookLogin = express_async_handler_1.default((req, res) => __awaiter(vo
                     res.status(201);
                     res.json({
                         _id: user.id,
+                        fullName: name,
                         username,
                         email,
                         profilePicture: url,

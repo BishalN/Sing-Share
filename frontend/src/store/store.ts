@@ -10,6 +10,7 @@ import {
   userFacebookLoginReducer,
   userGoogleLoginReducer,
   getUserProfileReducer,
+  getUsersProfileReducer,
 } from './reducers/userReducer';
 
 const reducers = combineReducers({
@@ -20,6 +21,7 @@ const reducers = combineReducers({
   userFacebookLogin: userFacebookLoginReducer,
   userGoogleLogin: userGoogleLoginReducer,
   getUserProfile: getUserProfileReducer,
+  getUsersProfile: getUsersProfileReducer,
 });
 
 let userInfoFromLocalStorage;

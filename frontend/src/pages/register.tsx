@@ -68,6 +68,7 @@ const Register: React.FC<registerProps> = ({}) => {
     router.reload();
   }
 
+  const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -84,11 +85,10 @@ const Register: React.FC<registerProps> = ({}) => {
     setPasswordError('');
     if (password !== confirmPassword) {
       setPasswordError("Passwords don't match");
-      console.log(passwordError);
       return;
     }
 
-    dispatch(register(username, email, password));
+    dispatch(register(fullName, username, email, password));
   };
   useEffect(() => {
     if (userInfo?.username || loginUserInfo?.username) {
@@ -123,6 +123,21 @@ const Register: React.FC<registerProps> = ({}) => {
           Register
         </Heading>
         <Flex flexDirection='column' justifyContent='center' maxW='sm'>
+          <FormControl
+            id='fullname'
+            mt={4}
+            isRequired
+            isInvalid={usernameError.length > 0}
+          >
+            <FormLabel>Full Name</FormLabel>
+            <Input
+              type='text'
+              isRequired
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+          </FormControl>
+
           <FormControl
             id='usrename'
             mt={4}

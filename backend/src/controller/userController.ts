@@ -17,16 +17,16 @@ import { sendForgetPasswordEmail } from '../utils/sendForgetPasswordEmail';
 // @route   POST /api/users
 // @access  Public
 const register = asyncHandler(async (req: Request, res: Response) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, fullName } = req.body;
 
-  const userAlreadyExistsWithThatUsername = await User.findOne({ username });
-  if (userAlreadyExistsWithThatUsername) {
+  const duplicateUsername = await User.findOne({ username });
+  if (duplicateUsername) {
     res.status(401);
     throw new Error('Username already in use');
   }
 
-  const userAlreadyExistsWithThatEmail = await User.findOne({ email });
-  if (userAlreadyExistsWithThatEmail) {
+  const duplicateEmail = await User.findOne({ email });
+  if (duplicateEmail) {
     res.status(401);
     throw new Error('Email already in use');
   }
@@ -35,6 +35,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
 
   try {
     const user = await User.create({
+      fullName,
       username,
       email,
       password: hashedPassword,
@@ -43,6 +44,7 @@ const register = asyncHandler(async (req: Request, res: Response) => {
       res.status(201);
       res.json({
         _id: user.id,
+        fullName,
         username,
         email,
         token: generateToken(user.id),
@@ -85,6 +87,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     //User with valid credentials
     res.json({
       _id: user.id,
+      fullName: user.fullName,
       username: user.username,
       email: user.email,
       token: generateToken(user.id),
@@ -145,6 +148,7 @@ const changePassword = asyncHandler(async (req, res) => {
       _id: user.id,
       username: user.username,
       email: user.email,
+      fullName: user.fullName,
       token: generateToken(user.id),
     });
   } catch (error) {
@@ -177,6 +181,7 @@ const googleLogin = asyncHandler(async (req, res) => {
           _id: user.id,
           profilePicture: picture,
           username: user.username,
+          fullName: user.fullName,
           email: user.email,
           token: generateToken(user.id),
         });
@@ -186,6 +191,7 @@ const googleLogin = asyncHandler(async (req, res) => {
         let username = name;
         try {
           const user = await User.create({
+            fullName: name,
             username,
             email,
             password,
@@ -197,6 +203,7 @@ const googleLogin = asyncHandler(async (req, res) => {
             res.json({
               _id: user.id,
               username,
+              fullName: name,
               email,
               profilePicture: picture,
               token: generateToken(user.id),
@@ -248,6 +255,7 @@ const facebookLogin = asyncHandler(async (req, res) => {
         _id: user.id,
         profilePicture: url,
         username: user.username,
+        fullName: user.fullName,
         email: user.email,
         token: generateToken(user.id),
       });
@@ -257,6 +265,7 @@ const facebookLogin = asyncHandler(async (req, res) => {
       let username = name;
       try {
         const user = await User.create({
+          fullName: name,
           username,
           email,
           password,
@@ -267,6 +276,7 @@ const facebookLogin = asyncHandler(async (req, res) => {
           res.status(201);
           res.json({
             _id: user.id,
+            fullName: name,
             username,
             email,
             profilePicture: url,
