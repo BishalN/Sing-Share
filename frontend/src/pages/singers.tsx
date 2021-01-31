@@ -9,6 +9,7 @@ import {
   Spinner,
   Badge,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { AiOutlineHeart, AiTwotoneAudio } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,6 +18,7 @@ import { Layout } from '../components/Layout';
 import { getUsersProfile } from '../store/actions/userProfileActions';
 
 const Singers = ({}) => {
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const getUsersProfileFromStore = useSelector(
@@ -50,7 +52,13 @@ const Singers = ({}) => {
           key={index}
           _hover={{ boxShadow: 'xl' }}
         >
-          <Avatar size='xl' name={`${user.fullName}`} src={user.pictureUrl} />
+          <Avatar
+            size='xl'
+            name={`${user.fullName}`}
+            src={user.profilePicture}
+            _hover={{ cursor: 'pointer' }}
+            onClick={() => router.push(`/${user.username}`)}
+          />
           <Box>
             <Text color='white' fontSize='xl' ml='4'>
               {user.fullName}

@@ -1,7 +1,9 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Link } from '@chakra-ui/react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Logo from './Logo';
+import NextLink from 'next/link';
+
 import { MenuLinks } from './MenuLinks';
 import { MenuToggle } from './MenuToggleButton';
 
@@ -42,7 +44,11 @@ export const NavBar = (props) => {
   return (
     <Box>
       <NavBarContainer {...props}>
-        <Logo w='50px' />
+        <NextLink href='/'>
+          <Link>
+            <Logo w='50px' />
+          </Link>
+        </NextLink>
         <MenuToggle toggle={toggle} isOpen={isOpen} />
         <MenuLinks isOpen={isOpen} />
       </NavBarContainer>
