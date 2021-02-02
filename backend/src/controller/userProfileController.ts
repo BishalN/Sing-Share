@@ -2,6 +2,9 @@ import { Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import User from '../models/User';
 import { generateToken } from '../utils/generateToken';
+import formData from 'form-data';
+import { Storage } from '@google-cloud/storage';
+import path from 'path';
 
 // @desc    Get all users from database
 // @route   GET /api/users/all
@@ -81,4 +84,21 @@ const updateProfile = asyncHandler(async (req: any, res) => {
   }
 });
 
-export { getUsers, getUser, getUserByUsername, updateProfile };
+const profilePictureUpload = asyncHandler(async (req, res) => {
+  const gc = new Storage({
+    keyFilename: path.join(__dirname, '../google.json'),
+    projectId: 'recordandshare-4e3f0',
+  });
+
+  const myBucket = gc.bucket('recordandshare-4e3f0.appspot.com');
+
+  myBucket.file('myfile').createWriteStream({ resumable: false });
+});
+
+export {
+  getUsers,
+  getUser,
+  getUserByUsername,
+  updateProfile,
+  profilePictureUpload,
+};

@@ -1,3 +1,5 @@
 node_modules
 .env.local
 .env
+serviceAccount.json
+google.json

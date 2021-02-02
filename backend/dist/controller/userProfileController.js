@@ -12,10 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProfile = exports.getUserByUsername = exports.getUser = exports.getUsers = void 0;
+exports.profilePictureUpload = exports.updateProfile = exports.getUserByUsername = exports.getUser = exports.getUsers = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const User_1 = __importDefault(require("../models/User"));
 const generateToken_1 = require("../utils/generateToken");
+const storage_1 = require("@google-cloud/storage");
+const path_1 = __importDefault(require("path"));
 const getUsers = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield User_1.default.find({}).select('-password');
@@ -79,4 +81,13 @@ const updateProfile = express_async_handler_1.default((req, res) => __awaiter(vo
     }
 }));
 exports.updateProfile = updateProfile;
+const profilePictureUpload = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const gc = new storage_1.Storage({
+        keyFilename: path_1.default.join(__dirname, '../google.json'),
+        projectId: 'recordandshare-4e3f0',
+    });
+    const myBucket = gc.bucket('recordandshare-4e3f0.appspot.com');
+    myBucket.file('myfile').createWriteStream({ resumable: false });
+}));
+exports.profilePictureUpload = profilePictureUpload;
 //# sourceMappingURL=userProfileController.js.map

@@ -12,7 +12,11 @@ import {
   getUsers,
   getUserByUsername,
   updateProfile,
+  profilePictureUpload,
 } from '../controller/userProfileController';
+import multer from 'multer';
+
+import admin, { storage } from 'firebase-admin';
 
 import { protect } from '../middleware/authMiddleware';
 

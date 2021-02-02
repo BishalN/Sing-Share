@@ -1,5 +1,6 @@
 import {
   Avatar,
+  AvatarBadge,
   Badge,
   Box,
   Button,
@@ -8,6 +9,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  IconButton,
   Input,
   Modal,
   ModalBody,
@@ -23,11 +25,13 @@ import {
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  AiFillCamera,
   AiFillPlayCircle,
   AiOutlineComment,
   AiOutlineHeart,
 } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
+import EditImage from '../components/EditImage';
 import { Layout } from '../components/Layout';
 import {
   getUserProfile,
@@ -94,6 +98,7 @@ const UserProfile = ({}) => {
   const userUpdateProfile = useSelector(
     (state: any) => state.userUpdateProfile
   );
+
   const {
     loading: userupdateProfileLoading,
     error: userUpdateProfileError,
@@ -103,6 +108,8 @@ const UserProfile = ({}) => {
   const [updateFullName, setUpdateFullName] = useState('');
   const [updateUserName, setUpdateUserName] = useState('');
   const [updateBio, setUpdateBio] = useState('');
+  const [updatedImage, setUpdatedImge] = useState(undefined);
+  const [uploading, setUploading] = useState(false);
 
   const [updateUsernameError, setUpdateUserNameError] = useState('');
 
@@ -115,6 +122,10 @@ const UserProfile = ({}) => {
         bio: updateBio,
       })
     );
+    if (!userUpdateProfileError) {
+      onClose();
+      router.push(`${updateUserName}`);
+    }
   };
 
   const { username } = router.query;
@@ -131,22 +142,21 @@ const UserProfile = ({}) => {
     userInfo: userLoginUserProfile,
   } = userLogin;
 
-  const isUserProfile =
-    userProfile?.username === userLoginUserProfile?.username;
+  const isUserProfile = userProfile?._id === userLoginUserProfile?._id;
 
   useEffect(() => {
-    if (!userProfile) {
-      dispatch(getUserProfile(username));
-    } else {
-      setUpdateFullName(userProfile.fullName);
-      setUpdateUserName(userProfile.username);
-      setUpdateBio(userProfile.bio);
-    }
-
     if (userUpdateProfileError) {
       setUpdateUserNameError('Username already in use');
+    } else {
+      if (!userProfile) {
+        dispatch(getUserProfile(username));
+      } else {
+        setUpdateFullName(userProfile.fullName);
+        setUpdateUserName(userProfile.username);
+        setUpdateBio(userProfile.bio);
+      }
     }
-  }, [username, userProfile, userUpdateProfileError]);
+  }, [username, userProfile, updatedProfile]);
 
   return (
     <Layout>
@@ -161,7 +171,12 @@ const UserProfile = ({}) => {
             size='2xl'
             name={`${userProfile?.username}`}
             src={`${userProfile?.profilePicture}`}
-          />{' '}
+            border='4px solid whitesmoke'
+            shadow='lg'
+          >
+            {isUserProfile && <EditImage />}
+          </Avatar>
+
           <Text fontWeight='medium' fontSize='2xl' color='shallowPink'>
             {userProfile?.fullName}
           </Text>
@@ -201,7 +216,7 @@ const UserProfile = ({}) => {
                   <ModalHeader>Edit Your Profile</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody pb={6}>
-                    <FormControl>
+                    <FormControl mt={4}>
                       <FormLabel>Full Name</FormLabel>
                       <Input
                         ref={initialRef}
@@ -223,7 +238,9 @@ const UserProfile = ({}) => {
                         onChange={(e) => setUpdateUserName(e.target.value)}
                         focusBorderColor='primaryColor'
                       />
-                      <FormErrorMessage>{updateUsernameError}</FormErrorMessage>
+                      <FormErrorMessage>
+                        The username that you wanted to use is already taken
+                      </FormErrorMessage>
                     </FormControl>
 
                     <FormControl mt={4}>
@@ -235,18 +252,16 @@ const UserProfile = ({}) => {
                         placeholder='write something about you'
                       />
                     </FormControl>
-
-                    <FormControl mt={4}>
-                      <FormLabel>Profile Picture</FormLabel>
-                      <input type='file' />
-                    </FormControl>
                   </ModalBody>
 
                   <ModalFooter>
                     <Button
                       colorScheme='pink'
                       mr={3}
-                      onClick={() => handleUserUpdate()}
+                      isLoading={userupdateProfileLoading}
+                      onClick={() => {
+                        handleUserUpdate();
+                      }}
                     >
                       Update
                     </Button>
