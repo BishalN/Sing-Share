@@ -16,15 +16,21 @@ import {
   useDisclosure,
   Alert,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { AiFillCamera } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
 
 const EditImage = ({}) => {
   const [files, setFiles] = useState([]);
+  const [fileError, SetFileError] = useState('');
 
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+  const {
+    acceptedFiles,
+    getRootProps,
+    getInputProps,
+    fileRejections,
+  } = useDropzone({
     accept: 'image/jpeg, image/jpg, image/png',
     maxFiles: 5,
     maxSize: 5000000,
@@ -39,6 +45,10 @@ const EditImage = ({}) => {
     },
   });
 
+  if (fileRejections.length > 0) {
+    SetFileError('Please upload an image file');
+  }
+
   const getUserProfileFromStore = useSelector(
     (state: any) => state.getUserProfile
   );
@@ -46,6 +56,8 @@ const EditImage = ({}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
+      {console.log(fileError)}
+      {fileError && <Alert>{fileError}</Alert>}
       <AvatarBadge boxSize='1.3em' border='none'>
         <IconButton
           rounded='xl'
