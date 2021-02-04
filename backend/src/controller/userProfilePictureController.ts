@@ -5,14 +5,16 @@ import { Storage } from '@google-cloud/storage';
 import User from '../models/User';
 import fs from 'fs';
 import { profileDir } from '../index';
-import sharp from 'sharp';
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, 'uploads/');
   },
   filename(req: any, file, cb) {
-    cb(null, `${req.user.username}${path.extname(file.originalname)}`);
+    cb(
+      null,
+      `${req.user.username}-${Date.now()}-${path.extname(file.originalname)}`
+    );
   },
 });
 

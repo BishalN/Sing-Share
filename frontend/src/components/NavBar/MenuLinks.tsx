@@ -43,6 +43,15 @@ export const MenuLinks = ({ isOpen }) => {
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const userUpdateProfilePicture = useSelector(
+    (state: any) => state.userUpdateProfilePicture
+  );
+  const {
+    loading: userupdateProfilePictureLoading,
+    error: userUpdateProfilePictureError,
+    userProfile: updatedProfilePicture,
+  } = userUpdateProfilePicture;
+
   const dispatch = useDispatch();
 
   let isLoggedIn;
@@ -77,7 +86,10 @@ export const MenuLinks = ({ isOpen }) => {
                     <Avatar
                       size='lg'
                       name={userInfo.username}
-                      src={userInfo.profilePicture}
+                      src={
+                        updatedProfilePicture?.profilePicture ||
+                        userInfo?.profilePicture
+                      }
                     >
                       <AvatarBadge
                         boxSize='0.75em'

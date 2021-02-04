@@ -28,6 +28,7 @@ const EditImage = ({}) => {
   const dispatch = useDispatch();
   const [files, setFiles] = useState([]);
   const [fileError, SetFileError] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const userUpdateProfilePicture = useSelector(
     (state: any) => state.userUpdateProfilePicture
@@ -45,9 +46,6 @@ const EditImage = ({}) => {
     fileRejections,
   } = useDropzone({
     accept: 'image/jpeg, image/jpg, image/png',
-    maxFiles: 5,
-
-    maxSize: 5000000,
     onDrop: (acceptedFiles) => {
       setFiles(
         acceptedFiles.map((file) =>
@@ -59,10 +57,6 @@ const EditImage = ({}) => {
     },
   });
 
-  if (fileRejections.length > 0) {
-    SetFileError('Please upload an image file');
-  }
-
   const getUserProfileFromStore = useSelector(
     (state: any) => state.getUserProfile
   );
@@ -72,12 +66,13 @@ const EditImage = ({}) => {
   const uploadProfileHandler = (file: File) => {
     const formdata = new FormData();
     formdata.append('image', file);
-
     dispatch(updateProfilePicture(formdata));
+    if (!uploadLoading && !(fileRejections.length > 0)) {
+      onClose();
+    }
   };
   return (
     <>
-      {fileError && <Alert>{fileError}</Alert>}
       <AvatarBadge boxSize='1.3em' border='none'>
         <IconButton
           rounded='xl'
@@ -101,6 +96,9 @@ const EditImage = ({}) => {
             flexDirection='column'
             mt={-5}
           >
+            {fileRejections.length > 0 && (
+              <Alert>Please upload a valid image file</Alert>
+            )}
             <Avatar
               mt='4'
               size='2xl'
@@ -139,7 +137,7 @@ const EditImage = ({}) => {
               color='white'
               mr={3}
               onClick={() => uploadProfileHandler(acceptedFiles[0])}
-              isLoading={uploadLoading}
+              isLoading={uploading}
             >
               Update
             </Button>

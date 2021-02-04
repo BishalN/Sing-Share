@@ -24,7 +24,7 @@ const storage = multer_1.default.diskStorage({
         cb(null, 'uploads/');
     },
     filename(req, file, cb) {
-        cb(null, `${req.user.username}${path_1.default.extname(file.originalname)}`);
+        cb(null, `${req.user.username}-${Date.now()}-${path_1.default.extname(file.originalname)}`);
     },
 });
 var limits = { fileSize: 1024 * 1024 * 5 };

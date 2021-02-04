@@ -9,6 +9,7 @@ import {
   USER_GET_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_PICTURE_FAIL,
+  USER_UPDATE_PROFILE_PICTURE_REQUEST,
   USER_UPDATE_PROFILE_PICTURE_SUCCESS,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
@@ -122,7 +123,7 @@ export const updateProfilePicture = (formdata) => async (
   getState
 ) => {
   try {
-    dispatch({ type: USER_UPDATE_PROFILE_PICTURE_SUCCESS });
+    dispatch({ type: USER_UPDATE_PROFILE_PICTURE_REQUEST });
 
     const {
       userLogin: {

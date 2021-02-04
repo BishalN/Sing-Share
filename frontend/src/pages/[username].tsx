@@ -38,8 +38,6 @@ import {
   updateProfile,
 } from '../store/actions/userProfileActions';
 
-interface usernameProps {}
-
 const AudioPlayer = (props) => {
   return (
     <>
@@ -95,10 +93,18 @@ const UserProfile = ({}) => {
   const initialRef = useRef();
   const finalRef = useRef();
 
+  const userUpdateProfilePicture = useSelector(
+    (state: any) => state.userUpdateProfilePicture
+  );
+  const {
+    loading: userupdateProfilePictureLoading,
+    error: userUpdateProfilePictureError,
+    userProfile: updatedProfilePicture,
+  } = userUpdateProfilePicture;
+
   const userUpdateProfile = useSelector(
     (state: any) => state.userUpdateProfile
   );
-
   const {
     loading: userupdateProfileLoading,
     error: userUpdateProfileError,
@@ -108,8 +114,6 @@ const UserProfile = ({}) => {
   const [updateFullName, setUpdateFullName] = useState('');
   const [updateUserName, setUpdateUserName] = useState('');
   const [updateBio, setUpdateBio] = useState('');
-  const [updatedImage, setUpdatedImge] = useState(undefined);
-  const [uploading, setUploading] = useState(false);
 
   const [updateUsernameError, setUpdateUserNameError] = useState('');
 
@@ -151,12 +155,12 @@ const UserProfile = ({}) => {
       if (!userProfile) {
         dispatch(getUserProfile(username));
       } else {
-        setUpdateFullName(userProfile.fullName);
-        setUpdateUserName(userProfile.username);
-        setUpdateBio(userProfile.bio);
+        setUpdateFullName(updatedProfile?.fullName || userProfile?.fullName);
+        setUpdateUserName(updatedProfile?.username || userProfile?.username);
+        setUpdateBio(updatedProfile?.bio || userProfile?.bio);
       }
     }
-  }, [username, userProfile, updatedProfile]);
+  }, [username, userProfile, updatedProfile, updatedProfilePicture]);
 
   return (
     <Layout>
@@ -170,7 +174,10 @@ const UserProfile = ({}) => {
             mt='4'
             size='2xl'
             name={`${userProfile?.username}`}
-            src={`${userProfile?.profilePicture}`}
+            src={
+              updatedProfilePicture?.profilePicture ||
+              userProfile?.profilePicture
+            }
             border='4px solid whitesmoke'
             shadow='lg'
           >
@@ -178,10 +185,10 @@ const UserProfile = ({}) => {
           </Avatar>
 
           <Text fontWeight='medium' fontSize='2xl' color='shallowPink'>
-            {userProfile?.fullName}
+            {updatedProfile?.fullName || userProfile?.fullName}
           </Text>
           <Text mt='-1' fontWeight='normal' fontSize='sm' color='gray.600'>
-            @{userProfile?.username}
+            @{updatedProfile?.username || userProfile?.username}
           </Text>
           <Text
             mt='2'
@@ -190,7 +197,7 @@ const UserProfile = ({}) => {
             textAlign='center'
             color='gray.400'
           >
-            {userProfile?.bio}
+            {updatedProfile?.bio || userProfile?.bio}
           </Text>
           {isUserProfile && (
             <>
