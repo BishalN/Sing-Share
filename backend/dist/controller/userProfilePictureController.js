@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadProfilePictureHandler = exports.upload = void 0;
-const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const storage_1 = require("@google-cloud/storage");
@@ -38,23 +37,30 @@ const gc = new storage_1.Storage({
     keyFilename: path_1.default.join(__dirname, '../google.json'),
     projectId: 'recordandshare-4e3f0',
 });
-const uploadProfilePictureHandler = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield User_1.default.findById(req.user._id).select('-password');
-    if (!user) {
-        res.status(400);
-        throw new Error('User not found');
+const uploadProfilePictureHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield User_1.default.findById(req.user._id).select('-password');
+        if (!user) {
+            res.status(400);
+            throw new Error('User not found');
+        }
+        const bucket = gc.bucket('recordandshare-4e3f0.appspot.com');
+        const uploadRes = yield bucket.upload(`${req.file.path}`, {});
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${req.file.filename}`;
+        if (uploadRes) {
+            fs_1.default.unlink(path_1.default.join(index_1.profileDir, req.file.filename), () => {
+                console.log('file deleted');
+            });
+        }
+        user.profilePicture = publicUrl;
+        const updatedUser = yield user.save();
+        res.json(updatedUser);
     }
-    const bucket = gc.bucket('recordandshare-4e3f0.appspot.com');
-    const uploadRes = yield bucket.upload(`${req.file.path}`, {});
-    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${req.file.filename}`;
-    if (uploadRes) {
-        fs_1.default.unlink(path_1.default.join(index_1.profileDir, req.file.filename), () => {
-            console.log('file deleted');
-        });
+    catch (error) {
+        res.status(500);
+        console.log(error.message);
+        throw new Error(error.message);
     }
-    user.profilePicture = publicUrl;
-    const updatedUser = yield user.save();
-    res.json(updatedUser);
-}));
+});
 exports.uploadProfilePictureHandler = uploadProfilePictureHandler;
 //# sourceMappingURL=userProfilePictureController.js.map

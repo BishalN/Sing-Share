@@ -15,15 +15,28 @@ import {
   ModalOverlay,
   useDisclosure,
   Alert,
+  Input,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { AiFillCamera } from 'react-icons/ai';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { updateProfilePicture } from '../store/actions/userProfileActions';
 
 const EditImage = ({}) => {
+  const dispatch = useDispatch();
   const [files, setFiles] = useState([]);
   const [fileError, SetFileError] = useState('');
+
+  const userUpdateProfilePicture = useSelector(
+    (state: any) => state.userUpdateProfilePicture
+  );
+  const {
+    loading: uploadLoading,
+    userProfile: updatedProfile,
+    error: uploadError,
+  } = userUpdateProfilePicture;
 
   const {
     acceptedFiles,
@@ -33,6 +46,7 @@ const EditImage = ({}) => {
   } = useDropzone({
     accept: 'image/jpeg, image/jpg, image/png',
     maxFiles: 5,
+
     maxSize: 5000000,
     onDrop: (acceptedFiles) => {
       setFiles(
@@ -54,9 +68,15 @@ const EditImage = ({}) => {
   );
   const { loading, error, userProfile } = getUserProfileFromStore;
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const uploadProfileHandler = (file: File) => {
+    const formdata = new FormData();
+    formdata.append('image', file);
+
+    dispatch(updateProfilePicture(formdata));
+  };
   return (
     <>
-      {console.log(fileError)}
       {fileError && <Alert>{fileError}</Alert>}
       <AvatarBadge boxSize='1.3em' border='none'>
         <IconButton
@@ -92,7 +112,7 @@ const EditImage = ({}) => {
             />
             <Box bg='gray.200' rounded='xl' p='4' mt={4} boxShadow='lg'>
               <div {...getRootProps({ className: 'dropzone' })}>
-                <input {...getInputProps()} />
+                <input name='image' {...getInputProps()} />
                 {/* {acceptedFileItems ? <acceptedFileItems/> : } */}
                 <Box p='4'>
                   {acceptedFiles.length > 0 ? (
@@ -114,7 +134,13 @@ const EditImage = ({}) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button bg='primaryColor' color='white' mr={3} onClick={onClose}>
+            <Button
+              bg='primaryColor'
+              color='white'
+              mr={3}
+              onClick={() => uploadProfileHandler(acceptedFiles[0])}
+              isLoading={uploadLoading}
+            >
               Update
             </Button>
             <Button onClick={onClose} variant='ghost'>

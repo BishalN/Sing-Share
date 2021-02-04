@@ -31,8 +31,8 @@ const gc = new Storage({
 // @desc    Update the user profile
 // @route   POST /api/users/upload-profilePicture
 // @access  Private only the account holder user
-const uploadProfilePictureHandler = expressAsyncHandler(
-  async (req: any, res) => {
+const uploadProfilePictureHandler = async (req: any, res) => {
+  try {
     const user: any = await User.findById(req.user._id).select('-password');
     if (!user) {
       res.status(400);
@@ -55,7 +55,11 @@ const uploadProfilePictureHandler = expressAsyncHandler(
     const updatedUser = await user.save();
 
     res.json(updatedUser);
+  } catch (error) {
+    res.status(500);
+    console.log(error.message);
+    throw new Error(error.message);
   }
-);
+};
 
 export { upload, uploadProfilePictureHandler };

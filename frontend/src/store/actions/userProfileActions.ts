@@ -117,7 +117,10 @@ export const updateProfile = ({ fullName, username, bio }) => async (
   }
 };
 
-export const updateProfilePicture = (file) => async (dispatch, getState) => {
+export const updateProfilePicture = (formdata) => async (
+  dispatch,
+  getState
+) => {
   try {
     dispatch({ type: USER_UPDATE_PROFILE_PICTURE_SUCCESS });
 
@@ -130,12 +133,13 @@ export const updateProfilePicture = (file) => async (dispatch, getState) => {
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
       },
     };
 
     const { data } = await axios.post(
       `http://localhost:4000/api/users/upload-profilePicture`,
-      { file },
+      formdata,
       config
     );
 
