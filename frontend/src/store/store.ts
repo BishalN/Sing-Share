@@ -12,6 +12,7 @@ import {
   getUserProfileReducer,
   getUsersProfileReducer,
   userUpdateProfileReducer,
+  userUpdateProfilePictureReducer,
 } from './reducers/userReducer';
 
 const reducers = combineReducers({
@@ -24,6 +25,7 @@ const reducers = combineReducers({
   getUserProfile: getUserProfileReducer,
   getUsersProfile: getUsersProfileReducer,
   userUpdateProfile: userUpdateProfileReducer,
+  userUpdateProfilePicture: userUpdateProfilePictureReducer,
 });
 
 let userInfoFromLocalStorage;

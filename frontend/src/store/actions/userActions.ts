@@ -206,3 +206,32 @@ export const googleLogin = (idToken) => async (dispatch) => {
     });
   }
 };
+
+export const updateProfilePicture = (file) => async (dispatch) => {
+  try {
+    dispatch({ type: USER_GOOGLE_LOGIN_REQUEST });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const { data } = await axios.post(
+      'http://localhost:4000/api/users/upload-profilePicture',
+      { file },
+      config
+    );
+
+    localStorage.setItem('userInfo', JSON.stringify(data));
+    dispatch({ type: USER_GOOGLE_LOGIN_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: USER_GOOGLE_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    });
+  }
+};

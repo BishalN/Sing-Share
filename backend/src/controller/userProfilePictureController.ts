@@ -28,6 +28,9 @@ const gc = new Storage({
   projectId: 'recordandshare-4e3f0',
 });
 
+// @desc    Update the user profile
+// @route   POST /api/users/upload-profilePicture
+// @access  Private only the account holder user
 const uploadProfilePictureHandler = expressAsyncHandler(
   async (req: any, res) => {
     const user: any = await User.findById(req.user._id).select('-password');
