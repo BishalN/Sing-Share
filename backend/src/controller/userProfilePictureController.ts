@@ -1,36 +1,58 @@
-import path from 'path';
-import express from 'express';
+import expressAsyncHandler from 'express-async-handler';
 import multer from 'multer';
+import path from 'path';
+import { Storage } from '@google-cloud/storage';
+import User from '../models/User';
+import fs from 'fs';
+import { profileDir } from '../index';
+import sharp from 'sharp';
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, 'uploads/');
   },
   filename(req: any, file, cb) {
-    cb(null, `${req.user.username}-${file.originalname}`);
+    cb(null, `${req.user.username}${path.extname(file.originalname)}`);
   },
 });
 
-function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (extname && mimetype) {
-    return cb(null, true);
-  } else {
-    cb('Images only!');
-  }
-}
-
-var limits = { fileSize: 1024 * 1024 * 5 }; //Sets the limit that file should
+var limits = { fileSize: 1024 * 1024 * 5 }; //Sets the limit that file can only bt up to 5mb
 
 const upload = multer({
   limits,
   storage,
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
 });
 
-export { upload };
+const gc = new Storage({
+  keyFilename: path.join(__dirname, '../google.json'),
+  projectId: 'recordandshare-4e3f0',
+});
+
+const uploadProfilePictureHandler = expressAsyncHandler(
+  async (req: any, res) => {
+    const user: any = await User.findById(req.user._id).select('-password');
+    if (!user) {
+      res.status(400);
+      throw new Error('User not found');
+    }
+
+    const bucket = gc.bucket('recordandshare-4e3f0.appspot.com');
+    const uploadRes = await bucket.upload(`${req.file.path}`, {});
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${req.file.filename}`;
+
+    if (uploadRes) {
+      //Deleting the file from file system
+      fs.unlink(path.join(profileDir, req.file.filename), () => {
+        console.log('file deleted');
+      });
+    }
+
+    user.profilePicture = publicUrl;
+
+    const updatedUser = await user.save();
+
+    res.json(updatedUser);
+  }
+);
+
+export { upload, uploadProfilePictureHandler };
