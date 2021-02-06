@@ -1,10 +1,9 @@
-import expressAsyncHandler from 'express-async-handler';
+import { Storage } from '@google-cloud/storage';
+import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
-import { Storage } from '@google-cloud/storage';
+import { uploadDir } from '../index';
 import User from '../models/User';
-import fs from 'fs';
-import { profileDir } from '../index';
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -47,7 +46,7 @@ const uploadProfilePictureHandler = async (req: any, res) => {
 
     if (uploadRes) {
       //Deleting the file from file system
-      fs.unlink(path.join(profileDir, req.file.filename), () => {
+      fs.unlink(path.join(uploadDir, req.file.filename), () => {
         console.log('file deleted');
       });
     }

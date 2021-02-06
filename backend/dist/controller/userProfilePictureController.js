@@ -13,12 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadProfilePictureHandler = exports.upload = void 0;
+const storage_1 = require("@google-cloud/storage");
+const fs_1 = __importDefault(require("fs"));
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
-const storage_1 = require("@google-cloud/storage");
-const User_1 = __importDefault(require("../models/User"));
-const fs_1 = __importDefault(require("fs"));
 const index_1 = require("../index");
+const User_1 = __importDefault(require("../models/User"));
 const storage = multer_1.default.diskStorage({
     destination(req, file, cb) {
         cb(null, 'uploads/');
@@ -48,7 +48,7 @@ const uploadProfilePictureHandler = (req, res) => __awaiter(void 0, void 0, void
         const uploadRes = yield bucket.upload(`${req.file.path}`, {});
         const publicUrl = `https://storage.googleapis.com/${bucket.name}/${req.file.filename}`;
         if (uploadRes) {
-            fs_1.default.unlink(path_1.default.join(index_1.profileDir, req.file.filename), () => {
+            fs_1.default.unlink(path_1.default.join(index_1.uploadDir, req.file.filename), () => {
                 console.log('file deleted');
             });
         }
