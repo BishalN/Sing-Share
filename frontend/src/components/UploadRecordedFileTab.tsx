@@ -96,8 +96,6 @@ export const UploadRecordedFileTab = ({}) => {
               ref={(element) => console.log(element)}
               src={files[0].preview}
               controls
-              className='noBody'
-              children={<Box>Hello</Box>}
             />
           </Box>
           <FormControl mt={4} isRequired>
