@@ -149,6 +149,9 @@ const UserProfile = ({}) => {
   const isUserProfile = userProfile?._id === userLoginUserProfile?._id;
 
   useEffect(() => {
+    if (!userLoginUserProfile.username) {
+      router.push('/');
+    }
     if (userUpdateProfileError) {
       setUpdateUserNameError('Username already in use');
     } else {
@@ -160,7 +163,7 @@ const UserProfile = ({}) => {
         setUpdateBio(updatedProfile?.bio || userProfile?.bio);
       }
     }
-  }, [username, userProfile, updatedProfile, updatedProfilePicture]);
+  }, [username, userProfile, updatedProfile]);
 
   return (
     <Layout>

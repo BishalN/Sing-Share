@@ -829,6 +829,14 @@
   dependencies:
     tslib "^2.0.0"
 
+"@ryusenpai/react-audio-visualizer@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@ryusenpai/react-audio-visualizer/-/react-audio-visualizer-1.0.8.tgz#5549df59381fef75cc7b8ec41a818c2f86963c57"
+  integrity sha512-0x0rpxBGfr8NrYkEo0D6IePLsnarJ2CCrq2bDtjq/XFwoAoYzaufAyNEHjdMF8Qn4/lDSgmydMV3D+EKUHciVg==
+  dependencies:
+    react "^17.0.1"
+    react-dom "^17.0.1"
+
 "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.6":
   version "7.0.7"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.7.tgz#98a993516c859eb0d5c4c8f098317a9ea68db9ad"
@@ -3979,6 +3987,13 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-audio-player@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/react-audio-player/-/react-audio-player-0.14.0.tgz#b57bc2b980b1bb3c8b4f6a2134062160462c5081"
+  integrity sha512-B0kP3KVjbp+TXG8TUh1kl91xnYwYx8c+YLbx3oZS9drcHvgTPWl4sl8inmwyLWPH0bMW5eqGFL5qT1fuHk8Ysw==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-clientside-effect@^1.2.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.3.tgz#95c95f520addfb71743608b990bfe01eb002012b"
@@ -4043,6 +4058,11 @@ react-is@16.13.1, react-is@^16.13.1, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-media-recorder@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-media-recorder/-/react-media-recorder-1.4.0.tgz#e72d366bd87157d634949bdc42300027c78a7aa7"
+  integrity sha512-3lc2LsS6TUG03tmbVd9Fnh7l1+YtbGy5Z+CYQA8zkJuGdroarLXxFExPXu0RqLFbomedD+Axp3pKuNrfIBmHtw==
 
 react-redux@^7.2.2:
   version "7.2.2"

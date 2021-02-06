@@ -52,6 +52,11 @@ export const MenuLinks = ({ isOpen }) => {
     userProfile: updatedProfilePicture,
   } = userUpdateProfilePicture;
 
+  const userUpdateProfile = useSelector(
+    (state: any) => state.userUpdateProfile
+  );
+  const { loading, error, userProfile } = userUpdateProfile;
+
   const dispatch = useDispatch();
 
   let isLoggedIn;
@@ -102,7 +107,9 @@ export const MenuLinks = ({ isOpen }) => {
               </MenuButton>
 
               <MenuList color='black' p={4} maxW='20px'>
-                <NextLink href={`/${userInfo.username}`}>
+                <NextLink
+                  href={`/${userUpdateProfile?.username || userInfo.username}`}
+                >
                   <MenuItem>Profile</MenuItem>
                 </NextLink>
                 <MenuItem>Record</MenuItem>

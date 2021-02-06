@@ -45,6 +45,12 @@ const recordingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    tags: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
     likes: [like],
     comments: [comment],
     isPublic: {
