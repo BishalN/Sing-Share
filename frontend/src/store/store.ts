@@ -15,6 +15,8 @@ import {
   userUpdateProfilePictureReducer,
 } from './reducers/userReducer';
 
+import { userUploadRecordingReducer } from './reducers/recordingReducer';
+
 const reducers = combineReducers({
   userRegister: userRegisterReducer,
   userLogin: userLoginReducer,
@@ -26,6 +28,7 @@ const reducers = combineReducers({
   getUsersProfile: getUsersProfileReducer,
   userUpdateProfile: userUpdateProfileReducer,
   userUpdateProfilePicture: userUpdateProfilePictureReducer,
+  userUploadRecording: userUploadRecordingReducer,
 });
 
 let userInfoFromLocalStorage;

@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
 var limits = { fileSize: 1024 * 1024 * 50 }; //Sets the limit that file can only bt up to 50mb
 
 export const upload = multer({
+  limits,
   storage,
 });
 
