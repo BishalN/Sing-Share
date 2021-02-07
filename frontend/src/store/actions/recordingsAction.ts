@@ -5,7 +5,10 @@ import {
 } from '../constants/recordingsConstants';
 import axios from 'axios';
 
-export const uploadRecording = (formdata) => async (dispatch, getState) => {
+export const uploadRecording = (formdata: FormData) => async (
+  dispatch,
+  getState
+) => {
   try {
     dispatch({ type: USER_UPLOAD_RECORDING_REQUEST });
 

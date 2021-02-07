@@ -11,19 +11,36 @@ import {
   FormHelperText,
   Heading,
   useToast,
+  Spinner,
+  Progress,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Flex,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import ReactAudioPlayer from 'react-audio-player';
+import { uploadRecording } from '../store/actions/recordingsAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { FacebookShareButton, LinkedinShareButton } from 'react-share';
+import { Router, useRouter } from 'next/router';
 
 export const UploadRecordedFileTab = ({}) => {
+  const dispatch = useDispatch();
   const [files, setFiles] = useState([]);
   const [title, setTitle] = useState('');
   const [tags, setTags] = useState('');
   const [description, setDescription] = useState('');
-  const [isPublic, setIsPublic] = useState(true);
-
+  let [isPublic, setIsPublic] = useState(true);
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
 
   const {
     acceptedFiles,
@@ -46,7 +63,6 @@ export const UploadRecordedFileTab = ({}) => {
   });
 
   const fileUploadHandler = () => {
-    console.log('upload request made');
     if (title.length <= 5) {
       toast({
         title: 'Title must be at least 5 character long',
@@ -57,18 +73,38 @@ export const UploadRecordedFileTab = ({}) => {
       });
     }
 
-    if (!isPublic) {
-      toast({
-        title: "Your recording won't be searchable ",
-        description: 'It is set to private Are you sure about that',
-        status: 'info',
-        isClosable: true,
-        duration: 4000,
-      });
+    if (title.length > 5) {
+      const formdata = new FormData();
+      formdata.append('title', title);
+      formdata.append('description', description);
+      formdata.append('isPublic', String(isPublic));
+      formdata.append('tags', tags);
+      formdata.append('recording', files[0]);
+
+      dispatch(uploadRecording(formdata));
     }
   };
 
-  useEffect(() => {});
+  const userUploadRecording = useSelector(
+    (state: any) => state.userUploadRecording
+  );
+  const { loading, error, recordingInfo, success } = userUploadRecording;
+
+  useEffect(() => {
+    if (recordingInfo && recordingInfo.fileUri) {
+      toast({
+        title: 'File successfully uploaded',
+        description: `${recordingInfo.title} is successfully uploaded to our server `,
+        isClosable: true,
+        status: 'success',
+      });
+    }
+    if (success) {
+      onOpen();
+    }
+  }, [recordingInfo, success]);
+
+  const router = useRouter();
 
   return (
     <>
@@ -164,7 +200,7 @@ export const UploadRecordedFileTab = ({}) => {
             <FormLabel color='shallowPink'>Accessibility</FormLabel>
             <Switch
               size='md'
-              value={String(isPublic)}
+              isChecked={isPublic}
               onChange={(e) => setIsPublic(e.target.checked)}
             />
             <FormHelperText fontWeight='light' fontStyle='italic' fontSize='xs'>
@@ -179,12 +215,58 @@ export const UploadRecordedFileTab = ({}) => {
             bg='black'
             mt={4}
             alignSelf='start'
-            onClick={fileUploadHandler}
+            onClick={() => {
+              fileUploadHandler();
+            }}
+            isLoading={loading}
+            disabled={recordingInfo?.fileUri}
           >
             Upload
           </Button>
         </Box>
       )}
+
+      <AlertDialog
+        motionPreset='slideInBottom'
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader color='primaryColor'>
+            Share it to your social media{' '}
+          </AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
+            Where to share ??
+            <Flex>
+              <FacebookShareButton
+                url={`https://www.facebook.com/dialog/share?
+  app_id=508027223494006
+  &display=popup
+  &href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F
+  &redirect_uri=https%3A%2F%2Fdevelopers.facebook.com%2Ftools%2Fexplorer`}
+              >
+                Share on facebook
+              </FacebookShareButton>
+            </Flex>
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button
+              bg='primaryColor'
+              ref={cancelRef}
+              onClick={() => {
+                onClose();
+                router.push('/');
+              }}
+            >
+              Go back home
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
