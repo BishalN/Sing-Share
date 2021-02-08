@@ -1,19 +1,4 @@
 import {
-  Box,
-  Input,
-  Text,
-  Button,
-  Stack,
-  FormControl,
-  FormLabel,
-  Textarea,
-  Switch,
-  FormHelperText,
-  Heading,
-  useToast,
-  Spinner,
-  Progress,
-  useDisclosure,
   AlertDialog,
   AlertDialogBody,
   AlertDialogCloseButton,
@@ -21,15 +6,33 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
-  Flex,
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  HStack,
+  Input,
+  Switch,
+  Text,
+  Textarea,
+  useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
 import ReactAudioPlayer from 'react-audio-player';
-import { uploadRecording } from '../store/actions/recordingsAction';
+import { useDropzone } from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
-import { FacebookShareButton, LinkedinShareButton } from 'react-share';
-import { Router, useRouter } from 'next/router';
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  LinkedinIcon,
+  LinkedinShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+} from 'react-share';
+import { uploadRecording } from '../store/actions/recordingsAction';
 
 export const UploadRecordedFileTab = ({}) => {
   const dispatch = useDispatch();
@@ -89,6 +92,9 @@ export const UploadRecordedFileTab = ({}) => {
     (state: any) => state.userUploadRecording
   );
   const { loading, error, recordingInfo, success } = userUploadRecording;
+
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const { userInfo } = userLogin;
 
   useEffect(() => {
     if (recordingInfo && recordingInfo.fileUri) {
@@ -240,29 +246,34 @@ export const UploadRecordedFileTab = ({}) => {
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>
-            Where to share ??
-            <Flex>
+            <HStack mt={4} spacing={4}>
               <FacebookShareButton
-                url={`https://www.facebook.com/dialog/share?
-  app_id=508027223494006
-  &display=popup
-  &href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F
-  &redirect_uri=https%3A%2F%2Fdevelopers.facebook.com%2Ftools%2Fexplorer`}
+                url={`${recordingInfo?.fileUri}`}
+                quote={`${recordingInfo?.title}`}
               >
-                Share on facebook
+                <FacebookIcon round />
               </FacebookShareButton>
-            </Flex>
+
+              <LinkedinShareButton url={`${recordingInfo?.fileUri}`}>
+                <LinkedinIcon round />
+              </LinkedinShareButton>
+
+              <TwitterShareButton url={`${recordingInfo?.fileUri}`}>
+                <TwitterIcon round />
+              </TwitterShareButton>
+            </HStack>
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button
+              color='white'
               bg='primaryColor'
               ref={cancelRef}
               onClick={() => {
                 onClose();
-                router.push('/');
+                router.push(`/${userInfo?.username}`);
               }}
             >
-              Go back home
+              Go back to Profile
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

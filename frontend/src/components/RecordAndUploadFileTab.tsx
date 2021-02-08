@@ -1,4 +1,11 @@
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Badge,
   Box,
   Button,
@@ -6,6 +13,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  HStack,
   IconButton,
   Input,
   Stack,
@@ -13,6 +21,7 @@ import {
   Text,
   Textarea,
   Tooltip,
+  useDisclosure,
   useToast,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
@@ -20,13 +29,28 @@ import { FaRecordVinyl } from 'react-icons/fa';
 import { GiCancel } from 'react-icons/gi';
 import { IoStopCircleSharp } from 'react-icons/io5';
 import { AiFillPauseCircle } from 'react-icons/ai';
-
 import { useReactMediaRecorder } from 'react-media-recorder';
 import ReactAudioPlayer from 'react-audio-player';
+import { useSelector, useDispatch } from 'react-redux';
+import { uploadRecording } from '../store/actions/recordingsAction';
+import router from 'next/dist/next-server/lib/router/router';
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  LinkedinShareButton,
+  LinkedinIcon,
+  TwitterShareButton,
+  TwitterIcon,
+} from 'react-share';
+import { useRouter } from 'next/router';
 
 interface RecordAndUploadFileTabProps {}
 
 export const RecordAndUploadFileTab: React.FC<RecordAndUploadFileTabProps> = ({}) => {
+  const dispatch = useDispatch();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
+  const router = useRouter();
   const {
     status,
     startRecording,
@@ -37,6 +61,7 @@ export const RecordAndUploadFileTab: React.FC<RecordAndUploadFileTabProps> = ({}
     isAudioMuted,
     muteAudio,
     pauseRecording,
+    previewStream,
     resumeRecording,
     unMuteAudio,
   } = useReactMediaRecorder({ audio: true });
@@ -49,8 +74,20 @@ export const RecordAndUploadFileTab: React.FC<RecordAndUploadFileTabProps> = ({}
 
   const toast = useToast();
 
-  const fileUploadHandler = () => {
-    console.log('upload request made');
+  const userUploadRecording = useSelector(
+    (state: any) => state.userUploadRecording
+  );
+  const {
+    loading,
+    error: errorUpload,
+    recordingInfo,
+    success,
+  } = userUploadRecording;
+
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const fileUploadHandler = async () => {
     if (title.length <= 5) {
       toast({
         title: 'Title must be at least 5 character long',
@@ -61,14 +98,17 @@ export const RecordAndUploadFileTab: React.FC<RecordAndUploadFileTabProps> = ({}
       });
     }
 
-    if (!isPublic) {
-      toast({
-        title: "Your recording won't be searchable ",
-        description: 'It is set to private Are you sure about that',
-        status: 'info',
-        isClosable: true,
-        duration: 4000,
-      });
+    if (title.length > 5) {
+      const formdata = new FormData();
+      formdata.append('title', title);
+      formdata.append('description', description);
+      formdata.append('isPublic', String(isPublic));
+      formdata.append('tags', tags);
+      //converting the blob url to actual blob file
+      let blob = await fetch(mediaBlobUrl).then((url) => url.blob());
+      formdata.append('recording', blob);
+
+      dispatch(uploadRecording(formdata));
     }
   };
 
@@ -247,7 +287,7 @@ export const RecordAndUploadFileTab: React.FC<RecordAndUploadFileTabProps> = ({}
             <FormLabel color='shallowPink'>Accessibility</FormLabel>
             <Switch
               size='md'
-              value={String(isPublic)}
+              isChecked={isPublic}
               onChange={(e) => setIsPublic(e.target.checked)}
             />
             <FormHelperText fontWeight='light' fontStyle='italic' fontSize='xs'>
@@ -263,11 +303,60 @@ export const RecordAndUploadFileTab: React.FC<RecordAndUploadFileTabProps> = ({}
             mt={4}
             alignSelf='start'
             onClick={fileUploadHandler}
+            isLoading={loading}
+            disabled={recordingInfo?.fileUri}
           >
             Upload
           </Button>
         </Box>
       )}
+
+      <AlertDialog
+        motionPreset='slideInBottom'
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader color='primaryColor'>
+            Share it to your social media{' '}
+          </AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
+            <HStack mt={4} spacing={4}>
+              <FacebookShareButton
+                url={`${recordingInfo?.fileUri}`}
+                quote={`${recordingInfo?.title}`}
+              >
+                <FacebookIcon round />
+              </FacebookShareButton>
+
+              <LinkedinShareButton url={`${recordingInfo?.fileUri}`}>
+                <LinkedinIcon round />
+              </LinkedinShareButton>
+
+              <TwitterShareButton url={`${recordingInfo?.fileUri}`}>
+                <TwitterIcon round />
+              </TwitterShareButton>
+            </HStack>
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button
+              color='white'
+              bg='primaryColor'
+              ref={cancelRef}
+              onClick={() => {
+                onClose();
+                router.push(`/${userInfo?.username}`);
+              }}
+            >
+              Go back to Profile
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Flex>
   );
 };
