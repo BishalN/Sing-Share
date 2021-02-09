@@ -15,7 +15,11 @@ import {
   userUpdateProfilePictureReducer,
 } from './reducers/userReducer';
 
-import { userUploadRecordingReducer } from './reducers/recordingReducer';
+import {
+  userUploadRecordingReducer,
+  getMyRecordingsReducer,
+  getRecordingsByUsernameReducer,
+} from './reducers/recordingReducer';
 
 const reducers = combineReducers({
   userRegister: userRegisterReducer,
@@ -29,6 +33,8 @@ const reducers = combineReducers({
   userUpdateProfile: userUpdateProfileReducer,
   userUpdateProfilePicture: userUpdateProfilePictureReducer,
   userUploadRecording: userUploadRecordingReducer,
+  getMyRecordings: getMyRecordingsReducer,
+  getRecordingsByUsername: getRecordingsByUsernameReducer,
 });
 
 let userInfoFromLocalStorage;

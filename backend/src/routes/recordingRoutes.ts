@@ -11,7 +11,6 @@ import {
 
 router.post('/upload', protect, upload.single('recording'), uploadRecording);
 router.get('/my', protect, getMyRecordings);
-
 router.get('/:username', protect, getRecordingsByUsername);
 
 export default router;
