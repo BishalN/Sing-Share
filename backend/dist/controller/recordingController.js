@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadRecording = exports.upload = void 0;
+exports.getMyRecordings = exports.getRecordingsByUsername = exports.uploadRecording = exports.upload = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const storage_1 = require("@google-cloud/storage");
 const path_1 = __importDefault(require("path"));
@@ -63,5 +63,37 @@ exports.uploadRecording = express_async_handler_1.default((req, res) => __awaite
         });
     }
     res.json(recording);
+}));
+exports.getRecordingsByUsername = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { username } = req.params;
+        const user = yield User_1.default.findOne({ username });
+        if (!user) {
+            res.status(400);
+            throw new Error('User not found');
+        }
+        const recordings = yield Recording_1.default.find({ user, isPublic: true });
+        res.json(recordings);
+    }
+    catch (error) {
+        res.status(500);
+        throw new Error(error.message);
+    }
+}));
+exports.getMyRecordings = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        console.log(user);
+        if (!user) {
+            res.status(400);
+            throw new Error('User not found');
+        }
+        const recordings = yield Recording_1.default.find({ user });
+        res.json(recordings);
+    }
+    catch (error) {
+        res.status(500);
+        throw new Error(error.message);
+    }
 }));
 //# sourceMappingURL=recordingController.js.map

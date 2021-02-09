@@ -16,7 +16,6 @@ import {
   HStack,
   IconButton,
   Input,
-  Stack,
   Switch,
   Text,
   Textarea,
@@ -24,25 +23,24 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import ReactAudioPlayer from 'react-audio-player';
+import { AiFillPauseCircle } from 'react-icons/ai';
 import { FaRecordVinyl } from 'react-icons/fa';
 import { GiCancel } from 'react-icons/gi';
 import { IoStopCircleSharp } from 'react-icons/io5';
-import { AiFillPauseCircle } from 'react-icons/ai';
 import { useReactMediaRecorder } from 'react-media-recorder';
-import ReactAudioPlayer from 'react-audio-player';
-import { useSelector, useDispatch } from 'react-redux';
-import { uploadRecording } from '../store/actions/recordingsAction';
-import router from 'next/dist/next-server/lib/router/router';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  FacebookShareButton,
   FacebookIcon,
-  LinkedinShareButton,
+  FacebookShareButton,
   LinkedinIcon,
-  TwitterShareButton,
+  LinkedinShareButton,
   TwitterIcon,
+  TwitterShareButton,
 } from 'react-share';
-import { useRouter } from 'next/router';
+import { uploadRecording } from '../store/actions/recordingsAction';
 
 interface RecordAndUploadFileTabProps {}
 
@@ -304,7 +302,6 @@ export const RecordAndUploadFileTab: React.FC<RecordAndUploadFileTabProps> = ({}
             alignSelf='start'
             onClick={fileUploadHandler}
             isLoading={loading}
-            disabled={recordingInfo?.fileUri}
           >
             Upload
           </Button>

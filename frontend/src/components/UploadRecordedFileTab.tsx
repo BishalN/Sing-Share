@@ -225,7 +225,6 @@ export const UploadRecordedFileTab = ({}) => {
               fileUploadHandler();
             }}
             isLoading={loading}
-            disabled={recordingInfo?.fileUri}
           >
             Upload
           </Button>

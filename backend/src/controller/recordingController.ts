@@ -6,6 +6,7 @@ import fs from 'fs';
 import { uploadDir } from '../index';
 import User from '../models/User';
 import Recording from '../models/Recording';
+import { json } from 'express';
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -33,6 +34,9 @@ const gc = new Storage({
 
 ////////////////////////Route Handlers////////////////////////////////////////////////////////////
 
+// @desc    Upload recording
+// @route   POST /api/recordings/upload
+// @access  Only Authenticated users
 export const uploadRecording = expressAsyncHandler(async (req: any, res) => {
   const user: any = await User.findById(req.user._id).select('-password');
   if (!user) {
@@ -65,4 +69,50 @@ export const uploadRecording = expressAsyncHandler(async (req: any, res) => {
   }
 
   res.json(recording);
+});
+
+// @desc    Get recording uri
+// @route   GET /api/recordings/username
+// @access  Only Authenticated users
+export const getRecordingsByUsername = expressAsyncHandler(async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      res.status(400);
+      throw new Error('User not found');
+    }
+
+    const recordings = await Recording.find({ user, isPublic: true });
+
+    res.json(recordings);
+  } catch (error) {
+    res.status(500);
+    throw new Error(error.message);
+  }
+});
+
+// @desc    Get recording uri
+// @route   GET /api/recordings/my
+// @access  Only the user specific
+export const getMyRecordings = expressAsyncHandler(async (req: any, res) => {
+  try {
+    const user = req.user;
+
+    console.log(user);
+
+    if (!user) {
+      res.status(400);
+      throw new Error('User not found');
+    }
+
+    const recordings = await Recording.find({ user });
+
+    res.json(recordings);
+  } catch (error) {
+    res.status(500);
+    throw new Error(error.message);
+  }
 });

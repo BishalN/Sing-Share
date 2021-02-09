@@ -8,5 +8,7 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 const recordingController_1 = require("../controller/recordingController");
 router.post('/upload', authMiddleware_1.protect, recordingController_1.upload.single('recording'), recordingController_1.uploadRecording);
+router.get('/my', authMiddleware_1.protect, recordingController_1.getMyRecordings);
+router.get('/:username', authMiddleware_1.protect, recordingController_1.getRecordingsByUsername);
 exports.default = router;
 //# sourceMappingURL=recordingRoutes.js.map
