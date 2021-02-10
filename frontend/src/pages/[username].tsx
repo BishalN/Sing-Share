@@ -280,15 +280,21 @@ const UserProfile = ({}) => {
           {isUserProfile
             ? myRecordings?.map((recording, index) => (
                 <RecordingsCard
+                  fileUri={recording.fileUri}
                   title={recording.title}
                   likes={recording.likes.length}
                   comments={recording.comments.length}
                   tags={recording.tags}
+                  description={recording.description}
                   key={index}
+                  isPublic={recording.isPublic}
                 />
               ))
             : recordings?.map((recording, index) => (
                 <RecordingsCard
+                  fileUri={recording.fileUri}
+                  isPublic={recording.isPublic}
+                  description={recording.description}
                   title={recording.title}
                   likes={recording.likes.length}
                   comments={recording.comments.length}

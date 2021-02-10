@@ -47,7 +47,9 @@ exports.uploadRecording = express_async_handler_1.default((req, res) => __awaite
     let { title, description, isPublic, tags } = req.body;
     isPublic = Boolean(isPublic);
     const bucket = gc.bucket('justforbucketrecording.appspot.com');
-    const uploadRes = yield bucket.upload(`${req.file.path}`, {});
+    const uploadRes = yield bucket.upload(`${req.file.path}`, {
+        public: isPublic,
+    });
     const fileUri = `https://storage.googleapis.com/${bucket.name}/${req.file.filename}`;
     const recording = yield Recording_1.default.create({
         user,

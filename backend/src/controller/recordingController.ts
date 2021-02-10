@@ -49,7 +49,10 @@ export const uploadRecording = expressAsyncHandler(async (req: any, res) => {
 
   const bucket = gc.bucket('justforbucketrecording.appspot.com');
 
-  const uploadRes = await bucket.upload(`${req.file.path}`, {});
+  const uploadRes = await bucket.upload(`${req.file.path}`, {
+    public: isPublic,
+  });
+
   const fileUri = `https://storage.googleapis.com/${bucket.name}/${req.file.filename}`;
 
   const recording = await Recording.create({
