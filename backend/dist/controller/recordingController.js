@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMyRecordings = exports.getRecordingsByUsername = exports.uploadRecording = exports.upload = void 0;
+exports.deleteRecording = exports.editRecording = exports.getMyRecordings = exports.getRecordingsByUsername = exports.uploadRecording = exports.upload = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const storage_1 = require("@google-cloud/storage");
 const path_1 = __importDefault(require("path"));
@@ -97,5 +97,41 @@ exports.getMyRecordings = express_async_handler_1.default((req, res) => __awaite
         res.status(500);
         throw new Error(error.message);
     }
+}));
+exports.editRecording = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { recordingId, title, tags, description, isPublic } = req.body;
+    const user = req.user;
+    const recording = yield Recording_1.default.findById(recordingId);
+    if (!recording) {
+        res.status(400);
+        throw new Error('Recording not found');
+    }
+    const isUsersRecording = String(recording === null || recording === void 0 ? void 0 : recording.user) === String(user._id);
+    if (!isUsersRecording) {
+        res.status(401);
+        throw new Error('Unauthorized ');
+    }
+    recording.title = title || recording.title;
+    recording.tags = tags || recording.tags;
+    recording.description = description || recording.description;
+    recording.isPublic = isPublic || recording.isPublic;
+    const updatedRecording = yield recording.save();
+    res.json(updatedRecording);
+}));
+exports.deleteRecording = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { recordingId } = req.body;
+    const user = req.user;
+    const recording = yield Recording_1.default.findById(recordingId);
+    if (!recording) {
+        res.status(400);
+        throw new Error('Recording not found');
+    }
+    const isUsersRecording = String(recording === null || recording === void 0 ? void 0 : recording.user) === String(user._id);
+    if (!isUsersRecording) {
+        res.status(401);
+        throw new Error('Unauthorized ');
+    }
+    const isDeleted = yield (recording === null || recording === void 0 ? void 0 : recording.deleteOne({ _id: recordingId }));
+    res.json({ status: 'success', deletedRecording: isDeleted.title });
 }));
 //# sourceMappingURL=recordingController.js.map

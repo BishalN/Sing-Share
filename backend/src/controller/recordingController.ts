@@ -119,3 +119,59 @@ export const getMyRecordings = expressAsyncHandler(async (req: any, res) => {
     throw new Error(error.message);
   }
 });
+
+// @desc    Edit the title,tags,description,isPublic of a recording
+// @route   GET /api/recordings/edit
+// @access  Only the user creator of the recording
+export const editRecording = expressAsyncHandler(async (req: any, res) => {
+  const { recordingId, title, tags, description, isPublic } = req.body;
+  const user = req.user;
+
+  const recording: any = await Recording.findById(recordingId);
+
+  if (!recording) {
+    res.status(400);
+    throw new Error('Recording not found');
+  }
+
+  const isUsersRecording = String(recording?.user) === String(user._id);
+
+  if (!isUsersRecording) {
+    res.status(401);
+    throw new Error('Unauthorized ');
+  }
+
+  recording.title = title || recording.title;
+  recording.tags = tags || recording.tags;
+  recording.description = description || recording.description;
+  recording.isPublic = isPublic || recording.isPublic;
+
+  const updatedRecording = await recording.save();
+
+  res.json(updatedRecording);
+});
+
+// @desc    Delete the recording
+// @route   DELETE /api/recordings/delete
+// @access  Only the user creator of the recording
+export const deleteRecording = expressAsyncHandler(async (req: any, res) => {
+  const { recordingId } = req.body;
+  const user = req.user;
+
+  const recording: any = await Recording.findById(recordingId);
+
+  if (!recording) {
+    res.status(400);
+    throw new Error('Recording not found');
+  }
+
+  const isUsersRecording = String(recording?.user) === String(user._id);
+
+  if (!isUsersRecording) {
+    res.status(401);
+    throw new Error('Unauthorized ');
+  }
+
+  const isDeleted = await recording?.deleteOne({ _id: recordingId });
+  res.json({ status: 'success', deletedRecording: isDeleted.title });
+});
