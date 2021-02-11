@@ -155,10 +155,10 @@ export const editRecording = expressAsyncHandler(async (req: any, res) => {
 // @route   DELETE /api/recordings/delete
 // @access  Only the user creator of the recording
 export const deleteRecording = expressAsyncHandler(async (req: any, res) => {
-  const { recordingId } = req.body;
+  const { recordingid } = req.headers;
   const user = req.user;
 
-  const recording: any = await Recording.findById(recordingId);
+  const recording: any = await Recording.findById(recordingid);
 
   if (!recording) {
     res.status(400);
@@ -172,6 +172,6 @@ export const deleteRecording = expressAsyncHandler(async (req: any, res) => {
     throw new Error('Unauthorized ');
   }
 
-  const isDeleted = await recording?.deleteOne({ _id: recordingId });
+  const isDeleted = await recording?.deleteOne({ _id: recordingid });
   res.json({ status: 'success', deletedRecording: isDeleted.title });
 });

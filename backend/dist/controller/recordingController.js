@@ -119,9 +119,9 @@ exports.editRecording = express_async_handler_1.default((req, res) => __awaiter(
     res.json(updatedRecording);
 }));
 exports.deleteRecording = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { recordingId } = req.body;
+    const { recordingid } = req.headers;
     const user = req.user;
-    const recording = yield Recording_1.default.findById(recordingId);
+    const recording = yield Recording_1.default.findById(recordingid);
     if (!recording) {
         res.status(400);
         throw new Error('Recording not found');
@@ -131,7 +131,7 @@ exports.deleteRecording = express_async_handler_1.default((req, res) => __awaite
         res.status(401);
         throw new Error('Unauthorized ');
     }
-    const isDeleted = yield (recording === null || recording === void 0 ? void 0 : recording.deleteOne({ _id: recordingId }));
+    const isDeleted = yield (recording === null || recording === void 0 ? void 0 : recording.deleteOne({ _id: recordingid }));
     res.json({ status: 'success', deletedRecording: isDeleted.title });
 }));
 //# sourceMappingURL=recordingController.js.map

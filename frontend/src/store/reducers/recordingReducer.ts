@@ -1,4 +1,10 @@
 import {
+  DELETE_MY_RECORDING_FAIL,
+  DELETE_MY_RECORDING_REQUEST,
+  DELETE_MY_RECORDING_SUCCESS,
+  EDIT_MY_RECORDING_FAIL,
+  EDIT_MY_RECORDING_REQUEST,
+  EDIT_MY_RECORDING_SUCCESS,
   GET_MY_RECORDINGS_FAIL,
   GET_MY_RECORDINGS_REQUEST,
   GET_MY_RECORDINGS_SUCCESS,
@@ -55,6 +61,32 @@ export const getMyRecordingsReducer = (state = {}, action) => {
         success: true,
       };
     case GET_MY_RECORDINGS_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const editMyRecordingReducer = (state = {}, action) => {
+  switch (action.type) {
+    case EDIT_MY_RECORDING_REQUEST:
+      return { loading: true };
+    case EDIT_MY_RECORDING_SUCCESS:
+      return { loading: false, recordingInfo: action.payload };
+    case EDIT_MY_RECORDING_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const deleteMyRecordingReducer = (state = {}, action) => {
+  switch (action.type) {
+    case DELETE_MY_RECORDING_REQUEST:
+      return { loading: true };
+    case DELETE_MY_RECORDING_SUCCESS:
+      return { loading: false, message: action.payload };
+    case DELETE_MY_RECORDING_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

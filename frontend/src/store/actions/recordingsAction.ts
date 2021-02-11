@@ -1,4 +1,10 @@
 import {
+  DELETE_MY_RECORDING_FAIL,
+  DELETE_MY_RECORDING_REQUEST,
+  DELETE_MY_RECORDING_SUCCESS,
+  EDIT_MY_RECORDING_FAIL,
+  EDIT_MY_RECORDING_REQUEST,
+  EDIT_MY_RECORDING_SUCCESS,
   GET_MY_RECORDINGS_FAIL,
   GET_MY_RECORDINGS_REQUEST,
   GET_MY_RECORDINGS_SUCCESS,
@@ -110,6 +116,77 @@ export const getMyRecordings = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: GET_MY_RECORDINGS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    });
+  }
+};
+
+export const editMyRecording = (recordingObj) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: EDIT_MY_RECORDING_REQUEST });
+
+    const {
+      userLogin: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `http://localhost:4000/api/recordings/edit`,
+      recordingObj,
+      config
+    );
+
+    dispatch({ type: EDIT_MY_RECORDING_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: EDIT_MY_RECORDING_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    });
+  }
+};
+
+export const deleteMyRecording = (recordingId) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({ type: DELETE_MY_RECORDING_REQUEST });
+
+    const {
+      userLogin: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        recordingid: recordingId,
+      },
+    };
+
+    const { data } = await axios.delete(
+      `http://localhost:4000/api/recordings/edit`,
+      config
+    );
+
+    dispatch({ type: DELETE_MY_RECORDING_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: DELETE_MY_RECORDING_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

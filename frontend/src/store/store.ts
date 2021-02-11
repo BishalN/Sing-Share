@@ -19,6 +19,8 @@ import {
   userUploadRecordingReducer,
   getMyRecordingsReducer,
   getRecordingsByUsernameReducer,
+  deleteMyRecordingReducer,
+  editMyRecordingReducer,
 } from './reducers/recordingReducer';
 
 const reducers = combineReducers({
@@ -35,6 +37,8 @@ const reducers = combineReducers({
   userUploadRecording: userUploadRecordingReducer,
   getMyRecordings: getMyRecordingsReducer,
   getRecordingsByUsername: getRecordingsByUsernameReducer,
+  deleteMyRecording: deleteMyRecordingReducer,
+  editMyRecording: editMyRecordingReducer,
 });
 
 let userInfoFromLocalStorage;
