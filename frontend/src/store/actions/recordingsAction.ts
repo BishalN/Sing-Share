@@ -179,7 +179,7 @@ export const deleteMyRecording = (recordingId) => async (
     };
 
     const { data } = await axios.delete(
-      `http://localhost:4000/api/recordings/edit`,
+      `http://localhost:4000/api/recordings/delete`,
       config
     );
 

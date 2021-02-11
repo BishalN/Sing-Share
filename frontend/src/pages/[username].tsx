@@ -153,6 +153,11 @@ const UserProfile = ({}) => {
     }
   }, [username, userProfile, updatedProfile, myRecordings, recordings]);
 
+  console.log(myRecordings);
+  if (myRecordings) {
+    console.log('this is wrong');
+  }
+
   return (
     <Layout>
       {loading ? (
@@ -276,7 +281,6 @@ const UserProfile = ({}) => {
           <Text alignSelf='start' mt='4' fontWeight='bold' fontSize='xl'>
             Latest Recordings:
           </Text>
-          {console.log(myRecordings)}
           {isUserProfile
             ? myRecordings?.map((recording, index) => (
                 <RecordingsCard
@@ -288,10 +292,12 @@ const UserProfile = ({}) => {
                   description={recording.description}
                   key={index}
                   isPublic={recording.isPublic}
+                  recordingId={recording._id}
                 />
               ))
             : recordings?.map((recording, index) => (
                 <RecordingsCard
+                  recordingId={recording._id}
                   fileUri={recording.fileUri}
                   isPublic={recording.isPublic}
                   description={recording.description}

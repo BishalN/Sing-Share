@@ -112,7 +112,11 @@ export const MenuLinks = ({ isOpen }) => {
                 >
                   <MenuItem>Profile</MenuItem>
                 </NextLink>
-                <MenuItem>Record</MenuItem>
+
+                <NextLink href='/record'>
+                  <MenuItem>Record</MenuItem>
+                </NextLink>
+
                 <MenuItem>Logout</MenuItem>
               </MenuList>
             </Menu>

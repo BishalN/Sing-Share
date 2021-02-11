@@ -29,7 +29,9 @@ import {
   Switch,
   Text,
   Textarea,
+  toast,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -38,6 +40,12 @@ import {
   AiOutlineComment,
 } from 'react-icons/ai';
 import ReactAudioPlayer from 'react-audio-player';
+import {
+  deleteMyRecording,
+  editMyRecording,
+  getMyRecordings,
+} from '../store/actions/recordingsAction';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface RecordingsCardProps {
   title: string;
@@ -47,12 +55,14 @@ interface RecordingsCardProps {
   fileUri: string;
   description: string;
   isPublic: string;
+  recordingId: string;
 }
 
 export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   title,
   comments,
   likes,
+  recordingId,
   tags,
   fileUri,
   description,
@@ -61,24 +71,55 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = useRef();
+  const dispatch = useDispatch();
+  const toast = useToast();
 
   const [isOpenAlert, setIsAlertOpen] = useState(false);
   const onCloseAlert = () => setIsAlertOpen(false);
   const cancelRef = useRef();
 
-  const [recTitle, setRecTitle] = useState('');
-  const [recTags, setRecTags] = useState('');
-  const [recDescription, setRecDescription] = useState('');
+  const [recTitle, setRecTitle] = useState(title);
+  const [recTags, setRecTags] = useState(tags);
+  const [recDescription, setRecDescription] = useState(description);
   const [recAccessibilityStatus, setRecAccessibilityStatus] = useState(
-    undefined
+    Boolean(isPublic)
   );
 
+  const editMyRecordingFromStore = useSelector(
+    (state: any) => state.editMyRecording
+  );
+  const { loading, recordingInfo, error } = editMyRecordingFromStore;
+
+  const deleteMyRecordingFromStore = useSelector(
+    (state: any) => state.deleteMyRecording
+  );
+  const { loading: loadingDelete, message } = deleteMyRecordingFromStore;
+
   useEffect(() => {
-    setRecTitle(title);
-    setRecTags(tags);
-    setRecTitle(description);
-    setRecAccessibilityStatus(isPublic);
-  });
+    if (recordingInfo) {
+      toast({
+        title: `${recordingInfo.title} successfully updated`,
+        duration: 2000,
+        status: 'success',
+        isClosable: true,
+        position: 'bottom-left',
+      });
+
+      onClose();
+    }
+
+    if (message?.status && message?.deletedRecording) {
+      toast({
+        title: `${message.deletedRecording} successfully deleted`,
+        duration: 3000,
+        status: message.status,
+        isClosable: true,
+        position: 'bottom-left',
+      });
+
+      setIsAlertOpen(false);
+    }
+  }, [recordingInfo, message]);
 
   return (
     <Accordion allowToggle rounded='xl' bg='gray.400' mb={4}>
@@ -102,8 +143,8 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
 
                 <Box>
                   <Text ml='3'>
-                    {title}
-                    {tags.split(',').map((tag, index) => (
+                    {recTitle}
+                    {recTags.split(',').map((tag, index) => (
                       <Badge
                         rounded='lg'
                         bg='primaryColor'
@@ -137,7 +178,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
         </h2>
         <AccordionPanel p={4} display='flex' justifyContent='space-between'>
           <Text maxW='300px' color='white'>
-            {description}
+            {recDescription}
           </Text>
           <HStack>
             <Button bg='primaryColor' color='white' onClick={onOpen}>
@@ -201,7 +242,22 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme='pink' mr={3}>
+            <Button
+              colorScheme='pink'
+              mr={3}
+              onClick={() => {
+                dispatch(
+                  editMyRecording({
+                    recordingId,
+                    title: recTitle,
+                    tags: recTags,
+                    description: recDescription,
+                    isPublic: recAccessibilityStatus,
+                  })
+                );
+              }}
+              isLoading={loading}
+            >
               Update
             </Button>
             <Button onClick={onClose}>Cancel</Button>
@@ -229,7 +285,16 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
               <Button ref={cancelRef} onClick={onCloseAlert}>
                 Cancel
               </Button>
-              <Button colorScheme='red' onClick={onCloseAlert} ml={3}>
+              <Button
+                colorScheme='red'
+                onClick={() => {
+                  dispatch(deleteMyRecording(recordingId));
+
+                  dispatch(getMyRecordings());
+                }}
+                ml={3}
+                isLoading={loadingDelete}
+              >
                 Delete
               </Button>
             </AlertDialogFooter>
