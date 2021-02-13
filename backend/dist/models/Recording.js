@@ -9,15 +9,9 @@ const comment = new mongoose_1.default.Schema({
         type: mongoose_1.default.Schema.Types.ObjectId,
         required: true,
     },
-    text: {
+    comment: {
         type: String,
         required: true,
-    },
-    name: {
-        type: String,
-    },
-    avatar: {
-        type: String,
     },
 }, { timestamps: true });
 const like = new mongoose_1.default.Schema({

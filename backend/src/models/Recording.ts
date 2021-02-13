@@ -6,15 +6,9 @@ const comment = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    text: {
+    comment: {
       type: String,
       required: true,
-    },
-    name: {
-      type: String,
-    },
-    avatar: {
-      type: String,
     },
   },
   { timestamps: true }

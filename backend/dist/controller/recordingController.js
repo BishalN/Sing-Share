@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteRecording = exports.editRecording = exports.getMyRecordings = exports.getRecordingsByUsername = exports.uploadRecording = exports.upload = void 0;
+exports.commentOnRecording = exports.toggleLikeRecording = exports.deleteRecording = exports.editRecording = exports.getMyRecordings = exports.getRecordingsByUsername = exports.uploadRecording = exports.upload = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const storage_1 = require("@google-cloud/storage");
 const path_1 = __importDefault(require("path"));
@@ -133,5 +133,25 @@ exports.deleteRecording = express_async_handler_1.default((req, res) => __awaite
     }
     const isDeleted = yield (recording === null || recording === void 0 ? void 0 : recording.deleteOne({ _id: recordingid }));
     res.json({ status: 'success', deletedRecording: isDeleted.title });
+}));
+exports.toggleLikeRecording = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const recording = yield Recording_1.default.findById(req.params.id);
+    if (recording.likes.some((like) => like.user.toString() === req.user.id)) {
+        recording.likes = recording.likes.filter((myLike) => myLike.user.toString() !== req.user.id);
+        yield recording.save();
+        return res.json(recording.likes);
+    }
+    recording.likes.unshift({ user: req.user.id });
+    yield recording.save();
+    return res.json(recording.likes);
+}));
+exports.commentOnRecording = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const recording = yield Recording_1.default.findById(req.params.id);
+    const { comment } = req.body;
+    console.log(recording.comments);
+    recording.comments.push({ user, comment });
+    yield recording.save();
+    return res.json(recording.comments);
 }));
 //# sourceMappingURL=recordingController.js.map

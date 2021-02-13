@@ -33,6 +33,7 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
+
 import React, { useEffect, useRef, useState } from 'react';
 import {
   AiFillPlayCircle,
@@ -46,6 +47,7 @@ import {
   getMyRecordings,
 } from '../store/actions/recordingsAction';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 
 interface RecordingsCardProps {
   title: string;
@@ -56,6 +58,7 @@ interface RecordingsCardProps {
   description: string;
   isPublic: string;
   recordingId: string;
+  isMyRecording?: boolean;
 }
 
 export const RecordingsCard: React.FC<RecordingsCardProps> = ({
@@ -67,12 +70,16 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   fileUri,
   description,
   isPublic,
+  isMyRecording,
   children,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const router = useRouter();
   const initialRef = useRef();
   const dispatch = useDispatch();
   const toast = useToast();
+
+  const path = router.asPath;
 
   const [isOpenAlert, setIsAlertOpen] = useState(false);
   const onCloseAlert = () => setIsAlertOpen(false);
@@ -94,6 +101,10 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
     (state: any) => state.deleteMyRecording
   );
   const { loading: loadingDelete, message } = deleteMyRecordingFromStore;
+
+  if (path.includes('?')) {
+    dispatch(getMyRecordings());
+  }
 
   useEffect(() => {
     if (recordingInfo) {
@@ -180,14 +191,17 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
           <Text maxW='300px' color='white'>
             {recDescription}
           </Text>
-          <HStack>
-            <Button bg='primaryColor' color='white' onClick={onOpen}>
-              Edit
-            </Button>
-            <Button colorScheme='red' onClick={() => setIsAlertOpen(true)}>
-              Delete
-            </Button>
-          </HStack>
+
+          {isMyRecording && (
+            <HStack>
+              <Button bg='primaryColor' color='white' onClick={onOpen}>
+                Edit
+              </Button>
+              <Button colorScheme='red' onClick={() => setIsAlertOpen(true)}>
+                Delete
+              </Button>
+            </HStack>
+          )}
         </AccordionPanel>
       </AccordionItem>
 

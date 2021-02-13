@@ -175,3 +175,45 @@ export const deleteRecording = expressAsyncHandler(async (req: any, res) => {
   const isDeleted = await recording?.deleteOne({ _id: recordingid });
   res.json({ status: 'success', deletedRecording: isDeleted.title });
 });
+
+// @desc    Like the recording
+// @route   PUT /api/recordings/toggle-like/:id
+// @access  All authenticated users
+export const toggleLikeRecording = expressAsyncHandler(
+  async (req: any, res) => {
+    const recording: any = await Recording.findById(req.params.id);
+
+    // Check if the recording has already been liked
+    if (recording.likes.some((like) => like.user.toString() === req.user.id)) {
+      recording.likes = recording.likes.filter(
+        (myLike) => myLike.user.toString() !== req.user.id
+      );
+      await recording.save();
+      return res.json(recording.likes);
+    }
+
+    recording.likes.unshift({ user: req.user.id });
+
+    await recording.save();
+
+    return res.json(recording.likes);
+  }
+);
+
+// @desc    Comment on the recording
+// @route   PUT /api/recordings/comment/:id
+// @access  All authenticated users
+
+export const commentOnRecording = expressAsyncHandler(async (req: any, res) => {
+  const user: any = req.user;
+  const recording: any = await Recording.findById(req.params.id);
+  const { comment } = req.body;
+
+  console.log(recording.comments);
+
+  recording.comments.push({ user, comment });
+
+  await recording.save();
+
+  return res.json(recording.comments);
+});

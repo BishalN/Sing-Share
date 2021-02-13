@@ -11,6 +11,8 @@ router.post('/upload', authMiddleware_1.protect, recordingController_1.upload.si
 router.get('/my', authMiddleware_1.protect, recordingController_1.getMyRecordings);
 router.put('/edit', authMiddleware_1.protect, recordingController_1.editRecording);
 router.delete('/delete', authMiddleware_1.protect, recordingController_1.deleteRecording);
+router.put('/toggle-like/:id', authMiddleware_1.protect, recordingController_1.toggleLikeRecording);
+router.put('/comment/:id', authMiddleware_1.protect, recordingController_1.commentOnRecording);
 router.get('/:username', authMiddleware_1.protect, recordingController_1.getRecordingsByUsername);
 exports.default = router;
 //# sourceMappingURL=recordingRoutes.js.map
