@@ -1,4 +1,6 @@
 import {
+  COMMENT_RECORDING_FAIL,
+  COMMENT_RECORDING_REQUEST,
   DELETE_MY_RECORDING_FAIL,
   DELETE_MY_RECORDING_REQUEST,
   DELETE_MY_RECORDING_SUCCESS,
@@ -11,6 +13,9 @@ import {
   GET_USER_RECORDINGS_BY_USERNAME_FAIL,
   GET_USER_RECORDINGS_BY_USERNAME_REQUEST,
   GET_USER_RECORDINGS_BY_USERNAME_SUCCESS,
+  LIKE_RECORDING_FAIL,
+  LIKE_RECORDING_REQUEST,
+  LIKE_RECORDING_SUCCESS,
   USER_UPLOAD_RECORDING_FAIL,
   USER_UPLOAD_RECORDING_REQUEST,
   USER_UPLOAD_RECORDING_SUCCESS,
@@ -87,6 +92,32 @@ export const deleteMyRecordingReducer = (state = {}, action) => {
     case DELETE_MY_RECORDING_SUCCESS:
       return { loading: false, message: action.payload };
     case DELETE_MY_RECORDING_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const likeRecordingReducer = (state = {}, action) => {
+  switch (action.type) {
+    case LIKE_RECORDING_REQUEST:
+      return { loading: true };
+    case LIKE_RECORDING_SUCCESS:
+      return { loading: false, likes: action.payload };
+    case LIKE_RECORDING_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const commentRecordingReducer = (state = {}, action) => {
+  switch (action.type) {
+    case COMMENT_RECORDING_REQUEST:
+      return { loading: true };
+    case COMMENT_RECORDING_REQUEST:
+      return { loading: false, comments: action.payload };
+    case COMMENT_RECORDING_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;
