@@ -222,6 +222,7 @@ export const toggleLikeRecording = (recordingId) => async (
 
     const { data } = await axios.put(
       `http://localhost:4000/api/recordings/toggle-like/${recordingId}`,
+      {},
       config
     );
 

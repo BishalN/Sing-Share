@@ -1,9 +1,4 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   AlertDialog,
   AlertDialogBody,
   AlertDialogContent,
@@ -13,12 +8,21 @@ import {
   Badge,
   Box,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormHelperText,
   FormLabel,
+  Heading,
   HStack,
+  IconButton,
   Input,
+  InputGroup,
+  InputRightElement,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -29,25 +33,24 @@ import {
   Switch,
   Text,
   Textarea,
-  toast,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  AiFillPlayCircle,
-  AiOutlineHeart,
-  AiOutlineComment,
-} from 'react-icons/ai';
 import ReactAudioPlayer from 'react-audio-player';
+import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from 'react-icons/ai';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   deleteMyRecording,
   editMyRecording,
   getMyRecordings,
+  toggleLikeRecording,
+  comment,
 } from '../store/actions/recordingsAction';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
+import { CommenterCard } from './CommenterCard';
 
 interface RecordingsCardProps {
   title: string;
@@ -59,6 +62,7 @@ interface RecordingsCardProps {
   isPublic: string;
   recordingId: string;
   isMyRecording?: boolean;
+  isLiked;
 }
 
 export const RecordingsCard: React.FC<RecordingsCardProps> = ({
@@ -71,26 +75,33 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   description,
   isPublic,
   isMyRecording,
+  isLiked,
   children,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const router = useRouter();
+  const {
+    isOpen: isOpenComment,
+    onOpen: onOpenComment,
+    onClose: onCloseComment,
+  } = useDisclosure();
+  const commentInitialRef = useRef();
+
   const initialRef = useRef();
   const dispatch = useDispatch();
   const toast = useToast();
-
-  const path = router.asPath;
 
   const [isOpenAlert, setIsAlertOpen] = useState(false);
   const onCloseAlert = () => setIsAlertOpen(false);
   const cancelRef = useRef();
 
   const [recTitle, setRecTitle] = useState(title);
+  const [recIsLiked, setRecIsLiked] = useState(isLiked());
   const [recTags, setRecTags] = useState(tags);
   const [recDescription, setRecDescription] = useState(description);
   const [recAccessibilityStatus, setRecAccessibilityStatus] = useState(
     Boolean(isPublic)
   );
+  const [commentValue, setComment] = useState('');
 
   const editMyRecordingFromStore = useSelector(
     (state: any) => state.editMyRecording
@@ -101,10 +112,6 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
     (state: any) => state.deleteMyRecording
   );
   const { loading: loadingDelete, message } = deleteMyRecordingFromStore;
-
-  if (path.includes('?')) {
-    dispatch(getMyRecordings());
-  }
 
   useEffect(() => {
     if (recordingInfo) {
@@ -133,77 +140,124 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   }, [recordingInfo, message]);
 
   return (
-    <Accordion allowToggle rounded='xl' bg='gray.400' mb={4}>
-      <AccordionItem>
-        <h2>
-          <AccordionButton>
-            <Box
-              as='div'
-              alignSelf='start'
-              mt='4'
-              mb='4'
-              bg='black'
-              color='white'
-              rounded='xl'
-              boxShadow='md'
-            >
-              <Flex p={3} direction='row'>
-                <Box maxW='10' overflow='hidden' rounded='10'>
-                  <ReactAudioPlayer src={fileUri} controls />
-                </Box>
+    <>
+      <Box
+        as='div'
+        alignSelf='start'
+        mt='4'
+        mb='4'
+        bg='black'
+        color='white'
+        rounded='xl'
+        boxShadow='md'
+      >
+        <Flex p={3} direction='row'>
+          <Box maxW='10' overflow='hidden' rounded='10'>
+            <ReactAudioPlayer src={fileUri} controls />
+          </Box>
 
-                <Box>
-                  <Text ml='3'>
-                    {recTitle}
-                    {recTags.split(',').map((tag, index) => (
-                      <Badge
-                        rounded='lg'
-                        bg='primaryColor'
-                        color='whitesmoke'
-                        ml='2'
-                        textTransform='lowercase'
-                      >
-                        #{tag}
-                      </Badge>
-                    ))}
-                  </Text>
-                </Box>
-                <Box ml='3' display='flex'>
-                  <Box>
-                    <AiOutlineHeart size={35} />
-                    <Badge bg='primaryColor' rounded='sm' color='white'>
-                      {likes}
-                    </Badge>
-                  </Box>
-                  <Box ml={3}>
-                    <AiOutlineComment size={35} />
-                    <Badge bg='primaryColor' rounded='sm' color='white'>
-                      {comments}
-                    </Badge>
-                  </Box>
-                </Box>
-              </Flex>
+          <Box>
+            <Text ml='3'>
+              {recTitle}
+              {recTags.split(',').map((tag, index) => (
+                <Badge
+                  rounded='lg'
+                  bg='primaryColor'
+                  color='whitesmoke'
+                  ml='2'
+                  textTransform='lowercase'
+                >
+                  #{tag}
+                </Badge>
+              ))}
+            </Text>
+          </Box>
+          <Box ml='3' display='flex'>
+            <Box>
+              {!recIsLiked ? (
+                <IconButton
+                  background='none'
+                  rounded='xl'
+                  onClick={() => {
+                    setRecIsLiked(!recIsLiked);
+                    dispatch(toggleLikeRecording(recordingId));
+                  }}
+                  _hover={{ background: 'secondaryColor' }}
+                  aria-label='Like the recording'
+                  icon={<AiOutlineHeart size={35} />}
+                />
+              ) : (
+                <IconButton
+                  background='none'
+                  rounded='xl'
+                  onClick={() => {
+                    setRecIsLiked(!recIsLiked);
+                    dispatch(toggleLikeRecording(recordingId));
+                  }}
+                  _hover={{ background: 'white' }}
+                  aria-label='Like the recording'
+                  icon={<AiFillHeart size={35} color='#d543bb' />}
+                />
+              )}
+
+              <Badge bg='primaryColor' rounded='sm' color='white'>
+                {recIsLiked ? likes + 1 : likes}
+              </Badge>
             </Box>
-            <AccordionIcon ml='2' />
-          </AccordionButton>
-        </h2>
-        <AccordionPanel p={4} display='flex' justifyContent='space-between'>
-          <Text maxW='300px' color='white'>
-            {recDescription}
-          </Text>
-
+            <Box ml={3}>
+              <IconButton
+                background='none'
+                rounded='xl'
+                onClick={() => {
+                  console.log('Open the modal');
+                  onOpenComment();
+                }}
+                _hover={{ background: 'secondaryColor' }}
+                aria-label='Comments'
+                icon={<AiOutlineComment size={35} />}
+              />
+              <Badge bg='primaryColor' rounded='sm' color='white'>
+                {comments}
+              </Badge>
+            </Box>
+          </Box>
           {isMyRecording && (
-            <HStack>
-              <Button bg='primaryColor' color='white' onClick={onOpen}>
-                Edit
-              </Button>
-              <Button colorScheme='red' onClick={() => setIsAlertOpen(true)}>
-                Delete
-              </Button>
-            </HStack>
+            <Menu>
+              <MenuButton ml='1' mt='-4'>
+                <BsThreeDotsVertical size={25} color='gray' />
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={onOpen} color='black'>
+                  <HStack>
+                    <FaEdit size={20} color='#d543bb' />
+                    <Text mt='3' fontSize='2'>
+                      Edit
+                    </Text>
+                  </HStack>
+                </MenuItem>
+                <MenuItem onClick={() => setIsAlertOpen(true)}>
+                  <HStack>
+                    <FaTrash size={20} color='gray' />
+                    <Text mt='3' color='black'>
+                      Delete
+                    </Text>
+                  </HStack>
+                </MenuItem>
+              </MenuList>
+            </Menu>
           )}
-        </AccordionPanel>
-      </AccordionItem>
+        </Flex>
+        <Text
+          color='grey'
+          fontWeight='light'
+          textAlign='center'
+          fontStyle='italic'
+          fontSize='sm'
+          flexWrap='wrap'
+        >
+          {recDescription}
+        </Text>
+      </Box>
 
       <Modal
         initialFocusRef={initialRef}
@@ -279,6 +333,62 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
         </ModalContent>
       </Modal>
 
+      {/* ///////////////////////////Comment modal////////////////////////////////// */}
+      <Modal
+        initialFocusRef={commentInitialRef}
+        isOpen={isOpenComment}
+        onClose={onCloseComment}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader color='primaryColor'>Comments</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <InputGroup>
+                <InputRightElement
+                  children={
+                    <Button
+                      p='4'
+                      variant='ghost'
+                      minW='4'
+                      isDisabled={comment.length === 0}
+                      color='primaryColor'
+                      onClick={() => {
+                        dispatch(comment(commentValue, recordingId));
+                        setComment('');
+                      }}
+                    >
+                      Post
+                    </Button>
+                  }
+                />
+                <Input
+                  value={commentValue}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder='Add a comment ....'
+                  focusBorderColor='primaryColor'
+                />
+              </InputGroup>
+              <Divider m='3' />
+              <CommenterCard />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              onClick={onCloseComment}
+              background='secondaryColor'
+              color='white'
+              _hover={{ color: 'black', background: 'white' }}
+            >
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <AlertDialog
         isOpen={isOpenAlert}
         leastDestructiveRef={cancelRef}
@@ -315,61 +425,6 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
-    </Accordion>
+    </>
   );
 };
-
-//before the accordion
-{
-  /* <Box
-as='div'
-alignSelf='start'
-mt='4'
-bg='black'
-color='white'
-rounded='xl'
-boxShadow='md'
-_hover={{ boxShadow: 'lg' }}
->
-<Flex alignItems='center' p={3} direction='row'>
-  <Box maxW='10' overflow='hidden' rounded='10'>
-    <ReactAudioPlayer
-      src={fileUri}
-      style={{ backgroundColor: 'black' }}
-      controls
-    />
-  </Box>
-
-  <Box>
-    <Text ml='3'>
-      {title}
-      {tags.split(',').map((tag, index) => (
-        <Badge
-          rounded='lg'
-          bg='primaryColor'
-          color='whitesmoke'
-          ml='2'
-          textTransform='lowercase'
-        >
-          #{tag}
-        </Badge>
-      ))}
-    </Text>
-  </Box>
-  <Box ml='3' display='flex'>
-    <Box>
-      <AiOutlineHeart size={35} />
-      <Badge bg='primaryColor' rounded='sm' color='white'>
-        {likes}
-      </Badge>
-    </Box>
-    <Box ml={3}>
-      <AiOutlineComment size={35} />
-      <Badge bg='primaryColor' rounded='sm' color='white'>
-        {comments}
-      </Badge>
-    </Box>
-  </Box>
-</Flex>
-</Box> */
-}

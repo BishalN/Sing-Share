@@ -122,6 +122,17 @@ const UserProfile = ({}) => {
     recordings,
   } = getRecordingsByUsernameFromStore;
 
+  const isLiked = (recording) => {
+    let likedOrNot = false;
+    recording.likes.map((like, index) => {
+      const LoggedInUserId = userLoginUserProfile?._id;
+      if (like?.user === LoggedInUserId) {
+        likedOrNot = true;
+      }
+    });
+    return likedOrNot;
+  };
+
   useEffect(() => {
     if (!userLoginUserProfile.username) {
       router.push('/');
@@ -289,10 +300,12 @@ const UserProfile = ({}) => {
                   isPublic={recording.isPublic}
                   recordingId={recording._id}
                   isMyRecording={true}
+                  isLiked={() => isLiked(recording)}
                 />
               ))
             : recordings?.map((recording, index) => (
                 <RecordingsCard
+                  isLiked={() => isLiked(recording)}
                   recordingId={recording._id}
                   fileUri={recording.fileUri}
                   isPublic={recording.isPublic}

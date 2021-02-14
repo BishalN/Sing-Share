@@ -1,6 +1,7 @@
 import {
   COMMENT_RECORDING_FAIL,
   COMMENT_RECORDING_REQUEST,
+  COMMENT_RECORDING_SUCCESS,
   DELETE_MY_RECORDING_FAIL,
   DELETE_MY_RECORDING_REQUEST,
   DELETE_MY_RECORDING_SUCCESS,
@@ -115,7 +116,7 @@ export const commentRecordingReducer = (state = {}, action) => {
   switch (action.type) {
     case COMMENT_RECORDING_REQUEST:
       return { loading: true };
-    case COMMENT_RECORDING_REQUEST:
+    case COMMENT_RECORDING_SUCCESS:
       return { loading: false, comments: action.payload };
     case COMMENT_RECORDING_FAIL:
       return { loading: false, error: action.payload };
