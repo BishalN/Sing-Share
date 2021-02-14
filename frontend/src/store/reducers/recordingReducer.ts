@@ -8,6 +8,9 @@ import {
   EDIT_MY_RECORDING_FAIL,
   EDIT_MY_RECORDING_REQUEST,
   EDIT_MY_RECORDING_SUCCESS,
+  GET_COMMENTS_FAIL,
+  GET_COMMENTS_REQUEST,
+  GET_COMMENTS_SUCCESS,
   GET_MY_RECORDINGS_FAIL,
   GET_MY_RECORDINGS_REQUEST,
   GET_MY_RECORDINGS_SUCCESS,
@@ -117,8 +120,21 @@ export const commentRecordingReducer = (state = {}, action) => {
     case COMMENT_RECORDING_REQUEST:
       return { loading: true };
     case COMMENT_RECORDING_SUCCESS:
-      return { loading: false, comments: action.payload };
+      return { loading: false, comment: action.payload };
     case COMMENT_RECORDING_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const getCommentsReducer = (state = {}, action) => {
+  switch (action.type) {
+    case GET_COMMENTS_REQUEST:
+      return { loading: true };
+    case GET_COMMENTS_SUCCESS:
+      return { loading: false, comments: action.payload };
+    case GET_COMMENTS_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

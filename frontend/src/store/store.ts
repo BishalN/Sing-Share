@@ -23,6 +23,7 @@ import {
   editMyRecordingReducer,
   commentRecordingReducer,
   likeRecordingReducer,
+  getCommentsReducer,
 } from './reducers/recordingReducer';
 
 const reducers = combineReducers({
@@ -43,6 +44,7 @@ const reducers = combineReducers({
   editMyRecording: editMyRecordingReducer,
   commentRecording: commentRecordingReducer,
   likeRecording: likeRecordingReducer,
+  getComments: getCommentsReducer,
 });
 
 let userInfoFromLocalStorage;

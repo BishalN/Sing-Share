@@ -203,7 +203,6 @@ export const toggleLikeRecording = expressAsyncHandler(
 // @desc    Comment on the recording
 // @route   PUT /api/recordings/comment/:id
 // @access  All authenticated users
-
 export const commentOnRecording = expressAsyncHandler(async (req: any, res) => {
   const user: any = req.user;
   const recording: any = await Recording.findById(req.params.id);
@@ -216,4 +215,18 @@ export const commentOnRecording = expressAsyncHandler(async (req: any, res) => {
   await recording.save();
 
   return res.json(recording.comments);
+});
+
+// @desc    Get all the comments of a recording
+// @route   GET /api/recordings/comment/:id
+// @access  All authenticated users
+export const getComments = expressAsyncHandler(async (req, res) => {
+  const recording: any = await Recording.findById(req.params.id);
+
+  if (!recording) {
+    res.status(404);
+    throw new Error('Recording not found');
+  }
+
+  res.json(recording.comments);
 });

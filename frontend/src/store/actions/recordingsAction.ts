@@ -8,6 +8,9 @@ import {
   EDIT_MY_RECORDING_FAIL,
   EDIT_MY_RECORDING_REQUEST,
   EDIT_MY_RECORDING_SUCCESS,
+  GET_COMMENTS_FAIL,
+  GET_COMMENTS_REQUEST,
+  GET_COMMENTS_SUCCESS,
   GET_MY_RECORDINGS_FAIL,
   GET_MY_RECORDINGS_REQUEST,
   GET_MY_RECORDINGS_SUCCESS,
@@ -264,6 +267,39 @@ export const comment = (comment, recordingId) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: COMMENT_RECORDING_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    });
+  }
+};
+
+export const getComments = (recordingId) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: GET_COMMENTS_REQUEST });
+
+    const {
+      userLogin: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.get(
+      `http://localhost:4000/api/recordings/comment/${recordingId}`,
+      config
+    );
+
+    dispatch({ type: GET_COMMENTS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: GET_COMMENTS_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
