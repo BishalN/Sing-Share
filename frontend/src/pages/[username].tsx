@@ -290,8 +290,11 @@ const UserProfile = ({}) => {
           {isUserProfile
             ? myRecordings?.map((recording, index) => (
                 <RecordingsCard
+                  loggedInuserAvatar={userLoginUserProfile.profilePicture}
                   fileUri={recording.fileUri}
+                  username={userLoginUserProfile.username}
                   title={recording.title}
+                  commentsArry={recording.comments}
                   likes={recording.likes.length}
                   comments={recording.comments.length}
                   tags={recording.tags}
@@ -305,7 +308,10 @@ const UserProfile = ({}) => {
               ))
             : recordings?.map((recording, index) => (
                 <RecordingsCard
+                  commentsArry={recording.comments}
                   isLiked={() => isLiked(recording)}
+                  username={userLoginUserProfile.username}
+                  loggedInuserAvatar={userLoginUserProfile.profilePicture}
                   recordingId={recording._id}
                   fileUri={recording.fileUri}
                   isPublic={recording.isPublic}

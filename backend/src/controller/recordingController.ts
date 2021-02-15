@@ -206,11 +206,9 @@ export const toggleLikeRecording = expressAsyncHandler(
 export const commentOnRecording = expressAsyncHandler(async (req: any, res) => {
   const user: any = req.user;
   const recording: any = await Recording.findById(req.params.id);
-  const { comment } = req.body;
+  const { comment, avatar, username } = req.body;
 
-  console.log(recording.comments);
-
-  recording.comments.push({ user, comment });
+  recording.comments.push({ user, comment, avatar, username });
 
   await recording.save();
 

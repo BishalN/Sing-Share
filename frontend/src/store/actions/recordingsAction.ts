@@ -241,7 +241,10 @@ export const toggleLikeRecording = (recordingId) => async (
   }
 };
 
-export const comment = (comment, recordingId) => async (dispatch, getState) => {
+export const comment = (comment, avatar, username, recordingId) => async (
+  dispatch,
+  getState
+) => {
   try {
     dispatch({ type: COMMENT_RECORDING_REQUEST });
 
@@ -259,7 +262,7 @@ export const comment = (comment, recordingId) => async (dispatch, getState) => {
 
     const { data } = await axios.put(
       `http://localhost:4000/api/recordings/comment/${recordingId}`,
-      { comment },
+      { comment, avatar, username },
       config
     );
 

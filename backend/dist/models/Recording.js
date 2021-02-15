@@ -13,6 +13,14 @@ const comment = new mongoose_1.default.Schema({
         type: String,
         required: true,
     },
+    avatar: {
+        type: String,
+        required: true,
+    },
+    username: {
+        type: String,
+        required: true,
+    },
 }, { timestamps: true });
 const like = new mongoose_1.default.Schema({
     user: {

@@ -5,6 +5,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Avatar,
   Badge,
   Box,
   Button,
@@ -13,12 +14,12 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
-  Heading,
   HStack,
   IconButton,
   Input,
   InputGroup,
   InputRightElement,
+  Link,
   Menu,
   MenuButton,
   MenuItem,
@@ -36,7 +37,6 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import ReactAudioPlayer from 'react-audio-player';
 import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from 'react-icons/ai';
@@ -44,13 +44,15 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  comment,
   deleteMyRecording,
   editMyRecording,
   getMyRecordings,
+  getRecordingsByUsername,
   toggleLikeRecording,
-  comment,
 } from '../store/actions/recordingsAction';
 import { CommenterCard } from './CommenterCard';
+import NextLink from 'next/link';
 
 interface RecordingsCardProps {
   title: string;
@@ -63,12 +65,16 @@ interface RecordingsCardProps {
   recordingId: string;
   isMyRecording?: boolean;
   isLiked;
+  loggedInuserAvatar: string;
+  commentsArry;
+  username;
 }
 
 export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   title,
   comments,
   likes,
+  loggedInuserAvatar,
   recordingId,
   tags,
   fileUri,
@@ -77,7 +83,11 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   isMyRecording,
   isLiked,
   children,
+  commentsArry,
+  username,
 }) => {
+  const [commentsArray, setCommentsArray] = useState(commentsArry);
+  console.log(commentsArray);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenComment,
@@ -101,7 +111,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   const [recAccessibilityStatus, setRecAccessibilityStatus] = useState(
     Boolean(isPublic)
   );
-  const [commentValue, setComment] = useState('');
+  const [commentValue, setcommentValue] = useState('');
 
   const editMyRecordingFromStore = useSelector(
     (state: any) => state.editMyRecording
@@ -209,7 +219,6 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                 background='none'
                 rounded='xl'
                 onClick={() => {
-                  console.log('Open the modal');
                   onOpenComment();
                 }}
                 _hover={{ background: 'secondaryColor' }}
@@ -217,7 +226,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                 icon={<AiOutlineComment size={35} />}
               />
               <Badge bg='primaryColor' rounded='sm' color='white'>
-                {comments}
+                {commentsArray.length}
               </Badge>
             </Box>
           </Box>
@@ -334,6 +343,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
       </Modal>
 
       {/* ///////////////////////////Comment modal////////////////////////////////// */}
+
       <Modal
         initialFocusRef={commentInitialRef}
         isOpen={isOpenComment}
@@ -353,11 +363,28 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                       p='4'
                       variant='ghost'
                       minW='4'
-                      isDisabled={comment.length === 0}
+                      isDisabled={commentValue.length === 0}
                       color='primaryColor'
                       onClick={() => {
-                        dispatch(comment(commentValue, recordingId));
-                        setComment('');
+                        dispatch(
+                          comment(
+                            commentValue,
+                            loggedInuserAvatar,
+                            username,
+                            recordingId
+                          )
+                        );
+
+                        setcommentValue('');
+
+                        setCommentsArray([
+                          ...commentsArray,
+                          {
+                            avatar: loggedInuserAvatar,
+                            comment: commentValue,
+                            username,
+                          },
+                        ]);
                       }}
                     >
                       Post
@@ -366,13 +393,30 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                 />
                 <Input
                   value={commentValue}
-                  onChange={(e) => setComment(e.target.value)}
+                  onChange={(e) => setcommentValue(e.target.value)}
                   placeholder='Add a comment ....'
                   focusBorderColor='primaryColor'
                 />
               </InputGroup>
               <Divider m='3' />
-              <CommenterCard />
+              {commentsArray?.map((comment, index) => (
+                <NextLink href={`/${comment.username}`}>
+                  <HStack spacing='2' m='2'>
+                    <Link>
+                      <Avatar name='Segun Adebayo' src={comment.avatar} />
+                    </Link>
+                    <Link>
+                      <Text color='black' fontWeight='bold'>
+                        {comment.username}
+                      </Text>
+                    </Link>
+
+                    <Text fontWeight='light' fontStyle='italic' fontSize='sm'>
+                      {comment.comment}
+                    </Text>
+                  </HStack>
+                </NextLink>
+              ))}
             </FormControl>
           </ModalBody>
 
