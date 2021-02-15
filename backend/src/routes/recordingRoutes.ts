@@ -12,6 +12,7 @@ import {
   toggleLikeRecording,
   commentOnRecording,
   getComments,
+  editComment,
 } from '../controller/recordingController';
 
 router.post('/upload', protect, upload.single('recording'), uploadRecording);
@@ -21,6 +22,7 @@ router.delete('/delete', protect, deleteRecording);
 router.put('/toggle-like/:id', protect, toggleLikeRecording);
 router.put('/comment/:id', protect, commentOnRecording);
 router.get('/comment/:id', protect, getComments);
+router.put('/comment/:id/edit/:commentId', protect, editComment);
 router.get('/:username', protect, getRecordingsByUsername);
 
 export default router;

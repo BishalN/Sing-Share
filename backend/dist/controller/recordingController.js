@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getComments = exports.commentOnRecording = exports.toggleLikeRecording = exports.deleteRecording = exports.editRecording = exports.getMyRecordings = exports.getRecordingsByUsername = exports.uploadRecording = exports.upload = void 0;
+exports.editComment = exports.getComments = exports.commentOnRecording = exports.toggleLikeRecording = exports.deleteRecording = exports.editRecording = exports.getMyRecordings = exports.getRecordingsByUsername = exports.uploadRecording = exports.upload = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const storage_1 = require("@google-cloud/storage");
 const path_1 = __importDefault(require("path"));
@@ -160,5 +160,22 @@ exports.getComments = express_async_handler_1.default((req, res) => __awaiter(vo
         throw new Error('Recording not found');
     }
     res.json(recording.comments);
+}));
+exports.editComment = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const recording = yield Recording_1.default.findById(req.params.id);
+    const { comment } = req.body;
+    const { comments } = recording;
+    const commentIndex = comments.findIndex((comment) => String(comment._id) === req.params.commentId);
+    const commentToBeEdited = comments[commentIndex];
+    if (String(commentToBeEdited.user) === String(req.user._id)) {
+        commentToBeEdited.comment = comment;
+        yield recording.save();
+        res.send(recording);
+    }
+    else {
+        res.status(401);
+        throw new Error('Unauthorized');
+    }
 }));
 //# sourceMappingURL=recordingController.js.map
