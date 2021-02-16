@@ -2,9 +2,15 @@ import {
   COMMENT_RECORDING_FAIL,
   COMMENT_RECORDING_REQUEST,
   COMMENT_RECORDING_SUCCESS,
+  DELETE_COMMENT_FAIL,
+  DELETE_COMMENT_REQUEST,
+  DELETE_COMMENT_SUCCESS,
   DELETE_MY_RECORDING_FAIL,
   DELETE_MY_RECORDING_REQUEST,
   DELETE_MY_RECORDING_SUCCESS,
+  EDIT_COMMENT_FAIL,
+  EDIT_COMMENT_REQUEST,
+  EDIT_COMMENT_SUCCESS,
   EDIT_MY_RECORDING_FAIL,
   EDIT_MY_RECORDING_REQUEST,
   EDIT_MY_RECORDING_SUCCESS,
@@ -303,6 +309,79 @@ export const getComments = (recordingId) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: GET_COMMENTS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    });
+  }
+};
+
+export const editComment = ({ comment, commentId, recordingId }) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({ type: EDIT_COMMENT_REQUEST });
+
+    const {
+      userLogin: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `http://localhost:4000/api/recordings/comment/${recordingId}/edit/${commentId}`,
+      { comment },
+      config
+    );
+
+    dispatch({ type: EDIT_COMMENT_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: EDIT_COMMENT_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    });
+  }
+};
+
+export const deleteComment = ({ commentId, recordingId }) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({ type: DELETE_COMMENT_REQUEST });
+
+    const {
+      userLogin: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.delete(
+      `http://localhost:4000/api/recordings/comment/${recordingId}/delete/${commentId}`,
+      config
+    );
+
+    dispatch({ type: DELETE_COMMENT_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: DELETE_COMMENT_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

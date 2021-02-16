@@ -2,9 +2,15 @@ import {
   COMMENT_RECORDING_FAIL,
   COMMENT_RECORDING_REQUEST,
   COMMENT_RECORDING_SUCCESS,
+  DELETE_COMMENT_FAIL,
+  DELETE_COMMENT_REQUEST,
+  DELETE_COMMENT_SUCCESS,
   DELETE_MY_RECORDING_FAIL,
   DELETE_MY_RECORDING_REQUEST,
   DELETE_MY_RECORDING_SUCCESS,
+  EDIT_COMMENT_FAIL,
+  EDIT_COMMENT_REQUEST,
+  EDIT_COMMENT_SUCCESS,
   EDIT_MY_RECORDING_FAIL,
   EDIT_MY_RECORDING_REQUEST,
   EDIT_MY_RECORDING_SUCCESS,
@@ -135,6 +141,32 @@ export const getCommentsReducer = (state = {}, action) => {
     case GET_COMMENTS_SUCCESS:
       return { loading: false, comments: action.payload };
     case GET_COMMENTS_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const editCommentReducer = (state = {}, action) => {
+  switch (action.type) {
+    case EDIT_COMMENT_REQUEST:
+      return { loading: true };
+    case EDIT_COMMENT_SUCCESS:
+      return { loading: false, editedComment: action.payload };
+    case EDIT_COMMENT_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const deleteCommentReducer = (state = {}, action) => {
+  switch (action.type) {
+    case DELETE_COMMENT_REQUEST:
+      return { loading: true };
+    case DELETE_COMMENT_SUCCESS:
+      return { loading: false, comments: action.payload };
+    case DELETE_COMMENT_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

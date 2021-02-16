@@ -251,7 +251,7 @@ export const editComment = expressAsyncHandler(async (req: any, res) => {
 
     await recording.save();
 
-    res.send(recording);
+    res.send(recording.comments[commentIndex]); //sends the edited comment
   } else {
     res.status(401);
     throw new Error('Unauthorized');
@@ -282,7 +282,7 @@ export const deleteComment = expressAsyncHandler(async (req: any, res) => {
     comments.splice(commentIndex, 1);
     await recording.save();
 
-    res.send(recording);
+    res.send(recording.comments);
   } else {
     res.status(401);
     throw new Error('Unauthorized');

@@ -171,7 +171,7 @@ exports.editComment = express_async_handler_1.default((req, res) => __awaiter(vo
     if (String(commentToBeEdited.user) === String(req.user.id)) {
         commentToBeEdited.comment = comment;
         yield recording.save();
-        res.send(recording);
+        res.send(recording.comments[commentIndex]);
     }
     else {
         res.status(401);
@@ -188,7 +188,7 @@ exports.deleteComment = express_async_handler_1.default((req, res) => __awaiter(
         String(recording.user) === String(req.user._id)) {
         comments.splice(commentIndex, 1);
         yield recording.save();
-        res.send(recording);
+        res.send(recording.comments);
     }
     else {
         res.status(401);
