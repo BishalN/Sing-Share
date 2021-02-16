@@ -86,8 +86,8 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   commentsArry,
   username,
 }) => {
+  console.log(loggedInuserAvatar);
   const [commentsArray, setCommentsArray] = useState(commentsArry);
-  console.log(commentsArray);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenComment,
@@ -369,21 +369,23 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                         dispatch(
                           comment(
                             commentValue,
-                            loggedInuserAvatar,
+                            loggedInuserAvatar ? loggedInuserAvatar : username,
                             username,
                             recordingId
                           )
                         );
 
                         setcommentValue('');
-
+                        console.log(loggedInuserAvatar);
                         setCommentsArray([
-                          ...commentsArray,
                           {
-                            avatar: loggedInuserAvatar,
+                            avatar: loggedInuserAvatar
+                              ? loggedInuserAvatar
+                              : username,
                             comment: commentValue,
                             username,
                           },
+                          ...commentsArray,
                         ]);
                       }}
                     >

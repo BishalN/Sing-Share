@@ -240,13 +240,13 @@ export const editComment = expressAsyncHandler(async (req: any, res) => {
   const { comments } = recording;
 
   const commentIndex = comments.findIndex(
-    (comment) => String(comment._id) === req.params.commentId
+    (comment) => String(comment.id) === req.params.commentId
   );
 
   const commentToBeEdited = comments[commentIndex];
 
   //check if the user requesting is the author of the comment or not
-  if (String(commentToBeEdited.user) === String(req.user._id)) {
+  if (String(commentToBeEdited.user) === String(req.user.id)) {
     commentToBeEdited.comment = comment;
 
     await recording.save();
@@ -259,30 +259,32 @@ export const editComment = expressAsyncHandler(async (req: any, res) => {
 });
 
 // @desc    delete the comment
-// @route   delete /api/recordings/comment/:id/edit/:commentId
+// @route   delete /api/recordings/comment/:id/delete/:commentId
 // @access  Only the original auther of the comment
-// export const deleteComment = expressAsyncHandler(async (req: any, res) => {
-//   const user = req.user;
-//   const recording: any = await Recording.findById(req.params.id);
-//   const { comment } = req.body;
+export const deleteComment = expressAsyncHandler(async (req: any, res) => {
+  const user = req.user;
+  const recording: any = await Recording.findById(req.params.id);
 
-//   const { comments } = recording;
+  const { comments } = recording;
 
-//   const commentIndex = comments.findIndex(
-//     (comment) => String(comment._id) === req.params.commentId
-//   );
+  const commentIndex = comments.findIndex(
+    (comment) => String(comment._id) === req.params.commentId
+  );
 
-//   const commentToBeEdited = comments[commentIndex];
+  const commentToBeDeleted = comments[commentIndex];
 
-//   //check if the user requesting is the author of the comment or not
-//   if (String(commentToBeEdited.user) === String(req.user._id)) {
-//     commentToBeEdited.comment = comment;
+  //check if the user requesting is the author of the comment or the creator of recording itself
+  if (
+    String(commentToBeDeleted.user) === String(req.user._id) ||
+    String(recording.user) === String(req.user._id)
+  ) {
+    //removing the comment from the array
+    comments.splice(commentIndex, 1);
+    await recording.save();
 
-//     await recording.save();
-
-//     res.send(recording);
-//   } else {
-//     res.status(401);
-//     throw new Error('Unauthorized');
-//   }
-// });
+    res.send(recording);
+  } else {
+    res.status(401);
+    throw new Error('Unauthorized');
+  }
+});

@@ -15,6 +15,7 @@ router.put('/toggle-like/:id', authMiddleware_1.protect, recordingController_1.t
 router.put('/comment/:id', authMiddleware_1.protect, recordingController_1.commentOnRecording);
 router.get('/comment/:id', authMiddleware_1.protect, recordingController_1.getComments);
 router.put('/comment/:id/edit/:commentId', authMiddleware_1.protect, recordingController_1.editComment);
+router.delete('/comment/:id/delete/:commentId', authMiddleware_1.protect, recordingController_1.deleteComment);
 router.get('/:username', authMiddleware_1.protect, recordingController_1.getRecordingsByUsername);
 exports.default = router;
 //# sourceMappingURL=recordingRoutes.js.map
