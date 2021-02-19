@@ -151,7 +151,7 @@ exports.commentOnRecording = express_async_handler_1.default((req, res) => __awa
     const { comment, avatar, username } = req.body;
     recording.comments.push({ user, comment, avatar, username });
     yield recording.save();
-    return res.json(recording.comments);
+    return res.json(recording.comments.pop());
 }));
 exports.getComments = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const recording = yield Recording_1.default.findById(req.params.id);

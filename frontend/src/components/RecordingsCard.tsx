@@ -36,16 +36,26 @@ import {
   Textarea,
   useDisclosure,
   useToast,
+  VStack,
 } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import ReactAudioPlayer from 'react-audio-player';
-import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from 'react-icons/ai';
+import {
+  AiFillHeart,
+  AiFillSave,
+  AiOutlineComment,
+  AiOutlineHeart,
+  AiOutlineSave,
+} from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { MdCancel } from 'react-icons/md';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   comment,
+  deleteComment,
   deleteMyRecording,
+  editComment,
   editMyRecording,
   getMyRecordings,
   getRecordingsByUsername,
@@ -86,7 +96,6 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   commentsArry,
   username,
 }) => {
-  console.log(loggedInuserAvatar);
   const [commentsArray, setCommentsArray] = useState(commentsArry);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -112,6 +121,12 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
     Boolean(isPublic)
   );
   const [commentValue, setcommentValue] = useState('');
+  const [isNewCommentAdded, setIsNewCommentAdded] = useState(false);
+  const [isEditCommentTriggered, setIsEditCommentTriggered] = useState({
+    bool: false,
+    index: null,
+  });
+  const [editCommentText, setEditCommentText] = useState('');
 
   const editMyRecordingFromStore = useSelector(
     (state: any) => state.editMyRecording
@@ -123,7 +138,51 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   );
   const { loading: loadingDelete, message } = deleteMyRecordingFromStore;
 
+  const deleteCommentFromStore = useSelector(
+    (state: any) => state.deleteComment
+  );
+  const {
+    loading: loadingDeleteComment,
+    comments: newComments,
+  } = deleteCommentFromStore;
+
+  //recent comment made by the user from the store
+  const commentRecordingFromStore = useSelector(
+    (state: any) => state.commentRecording
+  );
+  const {
+    loading: loadingAddComment,
+    comment: newlyAddedComment,
+  } = commentRecordingFromStore;
+  if (isNewCommentAdded && newlyAddedComment && !loadingAddComment) {
+    setCommentsArray([
+      {
+        avatar: newlyAddedComment.avatar,
+        comment: newlyAddedComment.comment,
+        username: newlyAddedComment.username,
+        _id: newlyAddedComment._id,
+        user: newlyAddedComment.user,
+      },
+      ...commentsArray,
+    ]);
+
+    //setting it back to false
+    setIsNewCommentAdded(false);
+  }
+
+  const editCommentFromStore = useSelector((state: any) => state.editComment);
+  const { loading: loadingEditComment, editedComment } = editCommentFromStore;
+
   useEffect(() => {
+    if (newComments) {
+      toast({
+        title: 'Comment deleted',
+        status: 'success',
+        position: 'bottom-left',
+      });
+
+      setCommentsArray(newComments);
+    }
     if (recordingInfo) {
       toast({
         title: `${recordingInfo.title} successfully updated`,
@@ -147,7 +206,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
 
       setIsAlertOpen(false);
     }
-  }, [recordingInfo, message]);
+  }, [recordingInfo, message, newComments]);
 
   return (
     <>
@@ -349,6 +408,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
         isOpen={isOpenComment}
         onClose={onCloseComment}
         isCentered
+        size='xl'
       >
         <ModalOverlay />
         <ModalContent>
@@ -375,18 +435,10 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                           )
                         );
 
+                        ///new comment state handling and updating the new comment
+                        setIsNewCommentAdded(true);
+
                         setcommentValue('');
-                        console.log(loggedInuserAvatar);
-                        setCommentsArray([
-                          {
-                            avatar: loggedInuserAvatar
-                              ? loggedInuserAvatar
-                              : username,
-                            comment: commentValue,
-                            username,
-                          },
-                          ...commentsArray,
-                        ]);
                       }}
                     >
                       Post
@@ -405,7 +457,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                 <NextLink href={`/${comment.username}`}>
                   <HStack spacing='2' m='2'>
                     <Link>
-                      <Avatar name='Segun Adebayo' src={comment.avatar} />
+                      <Avatar name={comment.username} src={comment.avatar} />
                     </Link>
                     <Link>
                       <Text color='black' fontWeight='bold'>
@@ -413,9 +465,123 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                       </Text>
                     </Link>
 
-                    <Text fontWeight='light' fontStyle='italic' fontSize='sm'>
-                      {comment.comment}
-                    </Text>
+                    {isEditCommentTriggered.index === index ? (
+                      <Textarea
+                        size='sm'
+                        focusBorderColor='primaryColor'
+                        value={editCommentText || comment.comment}
+                        onChange={(e) => setEditCommentText(e.target.value)}
+                      />
+                    ) : (
+                      <Text fontWeight='light' fontStyle='italic' fontSize='sm'>
+                        {comment.comment}
+                      </Text>
+                    )}
+
+                    {
+                      <>
+                        {isEditCommentTriggered.index === index ? (
+                          <HStack>
+                            <Button
+                              aria-label='edit comment'
+                              color='primaryColor'
+                              background='black'
+                              disabled={editCommentText.length <= 0}
+                              onClick={() => {
+                                dispatch(
+                                  editComment({
+                                    comment: editCommentText,
+                                    commentId: comment._id,
+                                    recordingId,
+                                  })
+                                );
+                                //optimistic update
+                                comment.comment = editCommentText;
+
+                                //getting back to normal
+                                setIsEditCommentTriggered({
+                                  bool: false,
+                                  index: null,
+                                });
+
+                                setEditCommentText('');
+                              }}
+                            >
+                              Save
+                            </Button>
+                            <Button
+                              aria-label='Cancel'
+                              onClick={() =>
+                                setIsEditCommentTriggered({
+                                  bool: false,
+                                  index: null,
+                                })
+                              }
+                            >
+                              Cancel
+                            </Button>
+                          </HStack>
+                        ) : (
+                          <Menu>
+                            <MenuButton>
+                              <IconButton
+                                aria-label='edit'
+                                size='sm'
+                                variant='outline'
+                                icon={<BsThreeDotsVertical />}
+                              />
+                            </MenuButton>
+                            <MenuList>
+                              {comment.username === username ? (
+                                <>
+                                  <MenuItem>
+                                    <HStack
+                                      onClick={() => {
+                                        setIsEditCommentTriggered({
+                                          bool: true,
+                                          index,
+                                        });
+                                      }}
+                                    >
+                                      <FaEdit size={15} />
+                                      <Text mt='3' fontSize='xs'>
+                                        Edit
+                                      </Text>
+                                    </HStack>
+                                  </MenuItem>
+                                </>
+                              ) : (
+                                ''
+                              )}
+                              {/* Available for both the owner of recorder and the
+                              author of comment */}
+                              {isMyRecording ||
+                              comment.username === username ? (
+                                <MenuItem>
+                                  <HStack
+                                    onClick={() => {
+                                      dispatch(
+                                        deleteComment({
+                                          commentId: comment._id,
+                                          recordingId,
+                                        })
+                                      );
+                                    }}
+                                  >
+                                    <FaTrash size={15} />
+                                    <Text mt='3' fontSize='xs'>
+                                      Delete
+                                    </Text>
+                                  </HStack>
+                                </MenuItem>
+                              ) : (
+                                ''
+                              )}
+                            </MenuList>
+                          </Menu>
+                        )}
+                      </>
+                    }
                   </HStack>
                 </NextLink>
               ))}

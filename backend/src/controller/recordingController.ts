@@ -212,7 +212,8 @@ export const commentOnRecording = expressAsyncHandler(async (req: any, res) => {
 
   await recording.save();
 
-  return res.json(recording.comments);
+  //returns the newly added comment by popping it from the memory
+  return res.json(recording.comments.pop());
 });
 
 // @desc    Get all the comments of a recording
