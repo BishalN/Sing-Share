@@ -54,6 +54,12 @@ const recordingSchema = new mongoose_1.default.Schema({
         type: Boolean,
         default: true,
     },
+    username: {
+        type: String,
+    },
+    avatar: {
+        type: String,
+    },
 }, { timestamps: true });
 exports.default = mongoose_1.default.model('Recording', recordingSchema);
 //# sourceMappingURL=Recording.js.map

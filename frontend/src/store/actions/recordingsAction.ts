@@ -23,6 +23,9 @@ import {
   GET_POPULAR_RECORDINGS_FAIL,
   GET_POPULAR_RECORDINGS_REQUEST,
   GET_POPULAR_RECORDINGS_SUCCESS,
+  GET_TOP_RECS_FAIL,
+  GET_TOP_RECS_REQUEST,
+  GET_TOP_RECS_SUCCESS,
   GET_USER_RECORDINGS_BY_USERNAME_FAIL,
   GET_USER_RECORDINGS_BY_USERNAME_REQUEST,
   GET_USER_RECORDINGS_BY_USERNAME_SUCCESS,
@@ -34,6 +37,11 @@ import {
   USER_UPLOAD_RECORDING_SUCCESS,
 } from '../constants/recordingsConstants';
 import axios from 'axios';
+import {
+  GET_USER_BY_USERID_FAIL,
+  GET_USER_BY_USERID_REQUEST,
+  GET_USER_BY_USERID_SUCCESS,
+} from '../constants/userConstants';
 
 export const uploadRecording = (formdata: FormData) => async (
   dispatch,
@@ -418,6 +426,46 @@ export const getPopularRecords = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: GET_POPULAR_RECORDINGS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    });
+  }
+};
+
+export const getTopRecs = () => async (dispatch) => {
+  try {
+    dispatch({ type: GET_TOP_RECS_REQUEST });
+
+    const { data } = await axios.get(
+      `http://localhost:4000/api/users/nominees`
+    );
+
+    dispatch({ type: GET_TOP_RECS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: GET_TOP_RECS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    });
+  }
+};
+
+export const getUserByUserId = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: GET_USER_BY_USERID_REQUEST });
+
+    const { data } = await axios.get(
+      `http://localhost:4000/api/users/find/:${id}`
+    );
+
+    dispatch({ type: GET_USER_BY_USERID_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: GET_USER_BY_USERID_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

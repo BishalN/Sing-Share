@@ -10,6 +10,8 @@ const userProfilePictureController_1 = require("../controller/userProfilePicture
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 router.post('/change-password', userController_1.changePassword);
+router.get('/nominees', userProfileController_1.getNominees);
+router.get('/find/:id', userProfileController_1.getUserById);
 router.post('/reset-password', userController_1.resetPassword);
 router.route('/login').post(userController_1.login);
 router.route('/facebook-login').post(userController_1.facebookLogin);

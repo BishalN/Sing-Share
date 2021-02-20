@@ -5,6 +5,8 @@ import { generateToken } from '../utils/generateToken';
 import formData from 'form-data';
 import { Storage } from '@google-cloud/storage';
 import path from 'path';
+import Recording from '../models/Recording';
+import { Document } from 'mongoose';
 
 // @desc    Get all users from database
 // @route   GET /api/users/all
@@ -53,7 +55,6 @@ const getUserByUsername = asyncHandler(async (req: any, res: Response) => {
 // @desc    Update the user profile
 // @route   PUT /api/users/update-profile
 // @access  Private only the account holder user
-
 const updateProfile = asyncHandler(async (req: any, res) => {
   //Since the user is logged in
   const user: any = await User.findById(req.user._id);
@@ -95,10 +96,42 @@ const profilePictureUpload = asyncHandler(async (req, res) => {
   myBucket.file('myfile').createWriteStream({ resumable: false });
 });
 
+// @desc    Get the nominees recordings
+// @route   GET /api/users/nominnees
+// @access  Private only the account holder user
+const getNominees = asyncHandler(async (req, res) => {
+  const recordings = await Recording.find({}).limit(5);
+
+  const newRec = Object(recordings);
+
+  for (let i = 0; i < newRec.length; i++) {
+    let user: any = await User.findById(String(newRec[i].user));
+
+    newRec[i].username = user.username;
+    newRec[i].avatar =
+      user.profilePicture === 'undefined' ? user.username : user.profilePicture;
+
+    console.log(user);
+  }
+
+  res.send(newRec);
+});
+
+// @desc    Get user profile by userid
+// @route   GET /api/users/find/id
+// @access  Private only the account holder user
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  res.send(user);
+});
+
 export {
   getUsers,
   getUser,
   getUserByUsername,
   updateProfile,
   profilePictureUpload,
+  getNominees,
+  getUserById,
 };

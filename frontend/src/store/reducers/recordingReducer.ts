@@ -23,6 +23,9 @@ import {
   GET_POPULAR_RECORDINGS_FAIL,
   GET_POPULAR_RECORDINGS_REQUEST,
   GET_POPULAR_RECORDINGS_SUCCESS,
+  GET_TOP_RECS_FAIL,
+  GET_TOP_RECS_REQUEST,
+  GET_TOP_RECS_SUCCESS,
   GET_USER_RECORDINGS_BY_USERNAME_FAIL,
   GET_USER_RECORDINGS_BY_USERNAME_REQUEST,
   GET_USER_RECORDINGS_BY_USERNAME_SUCCESS,
@@ -183,6 +186,19 @@ export const getPopularRecordsReducer = (state = {}, action) => {
     case GET_POPULAR_RECORDINGS_SUCCESS:
       return { loading: false, recordings: action.payload };
     case GET_POPULAR_RECORDINGS_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const getTopRecsReducer = (state = {}, action) => {
+  switch (action.type) {
+    case GET_TOP_RECS_REQUEST:
+      return { loading: true };
+    case GET_TOP_RECS_SUCCESS:
+      return { loading: false, recordings: action.payload };
+    case GET_TOP_RECS_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

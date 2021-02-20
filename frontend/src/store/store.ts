@@ -13,6 +13,7 @@ import {
   getUsersProfileReducer,
   userUpdateProfileReducer,
   userUpdateProfilePictureReducer,
+  getUserByUserIdReducer,
 } from './reducers/userReducer';
 
 import {
@@ -27,6 +28,7 @@ import {
   deleteCommentReducer,
   editCommentReducer,
   getPopularRecordsReducer,
+  getTopRecsReducer,
 } from './reducers/recordingReducer';
 
 const reducers = combineReducers({
@@ -38,6 +40,7 @@ const reducers = combineReducers({
   userGoogleLogin: userGoogleLoginReducer,
   getUserProfile: getUserProfileReducer,
   getUsersProfile: getUsersProfileReducer,
+  getUserByUserId: getUserByUserIdReducer,
   userUpdateProfile: userUpdateProfileReducer,
   userUpdateProfilePicture: userUpdateProfilePictureReducer,
   userUploadRecording: userUploadRecordingReducer,
@@ -51,6 +54,7 @@ const reducers = combineReducers({
   editComment: editCommentReducer,
   deleteComment: deleteCommentReducer,
   getPopularRecords: getPopularRecordsReducer,
+  getTopRecs: getTopRecsReducer,
 });
 
 let userInfoFromLocalStorage;

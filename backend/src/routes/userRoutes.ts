@@ -12,6 +12,8 @@ import {
   getUserByUsername,
   getUsers,
   updateProfile,
+  getNominees,
+  getUserById,
 } from '../controller/userProfileController';
 import {
   upload,
@@ -22,6 +24,8 @@ import { protect } from '../middleware/authMiddleware';
 const router = express.Router();
 
 router.post('/change-password', changePassword);
+router.get('/nominees', getNominees);
+router.get('/find/:id', getUserById);
 router.post('/reset-password', resetPassword);
 router.route('/login').post(login);
 router.route('/facebook-login').post(facebookLogin);

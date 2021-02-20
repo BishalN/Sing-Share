@@ -12,12 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.profilePictureUpload = exports.updateProfile = exports.getUserByUsername = exports.getUser = exports.getUsers = void 0;
+exports.getUserById = exports.getNominees = exports.profilePictureUpload = exports.updateProfile = exports.getUserByUsername = exports.getUser = exports.getUsers = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const User_1 = __importDefault(require("../models/User"));
 const generateToken_1 = require("../utils/generateToken");
 const storage_1 = require("@google-cloud/storage");
 const path_1 = __importDefault(require("path"));
+const Recording_1 = __importDefault(require("../models/Recording"));
 const getUsers = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield User_1.default.find({}).select('-password');
@@ -90,4 +91,22 @@ const profilePictureUpload = express_async_handler_1.default((req, res) => __awa
     myBucket.file('myfile').createWriteStream({ resumable: false });
 }));
 exports.profilePictureUpload = profilePictureUpload;
+const getNominees = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const recordings = yield Recording_1.default.find({}).limit(5);
+    const newRec = Object(recordings);
+    for (let i = 0; i < newRec.length; i++) {
+        let user = yield User_1.default.findById(String(newRec[i].user));
+        newRec[i].username = user.username;
+        newRec[i].avatar =
+            user.profilePicture === 'undefined' ? user.username : user.profilePicture;
+        console.log(user);
+    }
+    res.send(newRec);
+}));
+exports.getNominees = getNominees;
+const getUserById = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield User_1.default.findById(req.params.id);
+    res.send(user);
+}));
+exports.getUserById = getUserById;
 //# sourceMappingURL=userProfileController.js.map

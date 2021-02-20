@@ -59,6 +59,12 @@ const recordingSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    username: {
+      type: String,
+    },
+    avatar: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

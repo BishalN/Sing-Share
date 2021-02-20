@@ -3,17 +3,23 @@ import {
   Avatar,
   Badge,
   Box,
+  Divider,
   Flex,
   Heading,
   Input,
   InputGroup,
   InputLeftElement,
+  Skeleton,
+  Spinner,
   Stack,
   Text,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BsFillPlayFill } from 'react-icons/bs';
+import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from '../components/Layout';
+import { RecordingsCard } from '../components/RecordingsCard';
+import { getTopRecs, getUserByUserId } from '../store/actions/recordingsAction';
 
 const SearchBox = (props) => {
   return (
@@ -52,36 +58,77 @@ const HeadingTitle = (props) => {
 };
 
 const ProfileRecordings = (props) => {
+  const dispatch = useDispatch();
+
+  const topRecordingsFromStore = useSelector((state: any) => state.getTopRecs);
+  const { loading, recordings } = topRecordingsFromStore;
+
+  const likeRecordingFromStore = useSelector(
+    (state: any) => state.likeRecording
+  );
+  const { error } = likeRecordingFromStore;
+
+  useEffect(() => {
+    dispatch(getTopRecs());
+  }, []);
+
   return (
-    <Flex mt='6'>
-      <Avatar
-        name='Segun Adebayo'
-        src='https://bit.ly/sage-adebayo'
-        size='2xl'
-      />
-      <Box>
-        <Text fontSize='lg' fontWeight='medium' color='shallowPink'>
-          Segun Adebayo
-        </Text>
-        <Text fontSize='sm' fontWeight='normal' my='2' mx='2'>
-          This song is dedicated to my friend{' '}
-          <Badge
-            rounded='lg'
-            bg='primaryColor'
-            color='whitesmoke'
-            textTransform='lowercase'
+    <Box>
+      {loading && (
+        <Box
+          display='flex'
+          justifyContent='center'
+          minH='30vh'
+          alignItems='center'
+        >
+          <Spinner size='lg' />
+        </Box>
+      )}
+      {recordings?.map((recording, index) => (
+        <Flex mt='6' display={['block', 'flex']}>
+          <Box
+            alignContent='center'
+            display='flex'
+            alignItems='center'
+            flexDirection='column'
+            justifyContent='center'
           >
-            #memories
-          </Badge>
-        </Text>
-        <Flex>
-          <BsFillPlayFill size={60} fill='#4E7AD2' />
-          <Text mt='5' fontWeight='medium'>
-            Play the recording
-          </Text>
+            <Avatar
+              name={recording.username}
+              src={recording.avatar}
+              size='2xl'
+            />
+            <Text
+              mt='4'
+              fontSize='sm'
+              fontWeight='medium'
+              color='shallowPink'
+              textAlign='center'
+            >
+              {recording.username}
+            </Text>
+          </Box>
+          <Box ml='4'>
+            <RecordingsCard
+              comments={recording.comments.length}
+              commentsArry={recording.comments}
+              description={recording.description}
+              fileUri={recording.fileUri}
+              isLiked={() => false}
+              isPublic={recording.isPublic}
+              likes={recording.likes.length}
+              recordingId={recording._id}
+              loggedInuserAvatar='username'
+              tags={recording.tags}
+              title={recording.title}
+              username={recording.username}
+              isMyRecording={false}
+            />
+          </Box>
+          <Divider display={['block', 'none']} />
         </Flex>
-      </Box>
-    </Flex>
+      ))}
+    </Box>
   );
 };
 
