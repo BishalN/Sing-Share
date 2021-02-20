@@ -289,3 +289,12 @@ export const deleteComment = expressAsyncHandler(async (req: any, res) => {
     throw new Error('Unauthorized');
   }
 });
+
+// @desc    Get the popular recording i.e with highest likes
+// @route   GET /api/recordings/popular
+// @access  The authenticated users
+export const getPopularRecords = expressAsyncHandler(async (req: any, res) => {
+  const recordings = await Recording.find({}).sort({ likes: 'asc' }); //sorting by the number of likes
+
+  res.send(recordings);
+});

@@ -14,12 +14,14 @@ import {
   getComments,
   editComment,
   deleteComment,
+  getPopularRecords,
 } from '../controller/recordingController';
 
 router.post('/upload', protect, upload.single('recording'), uploadRecording);
 router.get('/my', protect, getMyRecordings);
 router.put('/edit', protect, editRecording);
 router.delete('/delete', protect, deleteRecording);
+router.get('/popular', protect, getPopularRecords);
 router.put('/toggle-like/:id', protect, toggleLikeRecording);
 router.put('/comment/:id', protect, commentOnRecording);
 router.get('/comment/:id', protect, getComments);
