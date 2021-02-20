@@ -196,7 +196,7 @@ exports.deleteComment = express_async_handler_1.default((req, res) => __awaiter(
     }
 }));
 exports.getPopularRecords = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const recordings = yield Recording_1.default.find({}).sort({ likes: 'asc' });
+    const recordings = yield Recording_1.default.find({});
     res.send(recordings);
 }));
 //# sourceMappingURL=recordingController.js.map

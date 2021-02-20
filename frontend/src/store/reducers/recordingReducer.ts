@@ -20,6 +20,9 @@ import {
   GET_MY_RECORDINGS_FAIL,
   GET_MY_RECORDINGS_REQUEST,
   GET_MY_RECORDINGS_SUCCESS,
+  GET_POPULAR_RECORDINGS_FAIL,
+  GET_POPULAR_RECORDINGS_REQUEST,
+  GET_POPULAR_RECORDINGS_SUCCESS,
   GET_USER_RECORDINGS_BY_USERNAME_FAIL,
   GET_USER_RECORDINGS_BY_USERNAME_REQUEST,
   GET_USER_RECORDINGS_BY_USERNAME_SUCCESS,
@@ -167,6 +170,19 @@ export const deleteCommentReducer = (state = {}, action) => {
     case DELETE_COMMENT_SUCCESS:
       return { loading: false, comments: action.payload };
     case DELETE_COMMENT_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const getPopularRecordsReducer = (state = {}, action) => {
+  switch (action.type) {
+    case GET_POPULAR_RECORDINGS_REQUEST:
+      return { loading: true };
+    case GET_POPULAR_RECORDINGS_SUCCESS:
+      return { loading: false, recordings: action.payload };
+    case GET_POPULAR_RECORDINGS_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

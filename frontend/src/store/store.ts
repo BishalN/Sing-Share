@@ -26,6 +26,7 @@ import {
   getCommentsReducer,
   deleteCommentReducer,
   editCommentReducer,
+  getPopularRecordsReducer,
 } from './reducers/recordingReducer';
 
 const reducers = combineReducers({
@@ -49,6 +50,7 @@ const reducers = combineReducers({
   getComments: getCommentsReducer,
   editComment: editCommentReducer,
   deleteComment: deleteCommentReducer,
+  getPopularRecords: getPopularRecordsReducer,
 });
 
 let userInfoFromLocalStorage;

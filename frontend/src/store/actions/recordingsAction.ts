@@ -20,6 +20,9 @@ import {
   GET_MY_RECORDINGS_FAIL,
   GET_MY_RECORDINGS_REQUEST,
   GET_MY_RECORDINGS_SUCCESS,
+  GET_POPULAR_RECORDINGS_FAIL,
+  GET_POPULAR_RECORDINGS_REQUEST,
+  GET_POPULAR_RECORDINGS_SUCCESS,
   GET_USER_RECORDINGS_BY_USERNAME_FAIL,
   GET_USER_RECORDINGS_BY_USERNAME_REQUEST,
   GET_USER_RECORDINGS_BY_USERNAME_SUCCESS,
@@ -382,6 +385,39 @@ export const deleteComment = ({ commentId, recordingId }) => async (
   } catch (error) {
     dispatch({
       type: DELETE_COMMENT_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.response,
+    });
+  }
+};
+
+export const getPopularRecords = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: GET_POPULAR_RECORDINGS_REQUEST });
+
+    const {
+      userLogin: {
+        userInfo: { token },
+      },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.get(
+      `http://localhost:4000/api/recordings/popular`,
+      config
+    );
+
+    dispatch({ type: GET_POPULAR_RECORDINGS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: GET_POPULAR_RECORDINGS_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
