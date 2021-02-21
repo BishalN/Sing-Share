@@ -52,7 +52,7 @@ const HeadingTitle = (props) => {
       lineHeight='none'
       {...props}
     >
-      Sing&Share your awesome voice with world
+      <span>Sing&Share</span> your awesome voice with world
     </Heading>
   );
 };
@@ -67,6 +67,24 @@ const ProfileRecordings = (props) => {
     (state: any) => state.likeRecording
   );
   const { error } = likeRecordingFromStore;
+
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const {
+    loading: userLoginLoading,
+    error: userLoginError,
+    userInfo,
+  } = userLogin;
+
+  const isLiked = (recording) => {
+    let likedOrNot = false;
+    recording.likes.map((like, index) => {
+      const LoggedInUserId = userInfo?._id;
+      if (like?.user === LoggedInUserId) {
+        likedOrNot = true;
+      }
+    });
+    return likedOrNot;
+  };
 
   useEffect(() => {
     dispatch(getTopRecs());
@@ -114,14 +132,14 @@ const ProfileRecordings = (props) => {
               commentsArry={recording.comments}
               description={recording.description}
               fileUri={recording.fileUri}
-              isLiked={() => false}
+              isLiked={() => isLiked(recording)}
               isPublic={recording.isPublic}
               likes={recording.likes.length}
               recordingId={recording._id}
-              loggedInuserAvatar='username'
+              loggedInuserAvatar={userInfo?.profilePicture}
               tags={recording.tags}
               title={recording.title}
-              username={recording.username}
+              username={userInfo?.username}
               isMyRecording={false}
             />
           </Box>

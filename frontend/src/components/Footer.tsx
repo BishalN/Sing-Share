@@ -9,10 +9,10 @@ export const Footer: React.FC<FooterProps> = ({}) => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      py='70px'
-      mt='4'
+      py='40px'
+      mt='100px'
       color='white'
-      background='black'
+      background='gray.800'
     >
       <Text letterSpacing='5px' fontWeight='bold' textAlign='center'>
         &copy;2021 Sing&Share

@@ -173,6 +173,28 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   const editCommentFromStore = useSelector((state: any) => state.editComment);
   const { loading: loadingEditComment, editedComment } = editCommentFromStore;
 
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const {
+    loading: loadingUserLogin,
+    error: errorUserLogin,
+    userInfo: userInfoUserLogin,
+  } = userLogin;
+
+  const toggleLikeHandler = () => {
+    if (userInfoUserLogin.length === 0) {
+      toast({
+        title: 'Sorry!',
+        status: 'error',
+        description: 'You have to be logged in to like a recording',
+        isClosable: true,
+        position: 'bottom-left',
+      });
+    } else {
+      setRecIsLiked(!recIsLiked);
+      dispatch(toggleLikeRecording(recordingId));
+    }
+  };
+
   useEffect(() => {
     if (newComments) {
       toast({
@@ -248,8 +270,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                   background='none'
                   rounded='xl'
                   onClick={() => {
-                    setRecIsLiked(!recIsLiked);
-                    dispatch(toggleLikeRecording(recordingId));
+                    toggleLikeHandler();
                   }}
                   _hover={{ background: 'secondaryColor' }}
                   aria-label='Like the recording'
@@ -260,8 +281,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                   background='none'
                   rounded='xl'
                   onClick={() => {
-                    setRecIsLiked(!recIsLiked);
-                    dispatch(toggleLikeRecording(recordingId));
+                    toggleLikeHandler();
                   }}
                   _hover={{ background: 'white' }}
                   aria-label='Like the recording'
@@ -278,7 +298,18 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                 background='none'
                 rounded='xl'
                 onClick={() => {
-                  onOpenComment();
+                  if (userInfoUserLogin.length === 0) {
+                    toast({
+                      title: 'Sorry!',
+                      description:
+                        'You have to be logged in order to see comments or comment in a recording',
+                      isClosable: true,
+                      status: 'error',
+                      position: 'bottom-left',
+                    });
+                  } else {
+                    onOpenComment();
+                  }
                 }}
                 _hover={{ background: 'secondaryColor' }}
                 aria-label='Comments'
