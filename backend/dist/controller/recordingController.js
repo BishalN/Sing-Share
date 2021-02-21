@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPopularRecords = exports.deleteComment = exports.editComment = exports.getComments = exports.commentOnRecording = exports.toggleLikeRecording = exports.deleteRecording = exports.editRecording = exports.getMyRecordings = exports.getRecordingsByUsername = exports.uploadRecording = exports.upload = void 0;
+exports.getPopularRecords = exports.deleteComment = exports.editComment = exports.getComments = exports.commentOnRecording = exports.toggleLikeRecording = exports.deleteRecording = exports.editRecording = exports.getRecordings = exports.getMyRecordings = exports.getRecordingsByUsername = exports.uploadRecording = exports.upload = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const storage_1 = require("@google-cloud/storage");
 const path_1 = __importDefault(require("path"));
@@ -85,7 +85,6 @@ exports.getRecordingsByUsername = express_async_handler_1.default((req, res) => 
 exports.getMyRecordings = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
-        console.log(user);
         if (!user) {
             res.status(400);
             throw new Error('User not found');
@@ -97,6 +96,27 @@ exports.getMyRecordings = express_async_handler_1.default((req, res) => __awaite
         res.status(500);
         throw new Error(error.message);
     }
+}));
+exports.getRecordings = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('req was here');
+    const title = req.query.title
+        ? {
+            title: {
+                $regex: req.query.title,
+                $options: 'i',
+            },
+        }
+        : {};
+    const tags = req.query.tags
+        ? {
+            tags: {
+                $regex: req.query.tags,
+                $options: 'i',
+            },
+        }
+        : {};
+    const recordings = yield Recording_1.default.find(Object.assign(Object.assign({}, title), tags));
+    res.send(recordings);
 }));
 exports.editRecording = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { recordingId, title, tags, description, isPublic } = req.body;

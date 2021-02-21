@@ -14,16 +14,35 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsFillPlayFill } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from '../components/Layout';
 import { RecordingsCard } from '../components/RecordingsCard';
 import { getTopRecs, getUserByUserId } from '../store/actions/recordingsAction';
+import { QueryClient, useQuery } from 'react-query';
+import axios from 'axios';
 
-const SearchBox = (props) => {
+const fetchRecording = async (title, tags) => {
+  return axios.get(
+    `http://localhost:4000/api/recordings/search/?title=${title}&tags=${tags}`
+  );
+};
+
+export const getServerSideProps = async () => {
+  const recordings = await fetchRecording('', '');
+  return {
+    props: { recordings },
+  };
+};
+
+const SearchBox = ({ recordings }) => {
+  const [title, setTile] = useState('');
+  const [tags, setTags] = useState('');
+  const queryInfo = useQuery('recordings', () => fetchRecording(title, tags));
+
   return (
-    <InputGroup _hover={{ boxShadow: 'sm' }} alignSelf='flex-end' {...props}>
+    <InputGroup _hover={{ boxShadow: 'sm' }} alignSelf='flex-end'>
       <InputLeftElement
         pointerEvents='none'
         ml={['40px', '150px', '300px', '300px']}
@@ -161,7 +180,8 @@ const RecordingsSection = (props) => {
   );
 };
 
-const Index = () => {
+const Index = ({ recordings }) => {
+  console.log(recordings, 'bishdwfhjk');
   return (
     <Layout>
       <Stack
@@ -171,7 +191,7 @@ const Index = () => {
         display='flex'
         alignItems='center'
       >
-        <SearchBox />
+        <SearchBox recordings={recordings} />
         <HeadingTitle />
       </Stack>
       <RecordingsSection />

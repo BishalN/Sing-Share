@@ -6,7 +6,6 @@ import fs from 'fs';
 import { uploadDir } from '../index';
 import User from '../models/User';
 import Recording from '../models/Recording';
-import { json } from 'express';
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -75,7 +74,7 @@ export const uploadRecording = expressAsyncHandler(async (req: any, res) => {
 });
 
 // @desc    Get recording uri
-// @route   GET /api/recordings/username
+// @route   GET /api/recordings/:username
 // @access  Only Authenticated users
 export const getRecordingsByUsername = expressAsyncHandler(async (req, res) => {
   try {
@@ -104,8 +103,6 @@ export const getMyRecordings = expressAsyncHandler(async (req: any, res) => {
   try {
     const user = req.user;
 
-    console.log(user);
-
     if (!user) {
       res.status(400);
       throw new Error('User not found');
@@ -118,6 +115,34 @@ export const getMyRecordings = expressAsyncHandler(async (req: any, res) => {
     res.status(500);
     throw new Error(error.message);
   }
+});
+
+// @desc    Get recording uri and data by the title or the tags
+// @route   GET /api/recordings/search/?title=....&pageNumber=....
+// @access  Only the authenticated users of the site
+export const getRecordings = expressAsyncHandler(async (req, res) => {
+  console.log('req was here');
+  const title = req.query.title
+    ? {
+        title: {
+          $regex: req.query.title,
+          $options: 'i',
+        },
+      }
+    : {};
+
+  const tags = req.query.tags
+    ? {
+        tags: {
+          $regex: req.query.tags,
+          $options: 'i',
+        },
+      }
+    : {};
+
+  const recordings = await Recording.find({ ...title, ...tags });
+
+  res.send(recordings);
 });
 
 // @desc    Edit the title,tags,description,isPublic of a recording

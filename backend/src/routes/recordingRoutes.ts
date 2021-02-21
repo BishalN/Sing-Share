@@ -15,8 +15,10 @@ import {
   editComment,
   deleteComment,
   getPopularRecords,
+  getRecordings,
 } from '../controller/recordingController';
 
+router.get('/search', getRecordings);
 router.post('/upload', protect, upload.single('recording'), uploadRecording);
 router.get('/my', protect, getMyRecordings);
 router.put('/edit', protect, editRecording);
