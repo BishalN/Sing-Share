@@ -5,6 +5,7 @@ import {
   Box,
   Divider,
   Flex,
+  FormHelperText,
   Heading,
   Input,
   InputGroup,
@@ -24,42 +25,11 @@ import { QueryClient, useQuery } from 'react-query';
 import axios from 'axios';
 
 const fetchRecording = async (title, tags) => {
-  return axios.get(
-    `http://localhost:4000/api/recordings/search/?title=${title}&tags=${tags}`
-  );
-};
-
-export const getServerSideProps = async () => {
-  const recordings = await fetchRecording('', '');
-  return {
-    props: { recordings },
-  };
-};
-
-const SearchBox = ({ recordings }) => {
-  const [title, setTile] = useState('');
-  const [tags, setTags] = useState('');
-  const queryInfo = useQuery('recordings', () => fetchRecording(title, tags));
-
-  return (
-    <InputGroup _hover={{ boxShadow: 'sm' }} alignSelf='flex-end'>
-      <InputLeftElement
-        pointerEvents='none'
-        ml={['40px', '150px', '300px', '300px']}
-        mt='10px'
-        children={<SearchIcon color='gray.300' />}
-      />
-      <Input
-        type='text'
-        placeholder='search e.g memories'
-        rounded='lg'
-        w='sm'
-        ml={['40px', '150px', '300px', '300px']}
-        mt='10px'
-        focusBorderColor='primaryColor'
-      />
-    </InputGroup>
-  );
+  return axios
+    .get(
+      `http://localhost:4000/api/recordings/search/?title=${title}&tags=${tags}`
+    )
+    .then((res) => res.data);
 };
 
 const HeadingTitle = (props) => {
@@ -180,8 +150,100 @@ const RecordingsSection = (props) => {
   );
 };
 
-const Index = ({ recordings }) => {
-  console.log(recordings, 'bishdwfhjk');
+const SearchResults = ({ searchTerm }) => {
+  let isTag = searchTerm.startsWith('#');
+
+  const searchInfo = useQuery(['recording', searchTerm], () => {
+    return fetchRecording(isTag ? '' : searchTerm, isTag ? searchTerm : '');
+  });
+
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const {
+    loading: userLoginLoading,
+    error: userLoginError,
+    userInfo: userLoginUserProfile,
+  } = userLogin;
+
+  const isLiked = (recording) => {
+    let likedOrNot = false;
+    recording.likes.map((like, index) => {
+      const LoggedInUserId = userLoginUserProfile?._id;
+      if (like?.user === LoggedInUserId) {
+        likedOrNot = true;
+      }
+    });
+    return likedOrNot;
+  };
+  return (
+    <Box>
+      <Text fontWeight='medium' mr='3' fontStyle='italic' display='inline'>
+        SearchTerm:
+      </Text>
+      <Badge color='white' background='gray.600' fontStyle='italic'>
+        {searchTerm}
+      </Badge>
+      <Text fontStyle='italic' fontWeight='light' my='2' fontSize='sm'>
+        Search using tags eg. #tagname in the search field
+      </Text>
+      {searchInfo.isLoading ? (
+        <Flex minHeight='50vh' justifyContent='center' alignItems='center'>
+          <Spinner />
+        </Flex>
+      ) : (
+        <Box>
+          {searchInfo?.data?.length === 0 ? (
+            <Flex
+              justifyContent='center'
+              minHeight='30vh'
+              alignItems='center'
+              background='gray.600'
+              rounded='lg'
+              color='white'
+              flexDirection='column'
+            >
+              <Text my='2'>oops</Text>
+              <Text
+                color='primaryColor'
+                fontWeight='bold'
+                fontSize='20px'
+                textAlign='center'
+                p='3'
+              >
+                No recording found named {searchTerm}{' '}
+              </Text>
+            </Flex>
+          ) : (
+            ''
+          )}
+          {searchInfo?.data?.map((recording, index) => {
+            return (
+              <RecordingsCard
+                loggedInuserAvatar={userLoginUserProfile.profilePicture}
+                fileUri={recording.fileUri}
+                username={userLoginUserProfile.username}
+                title={recording.title}
+                commentsArry={recording.comments}
+                likes={recording.likes.length}
+                comments={recording.comments.length}
+                tags={recording.tags}
+                description={recording.description}
+                key={index}
+                isPublic={recording.isPublic}
+                recordingId={recording._id}
+                isMyRecording={true}
+                isLiked={() => isLiked(recording)}
+              />
+            );
+          })}
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+const Index = ({}) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   return (
     <Layout>
       <Stack
@@ -191,10 +253,29 @@ const Index = ({ recordings }) => {
         display='flex'
         alignItems='center'
       >
-        <SearchBox recordings={recordings} />
-        <HeadingTitle />
+        <InputGroup _hover={{ boxShadow: 'sm' }} alignSelf='flex-end'>
+          <InputLeftElement
+            pointerEvents='none'
+            ml={['40px', '150px', '300px', '300px']}
+            mt='10px'
+            children={<SearchIcon color='gray.300' />}
+          />
+          <Input
+            type='text'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder='search e.g memories'
+            rounded='lg'
+            w='sm'
+            ml={['40px', '150px', '300px', '300px']}
+            mt='10px'
+            focusBorderColor='primaryColor'
+          />
+        </InputGroup>
+        <HeadingTitle display={searchTerm.length > 0 ? 'none' : 'block'} />
+        {searchTerm && <SearchResults searchTerm={searchTerm} />}
       </Stack>
-      <RecordingsSection />
+      <RecordingsSection display={searchTerm.length > 0 ? 'none' : 'block'} />
     </Layout>
   );
 };
