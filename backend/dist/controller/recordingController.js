@@ -98,7 +98,8 @@ exports.getMyRecordings = express_async_handler_1.default((req, res) => __awaite
     }
 }));
 exports.getRecordings = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('req was here');
+    const pageSize = 5;
+    const page = Number(req.query.pageNumber) || 1;
     const title = req.query.title
         ? {
             title: {
@@ -115,7 +116,9 @@ exports.getRecordings = express_async_handler_1.default((req, res) => __awaiter(
             },
         }
         : {};
-    const recordings = yield Recording_1.default.find(Object.assign(Object.assign({}, title), tags));
+    const recordings = yield Recording_1.default.find(Object.assign(Object.assign({}, title), tags))
+        .limit(pageSize)
+        .skip(pageSize * (page - 1));
     res.send(recordings);
 }));
 exports.editRecording = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {

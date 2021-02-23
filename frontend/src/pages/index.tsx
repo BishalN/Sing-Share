@@ -200,6 +200,7 @@ const SearchResults = ({ searchTerm }) => {
               rounded='lg'
               color='white'
               flexDirection='column'
+              my='4'
             >
               <Text my='2'>oops</Text>
               <Text
@@ -218,9 +219,9 @@ const SearchResults = ({ searchTerm }) => {
           {searchInfo?.data?.map((recording, index) => {
             return (
               <RecordingsCard
-                loggedInuserAvatar={userLoginUserProfile.profilePicture}
+                loggedInuserAvatar={userLoginUserProfile?.profilePicture}
                 fileUri={recording.fileUri}
-                username={userLoginUserProfile.username}
+                username={userLoginUserProfile?.username}
                 title={recording.title}
                 commentsArry={recording.comments}
                 likes={recording.likes.length}
@@ -230,7 +231,6 @@ const SearchResults = ({ searchTerm }) => {
                 key={index}
                 isPublic={recording.isPublic}
                 recordingId={recording._id}
-                isMyRecording={true}
                 isLiked={() => isLiked(recording)}
               />
             );

@@ -181,7 +181,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
   } = userLogin;
 
   const toggleLikeHandler = () => {
-    if (userInfoUserLogin.length === 0) {
+    if (!userInfoUserLogin || userInfoUserLogin.length === 0) {
       toast({
         title: 'Sorry!',
         status: 'error',
@@ -298,7 +298,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                 background='none'
                 rounded='xl'
                 onClick={() => {
-                  if (userInfoUserLogin.length === 0) {
+                  if (!userInfoUserLogin || userInfoUserLogin.length === 0) {
                     toast({
                       title: 'Sorry!',
                       description:

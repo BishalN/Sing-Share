@@ -121,7 +121,8 @@ export const getMyRecordings = expressAsyncHandler(async (req: any, res) => {
 // @route   GET /api/recordings/search/?title=....&pageNumber=....
 // @access  Only the authenticated users of the site
 export const getRecordings = expressAsyncHandler(async (req, res) => {
-  console.log('req was here');
+  const pageSize = 5;
+  const page = Number(req.query.pageNumber) || 1;
   const title = req.query.title
     ? {
         title: {
@@ -140,7 +141,9 @@ export const getRecordings = expressAsyncHandler(async (req, res) => {
       }
     : {};
 
-  const recordings = await Recording.find({ ...title, ...tags });
+  const recordings = await Recording.find({ ...title, ...tags })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
 
   res.send(recordings);
 });
