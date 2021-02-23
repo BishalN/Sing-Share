@@ -3,6 +3,7 @@ import {
   Avatar,
   Badge,
   Box,
+  Button,
   Divider,
   Flex,
   FormHelperText,
@@ -21,13 +22,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from '../components/Layout';
 import { RecordingsCard } from '../components/RecordingsCard';
 import { getTopRecs, getUserByUserId } from '../store/actions/recordingsAction';
-import { QueryClient, useQuery } from 'react-query';
+import { QueryClient, useQuery, QueryCache } from 'react-query';
 import axios from 'axios';
+import { Paginate } from '../components/Paginate';
+import Query from './query';
 
-const fetchRecording = async (title, tags) => {
+const fetchRecording = async (title, tags, pageNumber) => {
   return axios
     .get(
-      `http://localhost:4000/api/recordings/search/?title=${title}&tags=${tags}`
+      `http://localhost:4000/api/recordings/search/?title=${title}&tags=${tags}&pageNumber=${pageNumber}`
     )
     .then((res) => res.data);
 };
@@ -152,10 +155,21 @@ const RecordingsSection = (props) => {
 
 const SearchResults = ({ searchTerm }) => {
   let isTag = searchTerm.startsWith('#');
+  const [page, setPage] = useState(0);
 
-  const searchInfo = useQuery(['recording', searchTerm], () => {
-    return fetchRecording(isTag ? '' : searchTerm, isTag ? searchTerm : '');
-  });
+  let { isLoading, isError, data, isFetching, isPreviousData } = useQuery(
+    ['recording', searchTerm],
+    () => {
+      return fetchRecording(
+        isTag ? '' : searchTerm,
+        isTag ? searchTerm : '',
+        page
+      );
+    },
+    { keepPreviousData: true }
+  );
+
+  let queryClient = new QueryClient();
 
   const userLogin = useSelector((state: any) => state.userLogin);
   const {
@@ -185,13 +199,13 @@ const SearchResults = ({ searchTerm }) => {
       <Text fontStyle='italic' fontWeight='light' my='2' fontSize='sm'>
         Search using tags eg. #tagname in the search field
       </Text>
-      {searchInfo.isLoading ? (
+      {isLoading ? (
         <Flex minHeight='50vh' justifyContent='center' alignItems='center'>
           <Spinner />
         </Flex>
       ) : (
         <Box>
-          {searchInfo?.data?.length === 0 ? (
+          {data?.length === 0 ? (
             <Flex
               justifyContent='center'
               minHeight='30vh'
@@ -216,7 +230,7 @@ const SearchResults = ({ searchTerm }) => {
           ) : (
             ''
           )}
-          {searchInfo?.data?.map((recording, index) => {
+          {data?.recordings?.map((recording, index) => {
             return (
               <RecordingsCard
                 loggedInuserAvatar={userLoginUserProfile?.profilePicture}
@@ -237,6 +251,35 @@ const SearchResults = ({ searchTerm }) => {
           })}
         </Box>
       )}
+      <Text>
+        You are currently in page {data?.page} and we have {data?.pages} in
+        server{' '}
+      </Text>
+      <Button
+        mx='1'
+        onClick={() => setPage((old) => Math.max(old - 1, 0))}
+        disabled={page === 0}
+      >
+        Previous Page
+      </Button>
+      <Button
+        onClick={() => {
+          if (!isPreviousData && data.pages > page) {
+            setPage((old) => old + 1);
+          }
+        }}
+        // Disable the Next Page button until we know a next page is available
+        disabled={isPreviousData || !data.pages}
+      >
+        Next Page
+      </Button>
+      {/* <Paginate
+        page={data?.page}
+        pages={data?.pages}
+        tags={isTag ? searchTerm : ''}
+        title={isTag ? '' : searchTerm}
+        changePage={setCurrentPageNumber}
+      /> */}
     </Box>
   );
 };

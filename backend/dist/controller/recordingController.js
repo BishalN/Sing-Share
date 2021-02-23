@@ -116,10 +116,11 @@ exports.getRecordings = express_async_handler_1.default((req, res) => __awaiter(
             },
         }
         : {};
+    const count = yield Recording_1.default.countDocuments(Object.assign(Object.assign({}, title), tags));
     const recordings = yield Recording_1.default.find(Object.assign(Object.assign({}, title), tags))
         .limit(pageSize)
         .skip(pageSize * (page - 1));
-    res.send(recordings);
+    res.json({ recordings, page, pages: Math.ceil(count / pageSize) });
 }));
 exports.editRecording = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { recordingId, title, tags, description, isPublic } = req.body;

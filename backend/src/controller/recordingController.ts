@@ -6,6 +6,7 @@ import fs from 'fs';
 import { uploadDir } from '../index';
 import User from '../models/User';
 import Recording from '../models/Recording';
+import { count } from 'console';
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -141,11 +142,13 @@ export const getRecordings = expressAsyncHandler(async (req, res) => {
       }
     : {};
 
+  const count = await Recording.countDocuments({ ...title, ...tags });
+
   const recordings = await Recording.find({ ...title, ...tags })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
-  res.send(recordings);
+  res.json({ recordings, page, pages: Math.ceil(count / pageSize) });
 });
 
 // @desc    Edit the title,tags,description,isPublic of a recording
