@@ -36,19 +36,12 @@ import {
   Textarea,
   useDisclosure,
   useToast,
-  VStack,
 } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import NextLink from 'next/link';
+import React, { useRef, useState } from 'react';
 import ReactAudioPlayer from 'react-audio-player';
-import {
-  AiFillHeart,
-  AiFillSave,
-  AiOutlineComment,
-  AiOutlineHeart,
-  AiOutlineSave,
-} from 'react-icons/ai';
+import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { MdCancel } from 'react-icons/md';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -58,11 +51,8 @@ import {
   editComment,
   editMyRecording,
   getMyRecordings,
-  getRecordingsByUsername,
   toggleLikeRecording,
 } from '../store/actions/recordingsAction';
-import { CommenterCard } from './CommenterCard';
-import NextLink from 'next/link';
 
 interface RecordingsCardProps {
   title: string;
@@ -127,6 +117,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
     index: null,
   });
   const [editCommentText, setEditCommentText] = useState('');
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
   const editMyRecordingFromStore = useSelector(
     (state: any) => state.editMyRecording
@@ -195,58 +186,26 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (newComments) {
-      toast({
-        title: 'Comment deleted',
-        status: 'success',
-        position: 'bottom-left',
-      });
-
-      setCommentsArray(newComments);
-    }
-    if (recordingInfo) {
-      toast({
-        title: `${recordingInfo.title} successfully updated`,
-        duration: 2000,
-        status: 'success',
-        isClosable: true,
-        position: 'bottom-left',
-      });
-
-      onClose();
-    }
-
-    if (message?.status && message?.deletedRecording) {
-      toast({
-        title: `${message.deletedRecording} successfully deleted`,
-        duration: 3000,
-        status: message.status,
-        isClosable: true,
-        position: 'bottom-left',
-      });
-
-      setIsAlertOpen(false);
-    }
-  }, [recordingInfo, message, newComments]);
-
   return (
     <>
+      <Box rounded='10' my='3' display='flex'>
+        <ReactAudioPlayer
+          src={fileUri}
+          controls
+          onPlay={() => {
+            setIsAudioPlaying(true);
+          }}
+        />
+      </Box>
       <Box
         as='div'
         alignSelf='start'
-        mt='4'
-        mb='4'
         bg='black'
         color='white'
         rounded='xl'
         boxShadow='md'
       >
-        <Flex p={3} direction='row'>
-          <Box maxW='10' overflow='hidden' rounded='10'>
-            <ReactAudioPlayer src={fileUri} controls />
-          </Box>
-
+        <Flex px='3' py='2' direction='row'>
           <Box>
             <Text ml='3'>
               {recTitle}
@@ -264,7 +223,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
             </Text>
           </Box>
           <Box ml='3' display='flex'>
-            <Box>
+            <Box display='flex'>
               {!recIsLiked ? (
                 <IconButton
                   background='none'
@@ -289,11 +248,17 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                 />
               )}
 
-              <Badge bg='primaryColor' rounded='sm' color='white'>
+              <Badge
+                bg='primaryColor'
+                rounded='sm'
+                color='white'
+                maxHeight='5'
+                mt='3'
+              >
                 {recIsLiked ? likes + 1 : likes}
               </Badge>
             </Box>
-            <Box ml={3}>
+            <Box ml={3} display='flex'>
               <IconButton
                 background='none'
                 rounded='xl'
@@ -315,7 +280,13 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
                 aria-label='Comments'
                 icon={<AiOutlineComment size={35} />}
               />
-              <Badge bg='primaryColor' rounded='sm' color='white'>
+              <Badge
+                bg='primaryColor'
+                rounded='sm'
+                color='white'
+                maxHeight='5'
+                mt='3'
+              >
                 {commentsArray.length}
               </Badge>
             </Box>
@@ -353,6 +324,7 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
           fontStyle='italic'
           fontSize='sm'
           flexWrap='wrap'
+          px='2'
         >
           {recDescription}
         </Text>
@@ -438,7 +410,6 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
         initialFocusRef={commentInitialRef}
         isOpen={isOpenComment}
         onClose={onCloseComment}
-        isCentered
         size='xl'
       >
         <ModalOverlay />
@@ -668,6 +639,8 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+
+      <Divider />
     </>
   );
 };

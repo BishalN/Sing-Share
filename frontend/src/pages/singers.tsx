@@ -1,19 +1,19 @@
 import {
   Avatar,
-  Box,
-  Flex,
-  Heading,
-  Text,
-  Skeleton,
-  SkeletonCircle,
-  Spinner,
   Badge,
+  Box,
+  Button,
+  Flex,
+  HStack,
+  IconButton,
+  Spinner,
+  Text,
+  VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { AiOutlineHeart, AiTwotoneAudio } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { Layout } from '../components/Layout';
 import { getUsersProfile } from '../store/actions/userProfileActions';
 
@@ -41,16 +41,13 @@ const Singers = ({}) => {
         </Flex>
       )}
       {userProfiles?.map((user, index) => (
-        <Box
-          padding='6'
-          boxShadow='lg'
-          bg='black'
+        <HStack
+          padding={['4', '4', '6', '8']}
+          bg='gray.900'
           mt={2}
-          borderColor='black'
-          display='flex'
           rounded='xl'
           key={index}
-          _hover={{ boxShadow: 'xl' }}
+          spacing='4'
         >
           <Avatar
             size='xl'
@@ -59,30 +56,58 @@ const Singers = ({}) => {
             _hover={{ cursor: 'pointer' }}
             onClick={() => router.push(`/${user.username}`)}
           />
-          <Box>
-            <Text color='white' fontSize='xl' ml='4'>
+          <VStack ml='1' alignItems='flex-start' spacing='-1px'>
+            <Text
+              fontSize='xl'
+              fontWeight='bold'
+              color='primaryColor'
+              letterSpacing='1px'
+              textTransform='uppercase'
+            >
               {user.fullName}
             </Text>
-            <Text color='white' ml='4' fontWeight='light'>
+            <Text fontWeight='light' fontStyle='italic' color='gray.200'>
               @{user.username}
             </Text>
-          </Box>
-          <Box ml='3'>
-            <AiOutlineHeart size={35} color='white' />
-            <Badge bg='primaryColor' rounded='sm' color='white'>
-              1000
-            </Badge>
-          </Box>
-          <Box ml='3'>
-            <AiTwotoneAudio size={35} color='white' />
-            <Badge bg='primaryColor' rounded='sm' color='white'>
-              5
-            </Badge>
-          </Box>
-        </Box>
+            <Text
+              fontWeight='bold'
+              fontSize='lg'
+              fontStyle='italic'
+              textTransform='capitalize'
+              py='4'
+              color='gray.300'
+            >
+              {user.bio}
+            </Text>
+            {/* <Button
+              alignSelf='flex-start'
+              variant='ghost'
+              color='primaryColor'
+              onClick={() => router.push(`/${user.username}`)}
+            >
+              View Profile
+            </Button> */}
+            {/* <IconButton aria-label='view-profile' /> */}
+          </VStack>
+        </HStack>
       ))}
     </Layout>
   );
 };
 
 export default Singers;
+
+{
+  /* <Box ml='3'>
+            <AiOutlineHeart size={35} />
+            <Badge bg='primaryColor' rounded='sm'>
+              1000
+            </Badge>
+          </Box>
+          <Box ml='3'>
+            <AiTwotoneAudio size={35} />
+            <Badge bg='primaryColor' rounded='sm'>
+              5
+            </Badge>
+          </Box> */
+}

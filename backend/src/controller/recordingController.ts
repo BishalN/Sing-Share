@@ -325,7 +325,18 @@ export const deleteComment = expressAsyncHandler(async (req: any, res) => {
 // @route   GET /api/recordings/popular
 // @access  The authenticated users
 export const getPopularRecords = expressAsyncHandler(async (req: any, res) => {
-  const recordings = await Recording.find({});
+  try {
+    const pageSize = 5;
+    const page = req.query.pageNumber || 1;
+    const count = await Recording.countDocuments({ isPublic: true });
+    const recordings = await Recording.find({ isPublic: true })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
 
-  res.send(recordings);
+    res.json({ ...recordings, page, pages: count });
+  } catch (error) {
+    console.log(error);
+    res.status(500);
+    throw new Error(error.message);
+  }
 });

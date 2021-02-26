@@ -21,8 +21,14 @@ const path_1 = __importDefault(require("path"));
 const Recording_1 = __importDefault(require("../models/Recording"));
 const getUsers = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield User_1.default.find({}).select('-password');
-        res.json(users);
+        const pageSize = 5;
+        const page = req.query.pageNumber || 1;
+        const count = yield User_1.default.countDocuments({});
+        const users = yield User_1.default.find({})
+            .select('-password')
+            .limit(pageSize)
+            .skip(pageSize * (page - 1));
+        res.json(Object.assign(Object.assign({}, users), { page, pages: count }));
     }
     catch (error) {
         res.status(500);

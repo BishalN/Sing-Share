@@ -14,8 +14,15 @@ import { Document } from 'mongoose';
 
 const getUsers = asyncHandler(async (req: any, res: Response) => {
   try {
-    const users = await User.find({}).select('-password');
-    res.json(users);
+    const pageSize = 5;
+    const page = req.query.pageNumber || 1;
+    const count = await User.countDocuments({});
+    const users = await User.find({})
+      .select('-password')
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+
+    res.json({ ...users, page, pages: count });
   } catch (error) {
     res.status(500);
     throw new Error(error.message);

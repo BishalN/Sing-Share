@@ -17,6 +17,7 @@ import {
   Spinner,
   Stack,
   Text,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { BsFillPlayFill } from 'react-icons/bs';
@@ -38,7 +39,7 @@ const HeadingTitle = (props) => {
       lineHeight='none'
       {...props}
     >
-      <span>Sing&Share</span> your awesome voice with world
+      <span>Sing&Share</span> your awesome voice <br /> with world
     </Heading>
   );
 };
@@ -236,21 +237,24 @@ const SearchResults = ({ searchTerm, setSearchTerm }) => {
           )}
           {data?.recordings?.map((recording, index) => {
             return (
-              <RecordingsCard
-                loggedInuserAvatar={userLoginUserProfile?.profilePicture}
-                fileUri={recording.fileUri}
-                username={userLoginUserProfile?.username}
-                title={recording.title}
-                commentsArry={recording.comments}
-                likes={recording.likes.length}
-                comments={recording.comments.length}
-                tags={recording.tags}
-                description={recording.description}
-                key={index}
-                isPublic={recording.isPublic}
-                recordingId={recording._id}
-                isLiked={() => isLiked(recording)}
-              />
+              <Box>
+                <RecordingsCard
+                  loggedInuserAvatar={userLoginUserProfile?.profilePicture}
+                  fileUri={recording.fileUri}
+                  username={userLoginUserProfile?.username}
+                  title={recording.title}
+                  commentsArry={recording.comments}
+                  likes={recording.likes.length}
+                  comments={recording.comments.length}
+                  tags={recording.tags}
+                  description={recording.description}
+                  key={index}
+                  isPublic={recording.isPublic}
+                  recordingId={recording._id}
+                  isLiked={() => isLiked(recording)}
+                />
+                <Divider />
+              </Box>
             );
           })}
         </Box>
@@ -258,9 +262,8 @@ const SearchResults = ({ searchTerm, setSearchTerm }) => {
       {data?.recordings?.length === 0 ? (
         ''
       ) : (
-        <HStack>
+        <HStack my='4'>
           <Button
-            mx='1'
             onClick={() => setPage((old) => Math.max(old - 1, 1))}
             disabled={page === 1}
             bg='black'
@@ -292,15 +295,14 @@ const Index = ({}) => {
   return (
     <Layout>
       <Stack
-        minHeight={['30vh', '40vh', '45vh', '45vh']}
+        // minHeight={['30vh', '40vh', '45vh', '45vh']}
         wrap='wrap'
-        spacing='10px'
+        spacing={['20px']}
         display='flex'
         alignItems='center'
       >
         <InputGroup _hover={{ boxShadow: 'sm' }} alignSelf='flex-end'>
           <InputLeftElement
-            pointerEvents='none'
             ml={['40px', '150px', '300px', '300px']}
             mt='10px'
             children={<SearchIcon color='gray.300' />}

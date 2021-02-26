@@ -134,11 +134,7 @@ export const UploadRecordedFileTab = ({}) => {
         >
           <Box bg='teal' alignSelf='start'>
             <FormLabel color='shallowPink'>Preview</FormLabel>
-            <ReactAudioPlayer
-              ref={(element) => console.log(element)}
-              src={files[0].preview}
-              controls
-            />
+            <ReactAudioPlayer src={files[0].preview} controls />
           </Box>
           <FormControl mt={4} isRequired>
             <FormLabel color='shallowPink'>Title </FormLabel>
