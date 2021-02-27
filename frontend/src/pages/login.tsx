@@ -13,6 +13,7 @@ import {
   Heading,
   Input,
   Link,
+  useToast,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -31,6 +32,8 @@ import {
 const Login = ({}) => {
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const toast = useToast();
 
   const userLogin = useSelector((state: any) => state.userLogin);
   const { loading, error, userInfo } = userLogin;
@@ -66,7 +69,7 @@ const Login = ({}) => {
   from local storage as the userLogin --> userInfo as it is checked in initial state*/
 
   if (userFacebookInfo?.username || userGoogleInfo?.username) {
-    router.reload();
+    router.push('/');
   }
 
   useEffect(() => {
@@ -74,9 +77,10 @@ const Login = ({}) => {
       router.push('/');
     }
     if (error?.includes('Invalid Credentials')) {
+      console.log('object');
       setCredentialsError(error);
     }
-  }, [userGoogleInfo, userInfo, userFacebookInfo]);
+  }, [userGoogleInfo, userInfo, userFacebookInfo, error]);
 
   const [showAlert, setShowAlert] = useState(true);
 
@@ -96,7 +100,13 @@ const Login = ({}) => {
         </Alert>
       )}
 
-      <Flex mx='auto' alignItems='center' direction='column' maxW='sm'>
+      <Flex
+        mx='auto'
+        mt={['40px', '50px', '60px']}
+        alignItems='center'
+        direction='column'
+        maxW='sm'
+      >
         <Heading as='h1' mt='2' alignSelf='self-start' mb='sm'>
           Login
         </Heading>
@@ -155,7 +165,13 @@ const Login = ({}) => {
             </Link>
           </NextLink>
         </Flex>
-        <Button mt={8} colorScheme='facebook' leftIcon={<FaFacebook />} w='sm'>
+        <Button
+          mt={8}
+          colorScheme='facebook'
+          leftIcon={<FaFacebook />}
+          minW={['xs', 'sm']}
+          rounded='xl'
+        >
           <FacebookLogin
             appId='508027223494006'
             autoLoad={false}
@@ -168,14 +184,15 @@ const Login = ({}) => {
           />
         </Button>
 
-        <Box mt={4} maxWidth='sm'>
+        <Box mt={4} maxW='sm'>
           <GoogleLogin
             clientId='1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com'
             render={(renderProps) => (
               <Button
                 leftIcon={<FaGoogle />}
                 onClick={renderProps.onClick}
-                width='sm'
+                rounded='xl'
+                minW={['xs', 'sm']}
               >
                 Login with google
               </Button>

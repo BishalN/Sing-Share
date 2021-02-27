@@ -117,7 +117,6 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
     index: null,
   });
   const [editCommentText, setEditCommentText] = useState('');
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
   const editMyRecordingFromStore = useSelector(
     (state: any) => state.editMyRecording
@@ -188,14 +187,8 @@ export const RecordingsCard: React.FC<RecordingsCardProps> = ({
 
   return (
     <>
-      <Box rounded='10' my='3' display='flex'>
-        <ReactAudioPlayer
-          src={fileUri}
-          controls
-          onPlay={() => {
-            setIsAudioPlaying(true);
-          }}
-        />
+      <Box rounded='10' my='3' alignSelf='flex-start'>
+        <ReactAudioPlayer src={fileUri} controls />
       </Box>
       <Box
         as='div'

@@ -63,7 +63,6 @@ const Register: React.FC<registerProps> = ({}) => {
 
   /*Lil trick this will lead to restarting of the redux store and pickup the userinfo
   from local storage as the userLogin --> userInfo as it is checked in initial state*/
-
   if (userFacebookInfo?.username || userGoogleInfo?.username) {
     router.reload();
   }
@@ -119,10 +118,16 @@ const Register: React.FC<registerProps> = ({}) => {
         </Alert>
       )}
       <Container>
-        <Heading as='h1' mt='2'>
-          Register
-        </Heading>
-        <Flex flexDirection='column' justifyContent='center' maxW='sm'>
+        <Flex
+          flexDirection='column'
+          justifyContent='center'
+          maxW='sm'
+          mx='auto'
+          mt={['30px', '40px', '50px']}
+        >
+          <Heading as='h1' mt='4'>
+            Register
+          </Heading>
           <FormControl
             id='fullname'
             mt={4}
@@ -223,6 +228,7 @@ const Register: React.FC<registerProps> = ({}) => {
             mt={8}
             borderColor='black'
             colorScheme='facebook'
+            minW={['xs', 'sm']}
             leftIcon={<FaFacebook />}
           >
             <FacebookLogin
@@ -245,7 +251,7 @@ const Register: React.FC<registerProps> = ({}) => {
                 <Button
                   leftIcon={<FaGoogle />}
                   onClick={renderProps.onClick}
-                  width='sm'
+                  minW={['xs', 'sm']}
                 >
                   Signup with google
                 </Button>

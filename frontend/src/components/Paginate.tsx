@@ -1,42 +1,13 @@
-import { Box, Button, Link } from '@chakra-ui/react';
+import { Button, HStack } from '@chakra-ui/react';
 import React from 'react';
-import NextLink from 'next/link';
-import { QueryClient } from 'react-query';
 
-interface PaginateProps {
-  pages: number;
-  page: number;
-  title: string;
-  tags: string;
-  changePage;
-}
+interface PaginateProps {}
 
-export const Paginate: React.FC<PaginateProps> = ({
-  pages,
-  page,
-  title,
-  tags,
-  changePage,
-  children,
-}) => {
+export const Paginate: React.FC<PaginateProps> = ({}) => {
   return (
-    pages > 1 && (
-      <Box>
-        {[...Array(pages).keys()].map((x) => (
-          <Link key={x + 1}>
-            {/* <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item> */}
-            <Button
-              mx='1'
-              isActive={x + 1 === page}
-              onClick={() => {
-                changePage(x + 1);
-              }}
-            >
-              {x + 1}
-            </Button>
-          </Link>
-        ))}
-      </Box>
-    )
+    <HStack mt='2'>
+      <Button variant='ghost'>Previous</Button>
+      <Button variant='ghost'>Next</Button>
+    </HStack>
   );
 };

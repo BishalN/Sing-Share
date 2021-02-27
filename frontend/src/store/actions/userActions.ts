@@ -51,6 +51,7 @@ export const register = (
     );
 
     localStorage.setItem('userInfo', JSON.stringify(data));
+    dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
     dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -165,7 +166,7 @@ export const facebookLogin = (userId, accessToken) => async (dispatch) => {
       { userId, accessToken },
       config
     );
-
+    dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
     dispatch({ type: USER_FACEBOOK_LOGIN_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -195,6 +196,7 @@ export const googleLogin = (idToken) => async (dispatch) => {
     );
 
     localStorage.setItem('userInfo', JSON.stringify(data));
+    dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
     dispatch({ type: USER_GOOGLE_LOGIN_SUCCESS, payload: data });
   } catch (error) {
     dispatch({

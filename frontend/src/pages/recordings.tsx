@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import { Button, Center, HStack, Spinner } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from '../components/Layout';
 import { RecordingsCard } from '../components/RecordingsCard';
@@ -33,30 +34,37 @@ const Recordings: React.FC<recordingsProps> = ({}) => {
   };
 
   useEffect(() => {
+    console.log(recordings);
     if (!recordings) {
       dispatch(getPopularRecords());
     }
   }, [recordings]);
   return (
     <Layout>
-      {recordings?.map((recording, index) => (
-        <RecordingsCard
-          commentsArry={recording.comments}
-          username={userLoginUserProfile.username}
-          loggedInuserAvatar={userLoginUserProfile.profilePicture}
-          recordingId={recording._id}
-          fileUri={recording.fileUri}
-          isPublic={recording.isPublic}
-          description={recording.description}
-          title={recording.title}
-          likes={recording.likes.length}
-          comments={recording.comments.length}
-          tags={recording.tags}
-          isMyRecording={false}
-          isLiked={() => isLiked(recording)}
-          key={index}
-        />
-      ))}
+      {loading ? (
+        <Center minH='50vh'>
+          <Spinner />
+        </Center>
+      ) : (
+        recordings?.map((recording, index) => (
+          <RecordingsCard
+            commentsArry={recording.comments}
+            username={userLoginUserProfile.username}
+            loggedInuserAvatar={userLoginUserProfile.profilePicture}
+            recordingId={recording._id}
+            fileUri={recording.fileUri}
+            isPublic={recording.isPublic}
+            description={recording.description}
+            title={recording.title}
+            likes={recording.likes.length}
+            comments={recording.comments.length}
+            tags={recording.tags}
+            isMyRecording={false}
+            isLiked={() => isLiked(recording)}
+            key={index}
+          />
+        ))
+      )}
     </Layout>
   );
 };

@@ -221,13 +221,8 @@ exports.deleteComment = express_async_handler_1.default((req, res) => __awaiter(
 }));
 exports.getPopularRecords = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const pageSize = 5;
-        const page = req.query.pageNumber || 1;
-        const count = yield Recording_1.default.countDocuments({ isPublic: true });
-        const recordings = yield Recording_1.default.find({ isPublic: true })
-            .limit(pageSize)
-            .skip(pageSize * (page - 1));
-        res.json(Object.assign(Object.assign({}, recordings), { page, pages: count }));
+        const recordings = yield Recording_1.default.find({ isPublic: true });
+        res.send(recordings);
     }
     catch (error) {
         console.log(error);
