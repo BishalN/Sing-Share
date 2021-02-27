@@ -1,6 +1,8 @@
 import {
   Alert,
+  Box,
   Button,
+  Center,
   Container,
   Flex,
   FormControl,
@@ -44,7 +46,13 @@ const ResetPassword: React.FC<resetPassword> = ({}) => {
 
   return (
     <Layout>
-      <Container>
+      <Flex
+        minH='60vh'
+        mx='auto'
+        alignItems='center'
+        justifyContent='center'
+        flexDirection='column'
+      >
         <Heading as='h1' mt='2'>
           Reset Password
         </Heading>
@@ -66,17 +74,20 @@ const ResetPassword: React.FC<resetPassword> = ({}) => {
             <FormLabel>Email address</FormLabel>
             <Input
               type='email'
+              focusBorderColor='primaryColor'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <FormErrorMessage>{emailError}</FormErrorMessage>
             <FormHelperText>Make sure thats your email address</FormHelperText>
           </FormControl>
+
           <Flex>
             <Button
               mt={4}
-              colorScheme='blue'
               type='submit'
+              background='gray.700'
+              color='primaryColor'
               maxW='100px'
               onClick={handleSubmit}
               isLoading={loading}
@@ -91,7 +102,7 @@ const ResetPassword: React.FC<resetPassword> = ({}) => {
             </NextLink>
           </Flex>
         </Flex>
-      </Container>
+      </Flex>
     </Layout>
   );
 };

@@ -53,7 +53,7 @@ const ChangePassword: React.FC<changePassword> = ({}) => {
 
   return (
     <Layout>
-      <Container>
+      <Flex flexDirection='column' alignItems='center' justifyContent='center'>
         <Heading as='h1' mt='2'>
           Change Password
         </Heading>
@@ -63,6 +63,7 @@ const ChangePassword: React.FC<changePassword> = ({}) => {
             <Input
               type='password'
               value={password}
+              focusBorderColor='primaryColor'
               onChange={(e) => setPassword(e.target.value)}
             />
             <FormHelperText>Make it strong</FormHelperText>
@@ -75,6 +76,7 @@ const ChangePassword: React.FC<changePassword> = ({}) => {
           >
             <FormLabel>Confirm Password</FormLabel>
             <Input
+              focusBorderColor='primaryColor'
               type='password'
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -86,13 +88,13 @@ const ChangePassword: React.FC<changePassword> = ({}) => {
           <Flex>
             <Button
               mt={4}
-              colorScheme='blue'
+              background='gray.700'
+              color='primaryColor'
               type='submit'
-              maxW='100px'
               onClick={handleSubmit}
               isLoading={loading}
             >
-              Reset
+              Change Password
             </Button>
             <NextLink href='/login'>
               <Link mt={8} ml={4} as='a' fontSize='sm'>
@@ -101,7 +103,7 @@ const ChangePassword: React.FC<changePassword> = ({}) => {
             </NextLink>
           </Flex>
         </Flex>
-      </Container>
+      </Flex>
     </Layout>
   );
 };

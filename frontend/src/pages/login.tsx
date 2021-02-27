@@ -139,7 +139,7 @@ const Login = ({}) => {
           />
           <FormErrorMessage>{credentialsError}</FormErrorMessage>
 
-          <NextLink href='/password-reset'>
+          <NextLink href='/reset-password'>
             <Link>
               <FormHelperText>Forgot password?</FormHelperText>
             </Link>
