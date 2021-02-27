@@ -65,9 +65,6 @@ const Login = ({}) => {
     dispatch(login(usernameOrEmail, password));
   };
 
-  /*Lil trick this will lead to restarting of the redux store and pickup the userinfo
-  from local storage as the userLogin --> userInfo as it is checked in initial state*/
-
   if (userFacebookInfo?.username || userGoogleInfo?.username) {
     router.push('/');
   }
@@ -120,6 +117,7 @@ const Login = ({}) => {
           <Input
             type='text'
             isRequired
+            focusBorderColor='primaryColor'
             value={usernameOrEmail}
             onChange={(e) => setUsernameOrEmail(e.target.value)}
           />
@@ -136,6 +134,7 @@ const Login = ({}) => {
           <Input
             type='password'
             value={password}
+            focusBorderColor='primaryColor'
             onChange={(e) => setPassword(e.target.value)}
           />
           <FormErrorMessage>{credentialsError}</FormErrorMessage>

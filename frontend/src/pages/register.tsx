@@ -61,10 +61,8 @@ const Register: React.FC<registerProps> = ({}) => {
     userInfo: userFacebookInfo,
   } = userFacebookLogin;
 
-  /*Lil trick this will lead to restarting of the redux store and pickup the userinfo
-  from local storage as the userLogin --> userInfo as it is checked in initial state*/
   if (userFacebookInfo?.username || userGoogleInfo?.username) {
-    router.reload();
+    router.push('/');
   }
 
   const [fullName, setFullName] = useState('');
@@ -137,6 +135,7 @@ const Register: React.FC<registerProps> = ({}) => {
             <FormLabel>Full Name</FormLabel>
             <Input
               type='text'
+              focusBorderColor='primaryColor'
               isRequired
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
@@ -152,6 +151,7 @@ const Register: React.FC<registerProps> = ({}) => {
             <FormLabel>Username</FormLabel>
             <Input
               type='username'
+              focusBorderColor='primaryColor'
               isRequired
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -168,6 +168,7 @@ const Register: React.FC<registerProps> = ({}) => {
             <FormLabel>Email address</FormLabel>
             <Input
               type='email'
+              focusBorderColor='primaryColor'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -184,6 +185,7 @@ const Register: React.FC<registerProps> = ({}) => {
             <FormLabel>Password</FormLabel>
             <Input
               type='password'
+              focusBorderColor='primaryColor'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -192,12 +194,14 @@ const Register: React.FC<registerProps> = ({}) => {
           <FormControl
             id='confirmpassword'
             mt={4}
+            focusBorderColor='primaryColor'
             isRequired
             isInvalid={passwordError.length > 0}
           >
             <FormLabel>Confirm Password</FormLabel>
             <Input
               type='password'
+              focusBorderColor='primaryColor'
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />

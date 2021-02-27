@@ -24,6 +24,10 @@ const User_1 = __importDefault(require("../models/User"));
 const sendForgetPasswordEmail_1 = require("../utils/sendForgetPasswordEmail");
 const register = express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password, fullName } = req.body;
+    if (username.includes(' ' || '@')) {
+        res.status(400);
+        throw new Error('Space and @ character are not allowed in Username');
+    }
     const duplicateUsername = yield User_1.default.findOne({ username });
     if (duplicateUsername) {
         res.status(401);

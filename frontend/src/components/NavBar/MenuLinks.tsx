@@ -108,7 +108,9 @@ export const MenuLinks = ({ isOpen }) => {
 
               <MenuList color='black' p={4} maxW='20px'>
                 <NextLink
-                  href={`/${userUpdateProfile?.username || userInfo.username}`}
+                  href={`/users/${
+                    userUpdateProfile?.username || userInfo.username
+                  }`}
                 >
                   <MenuItem>Profile</MenuItem>
                 </NextLink>
@@ -125,7 +127,7 @@ export const MenuLinks = ({ isOpen }) => {
 
         {!isLoggedIn && <MenuItem to='/register'>Signup</MenuItem>}
         {!isLoggedIn && <MenuItem to='/login'>Login</MenuItem>}
-        {isLoggedIn && <MenuItem to='/singers'>Singers</MenuItem>}
+        {isLoggedIn && <MenuItem to='/users'>Singers</MenuItem>}
         {isLoggedIn && <MenuItem to='/recordings'>Recordings</MenuItem>}
         {isLoggedIn && (
           <Box onClick={logoutHandler}>

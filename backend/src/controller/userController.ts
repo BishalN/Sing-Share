@@ -19,6 +19,10 @@ import { sendForgetPasswordEmail } from '../utils/sendForgetPasswordEmail';
 const register = asyncHandler(async (req: Request, res: Response) => {
   const { username, email, password, fullName } = req.body;
 
+  if (username.includes(' ' || '@')) {
+    res.status(400);
+    throw new Error('Space and @ character are not allowed in Username');
+  }
   const duplicateUsername = await User.findOne({ username });
   if (duplicateUsername) {
     res.status(401);

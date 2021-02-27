@@ -28,17 +28,17 @@ import {
   AiOutlineHeart,
 } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import EditImage from '../components/EditImage';
-import { Layout } from '../components/Layout';
+import EditImage from '../../components/EditImage';
+import { Layout } from '../../components/Layout';
 import {
   getUserProfile,
   updateProfile,
-} from '../store/actions/userProfileActions';
+} from '../../store/actions/userProfileActions';
 import {
   getMyRecordings,
   getRecordingsByUsername,
-} from '../store/actions/recordingsAction';
-import { RecordingsCard } from '../components/RecordingsCard';
+} from '../../store/actions/recordingsAction';
+import { RecordingsCard } from '../../components/RecordingsCard';
 
 const UserProfile = ({}) => {
   const router = useRouter();
@@ -167,7 +167,7 @@ const UserProfile = ({}) => {
   return (
     <Layout>
       {loading ? (
-        <Flex minH='50vh' alignItems='center' justifyContent='center'>
+        <Flex minH='80vh' alignItems='center' justifyContent='center'>
           <Spinner thickness='5px' color='primaryColor' size='xl' />
         </Flex>
       ) : (
@@ -281,12 +281,15 @@ const UserProfile = ({}) => {
             </>
           )}
           <Divider color='grey.700' mt='3' />
-          <Text fontWeight='normal' fontSize='xl'>
-            5 songs recorded
-          </Text>
+
           <Text alignSelf='start' mt='4' fontWeight='bold' fontSize='xl'>
             Latest Recordings:
           </Text>
+          {(loadingMyRecordings || loadingMyRecordings) && (
+            <Box minHeight='50vh'>
+              <Spinner thickness='5px' color='primaryColor' size='xl' />
+            </Box>
+          )}
           {isUserProfile
             ? myRecordings?.map((recording, index) => (
                 <RecordingsCard

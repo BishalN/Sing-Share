@@ -42,14 +42,14 @@ const Recordings: React.FC<recordingsProps> = ({}) => {
   return (
     <Layout>
       {loading ? (
-        <Center minH='50vh'>
-          <Spinner />
+        <Center minH='80vh'>
+          <Spinner thickness='5px' color='primaryColor' size='xl' />
         </Center>
       ) : (
         recordings?.map((recording, index) => (
           <RecordingsCard
             commentsArry={recording.comments}
-            username={userLoginUserProfile.username}
+            username={userLoginUserProfile?.username}
             loggedInuserAvatar={userLoginUserProfile.profilePicture}
             recordingId={recording._id}
             fileUri={recording.fileUri}

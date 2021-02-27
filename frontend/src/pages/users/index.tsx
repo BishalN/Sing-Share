@@ -1,21 +1,9 @@
-import {
-  Avatar,
-  Badge,
-  Box,
-  Button,
-  Flex,
-  HStack,
-  IconButton,
-  Spinner,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Avatar, Flex, HStack, Spinner, Text, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { AiOutlineHeart, AiTwotoneAudio } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import { Layout } from '../components/Layout';
-import { getUsersProfile } from '../store/actions/userProfileActions';
+import { Layout } from '../../components/Layout';
+import { getUsersProfile } from '../../store/actions/userProfileActions';
 
 const Singers = ({}) => {
   const router = useRouter();
@@ -36,7 +24,7 @@ const Singers = ({}) => {
   return (
     <Layout>
       {loading && (
-        <Flex minHeight='50vh' alignItems='center' justifyContent='center'>
+        <Flex minHeight='80vh' alignItems='center' justifyContent='center'>
           <Spinner size='xl' color='primaryColor' thickness='3px' />
         </Flex>
       )}
@@ -54,7 +42,7 @@ const Singers = ({}) => {
             name={`${user.fullName}`}
             src={user.profilePicture}
             _hover={{ cursor: 'pointer' }}
-            onClick={() => router.push(`/${user.username}`)}
+            onClick={() => router.push(`/users/${user.username}`)}
           />
           <VStack ml='1' alignItems='flex-start' spacing='-1px'>
             <Text
@@ -79,15 +67,6 @@ const Singers = ({}) => {
             >
               {user.bio}
             </Text>
-            {/* <Button
-              alignSelf='flex-start'
-              variant='ghost'
-              color='primaryColor'
-              onClick={() => router.push(`/${user.username}`)}
-            >
-              View Profile
-            </Button> */}
-            {/* <IconButton aria-label='view-profile' /> */}
           </VStack>
         </HStack>
       ))}
@@ -96,18 +75,3 @@ const Singers = ({}) => {
 };
 
 export default Singers;
-
-{
-  /* <Box ml='3'>
-            <AiOutlineHeart size={35} />
-            <Badge bg='primaryColor' rounded='sm'>
-              1000
-            </Badge>
-          </Box>
-          <Box ml='3'>
-            <AiTwotoneAudio size={35} />
-            <Badge bg='primaryColor' rounded='sm'>
-              5
-            </Badge>
-          </Box> */
-}

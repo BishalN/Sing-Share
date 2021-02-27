@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Layout } from '../components/Layout';
 import {
+  Alert,
   Button,
   Container,
   Flex,
@@ -11,12 +10,11 @@ import {
   Heading,
   Input,
   Link,
-  Alert,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
-
+import { Layout } from '../components/Layout';
 import { resetPassword } from '../store/actions/userActions';
 
 interface resetPassword {}

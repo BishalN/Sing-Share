@@ -6,29 +6,24 @@ import {
   Button,
   Divider,
   Flex,
-  FormHelperText,
   Heading,
   HStack,
   Input,
   InputGroup,
   InputLeftElement,
   Progress,
-  Skeleton,
   Spinner,
   Stack,
   Text,
-  useMediaQuery,
 } from '@chakra-ui/react';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { BsFillPlayFill } from 'react-icons/bs';
+import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from '../components/Layout';
 import { RecordingsCard } from '../components/RecordingsCard';
-import { getTopRecs, getUserByUserId } from '../store/actions/recordingsAction';
-import { QueryClient, useQuery, QueryCache } from 'react-query';
-import axios from 'axios';
-import { Paginate } from '../components/Paginate';
-import Query from './query';
+import { getTopRecs } from '../store/actions/recordingsAction';
+import { useSpring, animated } from 'react-spring';
 
 const HeadingTitle = (props) => {
   return (
@@ -39,7 +34,7 @@ const HeadingTitle = (props) => {
       lineHeight='none'
       {...props}
     >
-      <span>Sing&Share</span> your awesome voice <br /> with world
+      Sing&Share your awesome voice <br /> with world
     </Heading>
   );
 };
@@ -86,7 +81,7 @@ const ProfileRecordings = (props) => {
           minH='30vh'
           alignItems='center'
         >
-          <Spinner size='lg' />
+          <Spinner thickness='5px' color='primaryColor' size='xl' />
         </Box>
       )}
       {recordings?.map((recording, index) => (
@@ -139,7 +134,7 @@ const ProfileRecordings = (props) => {
 
 const RecordingsSection = (props) => {
   return (
-    <Box alignSelf='start' mt='10px' {...props}>
+    <Box alignSelf='start' mt='40px' {...props}>
       <Heading as='h3' fontWeight='semibold' fontSize='2xl' color='gray.600'>
         Recordings
       </Heading>
@@ -206,7 +201,7 @@ const SearchResults = ({ searchTerm, setSearchTerm }) => {
       {isFetching && <Progress size='xs' isIndeterminate colorScheme='pink' />}
       {isLoading ? (
         <Flex minHeight='50vh' justifyContent='center' alignItems='center'>
-          <Spinner />
+          <Spinner thickness='5px' color='primaryColor' size='xl' />
         </Flex>
       ) : (
         <Box>
