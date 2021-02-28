@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import fetch from 'node-fetch';
+import uniqid from 'uniqid';
 
 const client = new OAuth2Client(
   '1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com'
@@ -183,7 +184,7 @@ const googleLogin = asyncHandler(async (req, res) => {
       if (user) {
         res.json({
           _id: user.id,
-          profilePicture: picture,
+          profilePicture: user.profilePicture, //sending back the picture from db
           username: user.username,
           fullName: user.fullName,
           email: user.email,
@@ -192,7 +193,7 @@ const googleLogin = asyncHandler(async (req, res) => {
       } else {
         //Brand new User
         let password = email + process.env.JWT_SECRET;
-        let username = name;
+        let username = name + uniqid('s&s'); //concatenating random strings for uniqueness in username
         try {
           const user = await User.create({
             fullName: name,

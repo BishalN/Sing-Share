@@ -15,17 +15,21 @@ import {
   Spinner,
   Stack,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from '../components/Layout';
 import { RecordingsCard } from '../components/RecordingsCard';
 import { getTopRecs } from '../store/actions/recordingsAction';
-import { useSpring, animated } from 'react-spring';
 
 const HeadingTitle = (props) => {
+  const router = useRouter();
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const { userInfo, error, loading } = userLogin;
   return (
     <Heading
       as='h1'
@@ -34,7 +38,26 @@ const HeadingTitle = (props) => {
       lineHeight='none'
       {...props}
     >
-      Sing&Share your awesome voice <br /> with world
+      <Tooltip label='start recording' aria-label='tooltip' position='revert'>
+        <Text
+          color='primaryColor'
+          display='inline'
+          fontStyle='italic'
+          _hover={{
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            if (userInfo) {
+              router.push('/record');
+            } else {
+              console.log('Log in to record');
+            }
+          }}
+        >
+          Sing&Share
+        </Text>
+      </Tooltip>{' '}
+      your awesome voice <br /> with world
     </Heading>
   );
 };

@@ -8,6 +8,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -171,7 +172,7 @@ const UserProfile = ({}) => {
           <Spinner thickness='5px' color='primaryColor' size='xl' />
         </Flex>
       ) : (
-        <Flex alignItems='center' direction='column'>
+        <Flex alignItems='center' direction='column' minH='80vh'>
           <Avatar
             mt='4'
             size='2xl'
@@ -193,11 +194,11 @@ const UserProfile = ({}) => {
             @{updatedProfile?.username || userProfile?.username}
           </Text>
           <Text
-            mt='2'
-            fontWeight='medium'
-            fontSize='md'
+            my='4'
+            fontSize='lg'
+            fontStyle='italic'
             textAlign='center'
-            color='gray.400'
+            color='gray.800'
           >
             {updatedProfile?.bio || userProfile?.bio}
           </Text>
@@ -281,10 +282,19 @@ const UserProfile = ({}) => {
             </>
           )}
           <Divider color='grey.700' mt='3' />
+          <Box display='flex' alignItems='self-start'>
+            <Text alignSelf='start' mt='4' fontWeight='bold' fontSize='xl'>
+              {myRecordings?.length === 0 || recordings?.length === 0
+                ? 'No recordings: '
+                : 'Latest Recordings:'}
+            </Text>
+            {myRecordings?.length === 0 ? (
+              <Button variant='ghost' mt='10px' color='primaryColor'>
+                Start recording
+              </Button>
+            ) : null}
+          </Box>
 
-          <Text alignSelf='start' mt='4' fontWeight='bold' fontSize='xl'>
-            Latest Recordings:
-          </Text>
           {(loadingMyRecordings || loadingMyRecordings) && (
             <Box minHeight='50vh'>
               <Spinner thickness='5px' color='primaryColor' size='xl' />

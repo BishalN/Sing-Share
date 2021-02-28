@@ -265,7 +265,7 @@ export const UploadRecordedFileTab = ({}) => {
               ref={cancelRef}
               onClick={() => {
                 onClose();
-                router.push(`/${userInfo?.username}`);
+                router.push(`users/${userInfo?.username}`);
               }}
             >
               Go back to Profile

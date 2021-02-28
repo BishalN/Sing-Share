@@ -346,7 +346,7 @@ export const RecordAndUploadFileTab: React.FC<RecordAndUploadFileTabProps> = ({}
               ref={cancelRef}
               onClick={() => {
                 onClose();
-                router.push(`/${userInfo?.username}/?afterRec=true`);
+                router.push(`users/${userInfo?.username}`);
               }}
             >
               Go back to Profile

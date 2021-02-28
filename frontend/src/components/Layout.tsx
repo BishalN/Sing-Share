@@ -10,7 +10,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <>
       <NavBar />
-      <Container w='100%'>{children}</Container>
+      <Container>{children}</Container>
       <Footer />
     </>
   );

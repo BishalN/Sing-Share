@@ -18,6 +18,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const google_auth_library_1 = require("google-auth-library");
 const node_fetch_1 = __importDefault(require("node-fetch"));
+const uniqid_1 = __importDefault(require("uniqid"));
 const client = new google_auth_library_1.OAuth2Client('1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com');
 const generateToken_1 = require("../utils/generateToken");
 const User_1 = __importDefault(require("../models/User"));
@@ -163,7 +164,7 @@ const googleLogin = express_async_handler_1.default((req, res) => __awaiter(void
             if (user) {
                 res.json({
                     _id: user.id,
-                    profilePicture: picture,
+                    profilePicture: user.profilePicture,
                     username: user.username,
                     fullName: user.fullName,
                     email: user.email,
@@ -172,7 +173,7 @@ const googleLogin = express_async_handler_1.default((req, res) => __awaiter(void
             }
             else {
                 let password = email + process.env.JWT_SECRET;
-                let username = name;
+                let username = name + uniqid_1.default('s&s');
                 try {
                     const user = yield User_1.default.create({
                         fullName: name,

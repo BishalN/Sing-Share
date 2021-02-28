@@ -7,6 +7,7 @@ import {
   USER_GET_PROFILE_FAIL,
   USER_GET_PROFILE_REQUEST,
   USER_GET_PROFILE_SUCCESS,
+  USER_LOGIN_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_PICTURE_FAIL,
   USER_UPDATE_PROFILE_PICTURE_REQUEST,
@@ -105,7 +106,7 @@ export const updateProfile = ({ fullName, username, bio }) => async (
       { fullName, username, bio },
       config
     );
-
+    dispatch({ type: USER_LOGIN_SUCCESS, payload: data }); //updating the userlogin reducer
     dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
