@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "justforbucketrecording",
+  "private_key_id": "8aa4844314a0b9986f2f175b4dfd5c80778435d4",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDVuZ33te2PnmJz\n8lxsuks/3zrP57rAM9jJQ70OD6Ty6YQp+GJnCzXTfxfrGPl84qp6tjrMPYgj8LFL\nbQGCUkjcmUDo/6CwwgU+enFQoOI09cVxD5LtIY+Lco06AR/NDdzYo3TdeDWm/5on\nwIFgF7UXGDgAoYqG2mdywtm6dm7NK86e9ifS8htIUEcNiHTJxLwhUWtLdgzQdoEQ\nugi1T+1VjuGMJJ+VHoDvnAmU3qV7UQXz741TgieeXVjbRGCNoFXiMlsr+ymDgICc\nLu5SHBsFxmfVPrhEZPGZw92mlLw/hCZAzfYODkqdPfKQYHBrfQPyA0srzmeKzHFq\nvo5QdxHBAgMBAAECggEAAWHAKZyonjI+kJbOwKGhIzbv4K3e0KzxJBF9nUkje9Iq\nfCc73c7Q2fbcllT7XCKUH7jyMcAng1R5lVCoIadOAGuhqQlUk5Soj3rVD68fm/WC\nFvEG5hoOl+7SsWR2F+eU2nDO8dA2osIXWqtmvBK2gCFfD3175DNGV5O2usshhvmZ\np7jGk7sMaUFxxTyQc2Aav6qa5x0z+R3QnYT+fVY68twHtK0QOewsS/razVuf3sPM\nWrBrJ9V7ds5SYA7Vu6ASOji0uUGg/NR+bkC+hIZYWWXsLZXXUHjo9lrsJa2CBnoa\nBvri1tUtDz3ZTYoew4AeSNjQmmNvpBtS4pO6dRX3QQKBgQDsEqvznjz67vbYrJcA\nIdVpMbWDj2a3487Tz9ZWHBKL4YowIvcmLzk9qliNjZv5F7SnTom0FAGv2Iqcm5zC\nV2jzkxwxl8SRwKi1uJvZZx2ajn3pDn83mFm97wH0cdHOuSr6fOsdblG+VNyWO2IX\nlyBqs44kAjGV6vBBoFrhKZF2oQKBgQDnxAcP9w7IllsjyBCYYChXkVxAHI+P8GU6\n8NkExz/m17rlUc4jk/+WYD74vziRJJafBZixG5JcvRqoyW1eEa6uZQcQ/qwUjrUl\nx3asfNFkUE0+pIAzt3mwcSR2i0bJ8FoZjaO+xvj3Ua/WNo4eDXAf4Re6LYDb0aYl\nADRN+HxnIQKBgQDQLn8Y7ZiVKZrh5QGcijmq9L0/cXyB+hFw1L4NXeA1HwZAAPW2\n5Loz2T8SRakgd3lGeYoSFfqO2gUSqmAJOhBBjJ+2VEJyzlV5O32ksLx4ieQbXD9w\nBZhOWLF+ockF5mEyWGr2n0zS7f9BNMkCSLG7pvBYbN7ReEe7d+/s1D2FQQKBgQCr\nlxWHe2mllrQpfLDUr7SOiJ9dFAgyEFBSYAi8oewss6G6sGNHMgazxdQ5hBGUXBtr\n5s/SqFAnexZmyqK/V6YVldSyf2rV2YZCTzgMomjAtTdLXq1QHNHqkQnm/lzNm7aJ\nXrVRxKyFJyRhG4kCtP5Di/puK8xQcxpoIIuZApTQIQKBgQDV0o2iyD5cdVBuCFrr\nHqN/4dhuY/W1L/OLiarzGHqsc8itvsbPZ+IC6V9vAtaYGyPOZrFaC4m4rHXUhQoe\nWE/Ft9aVyQKudfVJIsJCsyPiEbTcfZOvs9f6pbdCu/b/Yvqkd4Pymlz6wVmlfhaq\nCfONi/wdIlwvwIof6J8JII5dIw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "recording@justforbucketrecording.iam.gserviceaccount.com",
+  "client_id": "101078292633329517757",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/recording%40justforbucketrecording.iam.gserviceaccount.com"
+}
