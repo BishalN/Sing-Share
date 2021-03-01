@@ -24,20 +24,10 @@ const Record: React.FC<recordProps> = ({}) => {
       >
         <Tabs isFitted variant='soft-rounded' mt={4}>
           <TabList mb='1em'>
-            <Tab
-              fontWeight='bold'
-              fontSize='xl'
-              bg='gray.400'
-              color='primaryColor'
-            >
+            <Tab fontWeight='bold' fontSize='xl'>
               Upload an audio File
             </Tab>
-            <Tab
-              fontWeight='bold'
-              fontSize='xl'
-              bg='gray.400'
-              color='primaryColor'
-            >
+            <Tab fontWeight='bold' fontSize='xl'>
               Record and Upload
             </Tab>
           </TabList>

@@ -3,7 +3,11 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from '../../components/Layout';
-import { getUsersProfile } from '../../store/actions/userProfileActions';
+import { getRecordingsByUsername } from '../../store/actions/recordingsAction';
+import {
+  getUserProfile,
+  getUsersProfile,
+} from '../../store/actions/userProfileActions';
 
 const Singers = ({}) => {
   const router = useRouter();
@@ -42,7 +46,11 @@ const Singers = ({}) => {
             name={`${user.fullName}`}
             src={user.profilePicture}
             _hover={{ cursor: 'pointer' }}
-            onClick={() => router.push(`/users/${user.username}`)}
+            onClick={() => {
+              dispatch(getUserProfile(user.username));
+              dispatch(getRecordingsByUsername(user.username));
+              router.push(`/users/${user.username}/?forward=true`);
+            }}
           />
           <VStack ml='1' alignItems='flex-start' spacing='-1px'>
             <Text

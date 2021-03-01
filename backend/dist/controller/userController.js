@@ -224,7 +224,7 @@ const facebookLogin = express_async_handler_1.default((req, res) => __awaiter(vo
         if (user) {
             res.json({
                 _id: user.id,
-                profilePicture: url,
+                profilePicture: user.profilePicture,
                 username: user.username,
                 fullName: user.fullName,
                 email: user.email,
@@ -233,7 +233,7 @@ const facebookLogin = express_async_handler_1.default((req, res) => __awaiter(vo
         }
         else {
             let password = email + process.env.JWT_SECRET;
-            let username = name;
+            let username = name + uniqid_1.default('-s&s-');
             try {
                 const user = yield User_1.default.create({
                     fullName: name,

@@ -258,7 +258,7 @@ const facebookLogin = asyncHandler(async (req, res) => {
     if (user) {
       res.json({
         _id: user.id,
-        profilePicture: url,
+        profilePicture: user.profilePicture,
         username: user.username,
         fullName: user.fullName,
         email: user.email,
@@ -267,7 +267,7 @@ const facebookLogin = asyncHandler(async (req, res) => {
     } else {
       //Brand new User
       let password = email + process.env.JWT_SECRET;
-      let username = name;
+      let username = name + uniqid('-s&s-');
       try {
         const user = await User.create({
           fullName: name,

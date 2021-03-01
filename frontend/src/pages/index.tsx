@@ -1,4 +1,4 @@
-import { SearchIcon } from '@chakra-ui/icons';
+import { ArrowForwardIcon, SearchIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Badge,
@@ -15,11 +15,14 @@ import {
   Spinner,
   Stack,
   Text,
+  toast,
   Tooltip,
+  useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { AiOutlineAudio } from 'react-icons/ai';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from '../components/Layout';
@@ -28,6 +31,7 @@ import { getTopRecs } from '../store/actions/recordingsAction';
 
 const HeadingTitle = (props) => {
   const router = useRouter();
+  const toast = useToast();
   const userLogin = useSelector((state: any) => state.userLogin);
   const { userInfo, error, loading } = userLogin;
   return (
@@ -50,7 +54,13 @@ const HeadingTitle = (props) => {
             if (userInfo) {
               router.push('/record');
             } else {
-              console.log('Log in to record');
+              toast({
+                title: 'Log In to record',
+                isClosable: true,
+                description: "you've to be logged in to start recording",
+                position: 'bottom-left',
+                status: 'error',
+              });
             }
           }}
         >
@@ -173,7 +183,7 @@ const SearchResults = ({ searchTerm, setSearchTerm }) => {
   const fetchRecording = async (title, tags, pageNumber) => {
     return axios
       .get(
-        `http://localhost:4000/api/recordings/search/?title=${title}&tags=${tags}&pageNumber=${pageNumber}`
+        `http://singshare.herokuapp.com/api/recordings/search/?title=${title}&tags=${tags}&pageNumber=${pageNumber}`
       )
       .then((res) => res.data);
   };
@@ -310,6 +320,12 @@ const SearchResults = ({ searchTerm, setSearchTerm }) => {
 const Index = ({}) => {
   const [searchTerm, setSearchTerm] = useState('');
 
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const { userInfo, error, loading } = userLogin;
+
+  const router = useRouter();
+  const toast = useToast();
+
   return (
     <Layout>
       <Stack
@@ -337,6 +353,32 @@ const Index = ({}) => {
             focusBorderColor='primaryColor'
           />
         </InputGroup>
+        {userInfo && (
+          <Button
+            alignSelf='flex-start'
+            color='primaryColor'
+            background='gray.700'
+            rightIcon={<ArrowForwardIcon />}
+            leftIcon={<AiOutlineAudio size={25} />}
+            onClick={() => {
+              if (userInfo) {
+                router.push('/record');
+              } else {
+                toast({
+                  title: 'Log In to record',
+                  isClosable: true,
+                  description: "you've to be logged in to start recording",
+                  position: 'bottom-left',
+                  status: 'error',
+                });
+                router.push('/login');
+              }
+            }}
+          >
+            Start Recording
+          </Button>
+        )}
+
         <HeadingTitle display={searchTerm.length > 0 ? 'none' : 'block'} />
         {searchTerm && (
           <SearchResults

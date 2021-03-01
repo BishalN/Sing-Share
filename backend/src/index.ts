@@ -24,6 +24,6 @@ app.use('/api/recordings', recordingRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(4000, () => {
+app.listen(process.env.PORT || 4000, () => {
   console.log('The app is listening on port 4000');
 });

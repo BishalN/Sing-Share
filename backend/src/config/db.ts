@@ -1,4 +1,3 @@
-import { color } from '@chakra-ui/react';
 import mongoose from 'mongoose';
 import colors from 'colors';
 

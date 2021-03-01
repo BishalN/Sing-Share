@@ -22,7 +22,7 @@ app.use('/api/users', userRoutes_1.default);
 app.use('/api/recordings', recordingRoutes_1.default);
 app.use(errorMiddleware_1.notFound);
 app.use(errorMiddleware_1.errorHandler);
-app.listen(4000, () => {
+app.listen(process.env.PORT || 4000, () => {
     console.log('The app is listening on port 4000');
 });
 //# sourceMappingURL=index.js.map

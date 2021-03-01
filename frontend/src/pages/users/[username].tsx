@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Badge,
   Box,
   Button,
   Divider,
@@ -8,7 +7,6 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  HStack,
   Input,
   Modal,
   ModalBody,
@@ -23,26 +21,23 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  AiFillPlayCircle,
-  AiOutlineComment,
-  AiOutlineHeart,
-} from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import EditImage from '../../components/EditImage';
 import { Layout } from '../../components/Layout';
-import {
-  getUserProfile,
-  updateProfile,
-} from '../../store/actions/userProfileActions';
+import { RecordingsCard } from '../../components/RecordingsCard';
 import {
   getMyRecordings,
   getRecordingsByUsername,
 } from '../../store/actions/recordingsAction';
-import { RecordingsCard } from '../../components/RecordingsCard';
+import {
+  getUserProfile,
+  updateProfile,
+} from '../../store/actions/userProfileActions';
 
 const UserProfile = ({}) => {
   const router = useRouter();
+  const { username, forward } = router.query;
+
   const dispatch = useDispatch();
   const { onOpen, isOpen, onClose } = useDisclosure();
   const initialRef = useRef();
@@ -86,8 +81,6 @@ const UserProfile = ({}) => {
       router.push(`${updateUserName}`);
     }
   };
-
-  const { username } = router.query;
 
   const getUserProfileFromStore = useSelector(
     (state: any) => state.getUserProfile
@@ -163,7 +156,14 @@ const UserProfile = ({}) => {
         );
       }
     }
-  }, [username, userProfile, updatedProfile, myRecordings, recordings]);
+  }, [
+    username,
+    userProfile,
+    updatedProfile,
+    myRecordings,
+    recordings,
+    username,
+  ]);
 
   return (
     <Layout>

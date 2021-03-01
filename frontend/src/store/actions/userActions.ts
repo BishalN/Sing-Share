@@ -45,7 +45,7 @@ export const register = (
     };
 
     const { data } = await axios.post(
-      'http://localhost:4000/api/users',
+      'http://singshare.herokuapp.com/api/users',
       { fullName, username, email, password },
       config
     );
@@ -77,7 +77,7 @@ export const login = (usernameOrEmail: string, password: string) => async (
     };
 
     const { data } = await axios.post(
-      'http://localhost:4000/api/users/login',
+      'http://singshare.herokuapp.com/api/users/login',
       { usernameOrEmail, password },
       config
     );
@@ -106,7 +106,7 @@ export const resetPassword = (email) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      'http://localhost:4000/api/users/reset-password',
+      'http://singshare.herokuapp.com/api/users/reset-password',
       { email },
       config
     );
@@ -134,7 +134,7 @@ export const changePassword = (newPassword, token) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      'http://localhost:4000/api/users/change-password',
+      'http://singshare.herokuapp.com/api/users/change-password',
       { newPassword, token },
       config
     );
@@ -162,7 +162,7 @@ export const facebookLogin = (userId, accessToken) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      'http://localhost:4000/api/users/facebook-login',
+      'http://singshare.herokuapp.com/api/users/facebook-login',
       { userId, accessToken },
       config
     );
@@ -190,7 +190,7 @@ export const googleLogin = (idToken) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      'http://localhost:4000/api/users/google-login',
+      'http://singshare.herokuapp.com/api/users/google-login',
       { idToken },
       config
     );
@@ -220,7 +220,7 @@ export const updateProfilePicture = (file) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      'http://localhost:4000/api/users/upload-profilePicture',
+      'http://singshare.herokuapp.com/api/users/upload-profilePicture',
       { file },
       config
     );
