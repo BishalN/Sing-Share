@@ -40,7 +40,10 @@ import {
   TwitterIcon,
   TwitterShareButton,
 } from 'react-share';
-import { uploadRecording } from '../store/actions/recordingsAction';
+import {
+  getRecordingsByUsername,
+  uploadRecording,
+} from '../store/actions/recordingsAction';
 
 interface RecordAndUploadFileTabProps {}
 
@@ -345,6 +348,7 @@ export const RecordAndUploadFileTab: React.FC<RecordAndUploadFileTabProps> = ({}
               bg='primaryColor'
               ref={cancelRef}
               onClick={() => {
+                dispatch(getRecordingsByUsername(userInfo.username));
                 onClose();
                 router.push(`users/${userInfo?.username}`);
               }}
