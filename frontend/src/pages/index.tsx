@@ -183,7 +183,7 @@ const SearchResults = ({ searchTerm, setSearchTerm }) => {
   const fetchRecording = async (title, tags, pageNumber) => {
     return axios
       .get(
-        `http://singshare.herokuapp.com/api/recordings/search/?title=${title}&tags=${tags}&pageNumber=${pageNumber}`
+        `https://singshare.herokuapp.com/api/recordings/search/?title=${title}&tags=${tags}&pageNumber=${pageNumber}`
       )
       .then((res) => res.data);
   };
