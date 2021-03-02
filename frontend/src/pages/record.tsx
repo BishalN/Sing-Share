@@ -6,7 +6,9 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Layout } from '../components/Layout';
 import { RecordAndUploadFileTab } from '../components/RecordAndUploadFileTab';
 import { UploadRecordedFileTab } from '../components/UploadRecordedFileTab';
@@ -14,6 +16,14 @@ import { UploadRecordedFileTab } from '../components/UploadRecordedFileTab';
 interface recordProps {}
 
 const Record: React.FC<recordProps> = ({}) => {
+  const userLogin = useSelector((state: any) => state.userLogin);
+  const { userInfo } = userLogin;
+  const router = useRouter();
+  useEffect(() => {
+    if (userInfo?.length === 0) {
+      router.push('/login');
+    }
+  }, [userInfo]);
   return (
     <Layout>
       <Flex
