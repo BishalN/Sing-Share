@@ -186,6 +186,7 @@ const Login = ({}) => {
         <Box mt={4} maxW='sm'>
           <GoogleLogin
             clientId='1094965231233-8smhp95p11cj6lehlhvshqjf4b9nrao8.apps.googleusercontent.com'
+            redirectUri='https://sing-share.vercel.app/'
             render={(renderProps) => (
               <Button
                 leftIcon={<FaGoogle />}
