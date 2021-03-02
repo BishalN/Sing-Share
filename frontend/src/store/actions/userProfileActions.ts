@@ -33,7 +33,7 @@ export const getUserProfile = (username) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(
-      `http://singshare.herokuapp.com/api/users/${username}`,
+      `https://singshare.herokuapp.com/api/users/${username}`,
       config
     );
 
@@ -66,7 +66,7 @@ export const getUsersProfile = () => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(
-      `http://singshare.herokuapp.com/api/users/all`,
+      `https://singshare.herokuapp.com/api/users/all`,
       config
     );
 
@@ -102,7 +102,7 @@ export const updateProfile = ({ fullName, username, bio }) => async (
     };
 
     const { data } = await axios.put(
-      `http://singshare.herokuapp.com/api/users/edit`,
+      `https://singshare.herokuapp.com/api/users/edit`,
       { fullName, username, bio },
       config
     );
@@ -140,7 +140,7 @@ export const updateProfilePicture = (formdata) => async (
     };
 
     const { data } = await axios.post(
-      `http://singshare.herokuapp.com/api/users/upload-profilePicture`,
+      `https://singshare.herokuapp.com/api/users/upload-profilePicture`,
       formdata,
       config
     );

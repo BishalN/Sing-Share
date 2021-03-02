@@ -64,7 +64,7 @@ export const uploadRecording = (formdata: FormData) => async (
     };
 
     const { data } = await axios.post(
-      `http://singshare.herokuapp.com/api/recordings/upload`,
+      `https://singshare.herokuapp.com/api/recordings/upload`,
       formdata,
       config
     );
@@ -101,7 +101,7 @@ export const getRecordingsByUsername = (username: string) => async (
     };
 
     const { data } = await axios.get(
-      `http://singshare.herokuapp.com/api/recordings/${username}`,
+      `https://singshare.herokuapp.com/api/recordings/${username}`,
       config
     );
 
@@ -134,7 +134,7 @@ export const getMyRecordings = () => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(
-      `http://singshare.herokuapp.com/api/recordings/my`,
+      `https://singshare.herokuapp.com/api/recordings/my`,
       config
     );
 
@@ -167,7 +167,7 @@ export const editMyRecording = (recordingObj) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.put(
-      `http://singshare.herokuapp.com/api/recordings/edit`,
+      `https://singshare.herokuapp.com/api/recordings/edit`,
       recordingObj,
       config
     );
@@ -205,7 +205,7 @@ export const deleteMyRecording = (recordingId) => async (
     };
 
     const { data } = await axios.delete(
-      `http://singshare.herokuapp.com/api/recordings/delete`,
+      `https://singshare.herokuapp.com/api/recordings/delete`,
       config
     );
 
@@ -241,7 +241,7 @@ export const toggleLikeRecording = (recordingId) => async (
     };
 
     const { data } = await axios.put(
-      `http://singshare.herokuapp.com/api/recordings/toggle-like/${recordingId}`,
+      `https://singshare.herokuapp.com/api/recordings/toggle-like/${recordingId}`,
       {},
       config
     );
@@ -278,7 +278,7 @@ export const comment = (comment, avatar, username, recordingId) => async (
     };
 
     const { data } = await axios.put(
-      `http://singshare.herokuapp.com/api/recordings/comment/${recordingId}`,
+      `https://singshare.herokuapp.com/api/recordings/comment/${recordingId}`,
       { comment, avatar, username },
       config
     );
@@ -312,7 +312,7 @@ export const getComments = (recordingId) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(
-      `http://singshare.herokuapp.com/api/recordings/comment/${recordingId}`,
+      `https://singshare.herokuapp.com/api/recordings/comment/${recordingId}`,
       config
     );
 
@@ -348,7 +348,7 @@ export const editComment = ({ comment, commentId, recordingId }) => async (
     };
 
     const { data } = await axios.put(
-      `http://singshare.herokuapp.com/api/recordings/comment/${recordingId}/edit/${commentId}`,
+      `https://singshare.herokuapp.com/api/recordings/comment/${recordingId}/edit/${commentId}`,
       { comment },
       config
     );
@@ -385,7 +385,7 @@ export const deleteComment = ({ commentId, recordingId }) => async (
     };
 
     const { data } = await axios.delete(
-      `http://singshare.herokuapp.com/api/recordings/comment/${recordingId}/delete/${commentId}`,
+      `https://singshare.herokuapp.com/api/recordings/comment/${recordingId}/delete/${commentId}`,
       config
     );
 
@@ -418,7 +418,7 @@ export const getPopularRecords = () => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(
-      `http://singshare.herokuapp.com/api/recordings/popular`,
+      `https://singshare.herokuapp.com/api/recordings/popular`,
       config
     );
 
@@ -439,7 +439,7 @@ export const getTopRecs = () => async (dispatch) => {
     dispatch({ type: GET_TOP_RECS_REQUEST });
 
     const { data } = await axios.get(
-      `http://singshare.herokuapp.com/api/users/nominees`
+      `https://singshare.herokuapp.com/api/users/nominees`
     );
 
     dispatch({ type: GET_TOP_RECS_SUCCESS, payload: data });
@@ -459,7 +459,7 @@ export const getUserByUserId = (id) => async (dispatch) => {
     dispatch({ type: GET_USER_BY_USERID_REQUEST });
 
     const { data } = await axios.get(
-      `http://singshare.herokuapp.com/api/users/find/:${id}`
+      `https://singshare.herokuapp.com/api/users/find/:${id}`
     );
 
     dispatch({ type: GET_USER_BY_USERID_SUCCESS, payload: data });
