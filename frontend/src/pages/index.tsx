@@ -353,7 +353,7 @@ const Index = ({}) => {
             focusBorderColor='primaryColor'
           />
         </InputGroup>
-        {userInfo && (
+        {userInfo?.username ? (
           <Button
             alignSelf='flex-start'
             color='primaryColor'
@@ -377,6 +377,8 @@ const Index = ({}) => {
           >
             Start Recording
           </Button>
+        ) : (
+          ''
         )}
 
         <HeadingTitle display={searchTerm.length > 0 ? 'none' : 'block'} />
