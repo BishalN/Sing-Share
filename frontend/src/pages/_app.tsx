@@ -8,6 +8,7 @@ const queryClient = new QueryClient();
 
 import theme from '../theme';
 import { store } from '../store/store';
+import { Fonts } from '../fonts';
 
 function MyApp({ Component, pageProps }) {
   return (

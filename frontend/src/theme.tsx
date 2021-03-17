@@ -1,6 +1,8 @@
 import { extendTheme } from '@chakra-ui/react';
 import { createBreakpoints } from '@chakra-ui/theme-tools';
 
+import { Fonts } from './fonts';
+
 const breakpoints = createBreakpoints({
   sm: '30em',
   md: '48em',
@@ -19,9 +21,9 @@ const theme = extendTheme({
     white: '#ffffff',
   },
   fonts: {
-    body: 'poppins,system-ui, sans-serif',
-    heading: 'poppins,Georgia, serif',
-    mono: 'Menlo, monospace',
+    body: 'poppins',
+    heading: 'poppins',
+    mono: 'poppins',
   },
   fontSizes: {
     xs: '12px',
