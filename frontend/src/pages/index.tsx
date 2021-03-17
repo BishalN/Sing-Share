@@ -329,7 +329,6 @@ const Index = ({}) => {
   return (
     <Layout>
       <Stack
-        // minHeight={['30vh', '40vh', '45vh', '45vh']}
         wrap='wrap'
         spacing={['20px']}
         display='flex'
