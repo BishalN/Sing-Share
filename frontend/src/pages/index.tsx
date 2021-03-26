@@ -72,11 +72,20 @@ const HeadingTitle = (props) => {
   );
 };
 
-const ProfileRecordings = (props) => {
-  const dispatch = useDispatch();
+export async function getStaticProps() {
+  const { data } = await axios.get(
+    'https://singshare.herokuapp.com/api/users/nominees'
+  );
 
-  const topRecordingsFromStore = useSelector((state: any) => state.getTopRecs);
-  const { loading, recordings } = topRecordingsFromStore;
+  return {
+    props: {
+      recordings: data,
+    },
+  };
+}
+
+const ProfileRecordings = ({ recordings }) => {
+  const dispatch = useDispatch();
 
   const likeRecordingFromStore = useSelector(
     (state: any) => state.likeRecording
@@ -107,16 +116,6 @@ const ProfileRecordings = (props) => {
 
   return (
     <Box>
-      {loading && (
-        <Box
-          display='flex'
-          justifyContent='center'
-          minH='30vh'
-          alignItems='center'
-        >
-          <Spinner thickness='5px' color='primaryColor' size='xl' />
-        </Box>
-      )}
       {recordings?.map((recording, index) => (
         <Flex mt='6' display={['block', 'flex']}>
           <Box
@@ -165,13 +164,13 @@ const ProfileRecordings = (props) => {
   );
 };
 
-const RecordingsSection = (props) => {
+const RecordingsSection = (props, { recordings }) => {
   return (
     <Box alignSelf='start' mt='40px' {...props}>
       <Heading as='h3' fontWeight='semibold' fontSize='2xl' color='gray.600'>
         Recordings
       </Heading>
-      <ProfileRecordings />
+      <ProfileRecordings recordings={recordings} />
     </Box>
   );
 };
@@ -328,12 +327,7 @@ const Index = ({}) => {
 
   return (
     <Layout>
-      <Stack
-        wrap='wrap'
-        spacing={['20px']}
-        display='flex'
-        alignItems='center'
-      >
+      <Stack wrap='wrap' spacing={['20px']} display='flex' alignItems='center'>
         <InputGroup _hover={{ boxShadow: 'sm' }} alignSelf='flex-end'>
           <InputLeftElement
             ml={['40px', '150px', '300px', '300px']}
