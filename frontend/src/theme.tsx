@@ -21,9 +21,9 @@ const theme = extendTheme({
     white: '#ffffff',
   },
   fonts: {
-    body: 'poppins',
-    heading: 'poppins',
-    mono: 'poppins',
+    body: 'poppins,cursive',
+    heading: 'poppins,cursive',
+    mono: 'poppins,cursive',
   },
   fontSizes: {
     xs: '12px',
