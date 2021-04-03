@@ -4,7 +4,7 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import Head from 'next/head';
 
-import '../styles/global.css';
+import '../../styles/globals.css';
 
 const queryClient = new QueryClient();
 
