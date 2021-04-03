@@ -4,11 +4,13 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import Head from 'next/head';
 
+import '../styles/global.css';
+import '../';
+
 const queryClient = new QueryClient();
 
 import theme from '../theme';
 import { store } from '../store/store';
-import { Fonts } from '../fonts';
 
 function MyApp({ Component, pageProps }) {
   return (
