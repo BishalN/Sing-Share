@@ -1,0 +1,7 @@
+{
+  "component": {
+    "testFiles": "**/*.test.{js,ts,jsx,tsx}",
+    "componentFolder": "src"
+  },
+  "baseUrl": "https://sing-share.vercel.app"
+}
