@@ -15,7 +15,7 @@ export const Footer: React.FC<FooterProps> = ({}) => {
         color='white'
         background='gray.800'
       >
-        <Text letterSpacing='5px' textAlign='center'>
+        <Text letterSpacing='5px' textAlign='center' display='block'>
           All the data used here are just for demo purpose
         </Text>
         <Text letterSpacing='5px' fontWeight='bold' textAlign='center'>
